@@ -8,6 +8,7 @@ repos:
     hooks:
       - id: black
         language_version: python3.10
+      - id: black-jupyter
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.2.0
     hooks:
@@ -19,6 +20,7 @@ repos:
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
+        exclude: ^notebooks/
       - id: trailing-whitespace
       - id: requirements-txt-fixer
       - id: sort-simple-yaml
