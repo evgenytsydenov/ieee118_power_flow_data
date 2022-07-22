@@ -18,3 +18,28 @@ exclude = '''
   | dist
 )/
 '''
+
+[tool.poetry]
+name = "ieee118_power_flow_data"
+version = "0.1.0"
+description = ""
+authors = ["Evgeny Tsydenov <evgenytsydenov@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+pandas = "^1.4.3"
+numpy = "^1.23.1"
+matplotlib = "^3.5.2"
+jupyter = "^1.0.0"
+black = {extras = ["jupyter"], version = "^22.6.0"}
+flake8 = "^4.0.1"
+isort = "^5.10.1"
+pre-commit = "^2.20.0"
+seaborn = "^0.11.2"
+requests = "^2.28.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
