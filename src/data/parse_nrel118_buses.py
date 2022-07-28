@@ -26,7 +26,7 @@ def parse_nrel118_buses(
 
     # Return results
     if path_parsed_data:
-        buses.to_csv(path_parsed_data, header=True, index=True)
+        buses.to_csv(path_parsed_data, header=True, index=False)
     else:
         return buses
 

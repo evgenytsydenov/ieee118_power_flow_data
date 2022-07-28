@@ -8,12 +8,12 @@ stages:
       md5: 53359601ce73b4f6d166e6a37141ed1b
       size: 2360
     - path: src/data/parse_nrel118_buses.py
-      md5: 58d2569b714e11912d0e3064d9b69087
-      size: 1369
+      md5: b11de13f3275b454d3da2b232c7ec3a9
+      size: 1370
     outs:
     - path: data/parsed/buses_nrel118.csv
-      md5: 3086778f51157c57fb0c34d792dde0a4
-      size: 1802
+      md5: 83defcb9a707f9ab2b22f00fb542d70f
+      size: 1439
   parse_nrel118_line_data:
     cmd: python src/data/parse_nrel118_lines.py data/raw/nrel118/additional-files-mti-118/Lines.csv
       data/parsed/lines_nrel118.csv
@@ -22,9 +22,23 @@ stages:
       md5: 682db21351902ecc0d885892be9fc9ee
       size: 8436
     - path: src/data/parse_nrel118_lines.py
-      md5: 0519c4e949ac199b98dda0ec8742a8ea
-      size: 1799
+      md5: 819789acdfe14f79b7791453124daf39
+      size: 1798
     outs:
     - path: data/parsed/lines_nrel118.csv
-      md5: dbefd7c8f723af286f3e2350974efb6d
-      size: 8920
+      md5: b4b30232520ccd098b4e01f9be46fdaa
+      size: 8283
+  parse_jeas118_line_data:
+    cmd: python src/data/parse_jeas118_lines.py data/raw/jeas118/JEAS_IEEE118.doc
+      data/parsed/lines_jeas118.csv
+    deps:
+    - path: data/raw/jeas118/JEAS_IEEE118.doc
+      md5: 115121e48f534b9f720cecbdd6a9dbae
+      size: 663040
+    - path: src/data/parse_jeas118_lines.py
+      md5: 3b7658008bd1f68c3a2e02852bf39732
+      size: 2274
+    outs:
+    - path: data/parsed/lines_jeas118.csv
+      md5: 8be6400397efff3cdb4b7d3a6df60c6d
+      size: 6635

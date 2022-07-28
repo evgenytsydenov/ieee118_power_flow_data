@@ -14,3 +14,11 @@ stages:
       - src/data/parse_nrel118_lines.py
     outs:
       - data/parsed/lines_nrel118.csv
+
+  parse_jeas118_line_data:
+    cmd: python src/data/parse_jeas118_lines.py data/raw/jeas118/JEAS_IEEE118.doc data/parsed/lines_jeas118.csv
+    deps:
+      - data/raw/jeas118/JEAS_IEEE118.doc
+      - src/data/parse_jeas118_lines.py
+    outs:
+      - data/parsed/lines_jeas118.csv

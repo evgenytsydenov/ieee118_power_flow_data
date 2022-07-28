@@ -27,8 +27,8 @@ def parse_nrel118_lines(
             "Bus from ": "from_bus",
             "Bus to": "to_bus",
             "Max Flow (MW)": "max_p_mw",
-            "Reactance (p.u.)": "x_ohm",
-            "Resistance (p.u.)": "r_ohm",
+            "Reactance (p.u.)": "x_pu",
+            "Resistance (p.u.)": "r_pu",
         },
         inplace=True,
     )
@@ -41,7 +41,7 @@ def parse_nrel118_lines(
 
     # Return results
     if path_parsed_data:
-        lines.to_csv(path_parsed_data, header=True, index=True)
+        lines.to_csv(path_parsed_data, header=True, index=False)
     else:
         return lines
 
