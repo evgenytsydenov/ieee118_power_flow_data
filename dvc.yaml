@@ -1,0 +1,16 @@
+stages:
+  parse_nrel118_bus_data:
+    cmd: python src/data/parse_nrel118_buses.py data/raw/nrel118/additional-files-mti-118/Buses.csv data/parsed/buses_nrel118.csv
+    deps:
+      - data/raw/nrel118/additional-files-mti-118/Buses.csv
+      - src/data/parse_nrel118_buses.py
+    outs:
+      - data/parsed/buses_nrel118.csv
+
+  parse_nrel118_line_data:
+    cmd: python src/data/parse_nrel118_lines.py data/raw/nrel118/additional-files-mti-118/Lines.csv data/parsed/lines_nrel118.csv
+    deps:
+      - data/raw/nrel118/additional-files-mti-118/Lines.csv
+      - src/data/parse_nrel118_lines.py
+    outs:
+      - data/parsed/lines_nrel118.csv

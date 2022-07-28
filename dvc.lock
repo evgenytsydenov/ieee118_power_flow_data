@@ -1,0 +1,30 @@
+schema: '2.0'
+stages:
+  parse_nrel118_bus_data:
+    cmd: python src/data/parse_nrel118_buses.py data/raw/nrel118/additional-files-mti-118/Buses.csv
+      data/parsed/buses_nrel118.csv
+    deps:
+    - path: data/raw/nrel118/additional-files-mti-118/Buses.csv
+      md5: 53359601ce73b4f6d166e6a37141ed1b
+      size: 2360
+    - path: src/data/parse_nrel118_buses.py
+      md5: 58d2569b714e11912d0e3064d9b69087
+      size: 1369
+    outs:
+    - path: data/parsed/buses_nrel118.csv
+      md5: 3086778f51157c57fb0c34d792dde0a4
+      size: 1802
+  parse_nrel118_line_data:
+    cmd: python src/data/parse_nrel118_lines.py data/raw/nrel118/additional-files-mti-118/Lines.csv
+      data/parsed/lines_nrel118.csv
+    deps:
+    - path: data/raw/nrel118/additional-files-mti-118/Lines.csv
+      md5: 682db21351902ecc0d885892be9fc9ee
+      size: 8436
+    - path: src/data/parse_nrel118_lines.py
+      md5: 0519c4e949ac199b98dda0ec8742a8ea
+      size: 1799
+    outs:
+    - path: data/parsed/lines_nrel118.csv
+      md5: dbefd7c8f723af286f3e2350974efb6d
+      size: 8920
