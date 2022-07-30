@@ -8,12 +8,12 @@ stages:
       md5: 53359601ce73b4f6d166e6a37141ed1b
       size: 2360
     - path: src/data/parse_nrel118_buses.py
-      md5: b11de13f3275b454d3da2b232c7ec3a9
-      size: 1370
+      md5: 040a24e55885e3e6ff6a0d645b7dd1db
+      size: 1707
     outs:
     - path: data/parsed/buses_nrel118.csv
-      md5: 83defcb9a707f9ab2b22f00fb542d70f
-      size: 1439
+      md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
+      size: 2540
   parse_nrel118_line_data:
     cmd: python src/data/parse_nrel118_lines.py data/raw/nrel118/additional-files-mti-118/Lines.csv
       data/parsed/lines_nrel118.csv
@@ -42,3 +42,16 @@ stages:
     - path: data/parsed/lines_jeas118.csv
       md5: 8be6400397efff3cdb4b7d3a6df60c6d
       size: 6635
+  prepare_bus_data:
+    cmd: python src/data/prepare_buses.py data/parsed/buses_nrel118.csv data/prepared/buses.csv
+    deps:
+    - path: data/parsed/buses_nrel118.csv
+      md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
+      size: 2540
+    - path: src/data/prepare_buses.py
+      md5: a27913346f73c9e9b522b4224aafd282
+      size: 1525
+    outs:
+    - path: data/prepared/buses.csv
+      md5: 5d31dafc475a1d496d7599d5e8170d14
+      size: 2406

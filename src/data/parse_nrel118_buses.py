@@ -5,24 +5,38 @@ import pandas as pd
 
 
 def parse_nrel118_buses(
-    path_raw_data: str, path_parsed_data: Optional[str] = None
+    raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
     """Fix bus names and drop unnecessary information.
 
     Args:
-        path_raw_data: Path to raw bus data from NREL-118 dataset.
+        raw_data: Path or dataframe with raw bus data from NREL-118 dataset.
         path_parsed_data: Path to save parsed data.
 
     Returns:
         Parsed bus data or None if `path_parsed_data` is passed and the data were saved.
     """
+    if isinstance(raw_data, str):
+        buses = pd.read_csv(raw_data, header=0)
+    else:
+        buses = raw_data[["Bus Name", "Region", "Load Participation Factor"]]
+
     # Load raw bus data
-    buses = pd.read_csv(path_raw_data, header=0, usecols=["Bus Name", "Region"])
-    buses.rename(columns={"Bus Name": "name", "Region": "region"}, inplace=True)
+    buses.rename(
+        columns={
+            "Bus Name": "name",
+            "Region": "region",
+            "Load Participation Factor": "load_participation_factor",
+        },
+        inplace=True,
+    )
     buses.sort_values(by="name", inplace=True, ignore_index=True)
 
     # Unify bus names
-    buses["name"] = "bus__" + buses["name"].str.lstrip("bus0")
+    buses["name"] = "bus_" + buses["name"].str.lstrip("bus0")
+
+    # Convert regions to lowercase
+    buses["region"] = buses["region"].str.lower()
 
     # Return results
     if path_parsed_data:

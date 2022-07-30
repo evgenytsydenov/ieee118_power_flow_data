@@ -22,3 +22,11 @@ stages:
       - src/data/parse_jeas118_lines.py
     outs:
       - data/parsed/lines_jeas118.csv
+
+  prepare_bus_data:
+    cmd: python src/data/prepare_buses.py data/parsed/buses_nrel118.csv data/prepared/buses.csv
+    deps:
+      - data/parsed/buses_nrel118.csv
+      - src/data/prepare_buses.py
+    outs:
+      - data/prepared/buses.csv
