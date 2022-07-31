@@ -1,5 +1,6 @@
 stages:
   parse_nrel118_bus_data:
+    desc: "Parse bus data from NREL-118 dataset"
     cmd: python src/data/parse_nrel118_buses.py
       data/raw/nrel118/additional-files-mti-118/Buses.csv
       data/parsed/nrel118_buses.csv
@@ -10,6 +11,7 @@ stages:
       - data/parsed/nrel118_buses.csv
 
   parse_nrel118_line_data:
+    desc: "Parse line data from NREL-118 dataset"
     cmd: python src/data/parse_nrel118_lines.py
       data/raw/nrel118/additional-files-mti-118/Lines.csv
       data/parsed/nrel118_lines.csv
@@ -20,6 +22,7 @@ stages:
       - data/parsed/nrel118_lines.csv
 
   parse_jeas118_line_data:
+    desc: "Parse line data from JEAS-118 dataset"
     cmd: python src/data/parse_jeas118_lines.py
       data/raw/jeas118/JEAS_IEEE118.doc
       data/parsed/jeas118_lines.csv
@@ -30,6 +33,7 @@ stages:
       - data/parsed/jeas118_lines.csv
 
   parse_jeas118_trafo_data:
+    desc: "Parse transformer data from JEAS-118 dataset"
     cmd: python src/data/parse_jeas118_trafos.py
       data/raw/jeas118/JEAS_IEEE118.doc
       data/parsed/jeas118_trafos.csv
@@ -40,6 +44,7 @@ stages:
       - data/parsed/jeas118_trafos.csv
 
   prepare_bus_data:
+    desc: "Build final bus dataset"
     cmd: python src/data/prepare_buses.py
       data/parsed/nrel118_buses.csv
       data/prepared/buses.csv
@@ -50,6 +55,7 @@ stages:
       - data/prepared/buses.csv
 
   prepare_branch_data:
+    desc: "Build final dataset with line and transformer info"
     cmd: python src/data/prepare_branches.py
       data/parsed/nrel118_lines.csv
       data/parsed/jeas118_lines.csv
