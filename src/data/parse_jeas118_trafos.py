@@ -43,7 +43,7 @@ def parse_jeas118_trafos(
             "From Bus": "from_bus",
             "To\nBus": "to_bus",
             "Circuit ID": "parallel",
-            "Tap Initial": "ratio",
+            "Tap Initial": "trafo_ratio",
         },
         inplace=True,
     )

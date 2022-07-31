@@ -40,11 +40,12 @@ stages:
       - data/prepared/buses.csv
 
   prepare_branch_data:
-    cmd: python src/data/prepare_branches.py data/parsed/lines_nrel118.csv data/parsed/lines_jeas118.csv data/parsed/trafos_jeas118.csv data/prepared/branches.csv
+    cmd: python src/data/prepare_branches.py data/parsed/lines_nrel118.csv data/parsed/lines_jeas118.csv data/parsed/trafos_jeas118.csv data/prepared/buses.csv data/prepared/branches.csv
     deps:
       - src/data/prepare_branches.py
       - data/parsed/lines_nrel118.csv
       - data/parsed/lines_jeas118.csv
       - data/parsed/trafos_jeas118.csv
+      - data/prepared/buses.csv
     outs:
       - data/prepared/branches.csv

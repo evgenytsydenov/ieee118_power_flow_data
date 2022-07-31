@@ -63,15 +63,15 @@ stages:
       md5: 115121e48f534b9f720cecbdd6a9dbae
       size: 663040
     - path: src/data/parse_jeas118_trafos.py
-      md5: a6ec1f3d37a3199f4e78e9872feeacde
-      size: 2406
+      md5: 947f773c9547c0f18bb4779952b15d8c
+      size: 2412
     outs:
     - path: data/parsed/trafos_jeas118.csv
-      md5: 47f47ad34c2303ca96bd3098748d2a6d
-      size: 311
+      md5: 4f460fce1790a10ea22d7cac9c380c92
+      size: 317
   prepare_branch_data:
     cmd: python src/data/prepare_branches.py data/parsed/lines_nrel118.csv data/parsed/lines_jeas118.csv
-      data/parsed/trafos_jeas118.csv data/prepared/branches.csv
+      data/parsed/trafos_jeas118.csv data/prepared/buses.csv data/prepared/branches.csv
     deps:
     - path: data/parsed/lines_jeas118.csv
       md5: 7077a43e23624864a8cb0cb527532a85
@@ -80,12 +80,15 @@ stages:
       md5: 6ecc08f8b32b00c87885ff9c603c90bb
       size: 8100
     - path: data/parsed/trafos_jeas118.csv
-      md5: 47f47ad34c2303ca96bd3098748d2a6d
-      size: 311
+      md5: 4f460fce1790a10ea22d7cac9c380c92
+      size: 317
+    - path: data/prepared/buses.csv
+      md5: 5d31dafc475a1d496d7599d5e8170d14
+      size: 2406
     - path: src/data/prepare_branches.py
-      md5: 47ce5b9f6cd6767d998e2086370c48aa
-      size: 2580
+      md5: f1d7bd82ca67560d1142fa81da6d2ad9
+      size: 3652
     outs:
     - path: data/prepared/branches.csv
-      md5: 686809be80f249b810ba0f8c99a764d8
-      size: 10967
+      md5: 33ca65a5ca689ba4503380b1d98753ec
+      size: 17712
