@@ -7,22 +7,28 @@ import pandas as pd
 def parse_nrel118_lines(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Fix variable names and drop unnecessary information.
+    """Parse raw line data from NREL-118 dataset.
 
     Args:
-        raw_data: Path or dataframe with raw line data from NREL-118 dataset.
+        raw_data: Path or dataframe with raw data.
         path_parsed_data: Path to save parsed data.
 
     Returns:
-        Parsed line data or None if `path_parsed_data` is passed and the data
-          were saved.
+        Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
+    dtypes = {
+        "Line Name": str,
+        "Bus from ": str,
+        "Bus to": str,
+        "Max Flow (MW)": float,
+        "Reactance (p.u.)": float,
+        "Resistance (p.u.)": float,
+    }
+    cols = dtypes.keys()
     if isinstance(raw_data, str):
-        lines = pd.read_csv(
-            raw_data, header=0, usecols=lambda x: x not in ["Min Flow (MW)"]
-        )
+        lines = pd.read_csv(raw_data, header=0, usecols=cols, dtype=dtypes)
     else:
-        lines = raw_data.drop(columns=["Min Flow (MW)"])
+        lines = raw_data[cols].astype(dtypes)
 
     # Rename variables
     lines.rename(
@@ -59,6 +65,4 @@ if __name__ == "__main__":
         )
 
     # Run
-    path_raw_data = sys.argv[1]
-    path_parsed_data = sys.argv[2]
-    parse_nrel118_lines(path_raw_data, path_parsed_data)
+    parse_nrel118_lines(raw_data=sys.argv[1], path_parsed_data=sys.argv[2])

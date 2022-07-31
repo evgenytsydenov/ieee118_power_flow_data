@@ -7,19 +7,21 @@ import pandas as pd
 def parse_nrel118_buses(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Fix bus names and drop unnecessary information.
+    """Parse raw bus data from NREL-118 dataset.
 
     Args:
-        raw_data: Path or dataframe with raw bus data from NREL-118 dataset.
+        raw_data: Path or dataframe with raw data.
         path_parsed_data: Path to save parsed data.
 
     Returns:
-        Parsed bus data or None if `path_parsed_data` is passed and the data were saved.
+        Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
+    dtypes = {"Bus Name": str, "Region": str, "Load Participation Factor": float}
+    cols = dtypes.keys()
     if isinstance(raw_data, str):
-        buses = pd.read_csv(raw_data, header=0)
+        buses = pd.read_csv(raw_data, header=0, dtype=dtypes, usecols=cols)
     else:
-        buses = raw_data[["Bus Name", "Region", "Load Participation Factor"]]
+        buses = raw_data[cols].astype(dtypes)
 
     # Load raw bus data
     buses.rename(
@@ -54,6 +56,4 @@ if __name__ == "__main__":
         )
 
     # Run
-    path_raw_data = sys.argv[1]
-    path_parsed_data = sys.argv[2]
-    parse_nrel118_buses(path_raw_data, path_parsed_data)
+    parse_nrel118_buses(raw_data=sys.argv[1], path_parsed_data=sys.argv[2])

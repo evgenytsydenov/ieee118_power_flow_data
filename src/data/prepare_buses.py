@@ -7,20 +7,21 @@ import pandas as pd
 def prepare_buses(
     parsed_data: str | pd.DataFrame, path_prepared_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Insert information about voltage levels and state of buses.
+    """Prepare final bus data.
 
     Args:
-        parsed_data: path to parsed data or dataframe with parsed data.
+        parsed_data: Path or dataframe to parsed data.
         path_prepared_data: Path to save prepared data.
 
     Returns:
-        Prepared bus data or None if `path_prepared_data` is passed and the data
-          were saved.
+        Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
+    dtypes = {"name": str, "region": str}
+    cols = dtypes.keys()
     if isinstance(parsed_data, str):
-        buses = pd.read_csv(parsed_data, header=0, usecols=["name", "region"])
+        buses = pd.read_csv(parsed_data, header=0, usecols=cols, dtype=dtypes)
     else:
-        buses = parsed_data[["name", "region"]]
+        buses = parsed_data[cols].astype(dtypes)
 
     # All buses are in service
     buses["in_service"] = True
@@ -31,11 +32,10 @@ def prepare_buses(
     buses.loc[[num - 1 for num in buses_345], "v_rated__kv"] = 345
 
     # Return results
-    cols = ["name", "region", "in_service", "v_rated__kv"]
     if path_prepared_data:
-        buses[cols].to_csv(path_prepared_data, header=True, index=False)
+        buses.to_csv(path_prepared_data, header=True, index=False)
     else:
-        return buses[cols]
+        return buses
 
 
 if __name__ == "__main__":
@@ -47,6 +47,4 @@ if __name__ == "__main__":
         )
 
     # Run
-    path_parsed_data = sys.argv[1]
-    path_prepared_data = sys.argv[2]
-    prepare_buses(path_parsed_data, path_prepared_data)
+    prepare_buses(parsed_data=sys.argv[1], path_prepared_data=sys.argv[2])

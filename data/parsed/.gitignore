@@ -1,4 +1,4 @@
-/buses_nrel118.csv
-/lines_nrel118.csv
-/lines_jeas118.csv
-/trafos_jeas118.csv
+/nrel118_lines.csv
+/jeas118_lines.csv
+/jeas118_trafos.csv
+/nrel118_buses.csv

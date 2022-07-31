@@ -13,28 +13,34 @@ from src.utils.converters import doc_to_docx, docx_to_pandas
 def parse_jeas118_trafos(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Parse raw transformer data and load necessary parameters.
+    """Parse raw transformer data from JEAS-118 dataset.
 
     Args:
-        raw_data: Path or dataframe with raw transformer data from JEAS-118 dataset.
+        raw_data: Path or dataframe with raw data.
         path_parsed_data: Path to save parsed data.
 
     Returns:
-        Parsed transformer data or None if `path_parsed_data` is passed and the data
-          were saved.
+        Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
-    columns = ["Transformer No.", r"From Bus", "To\nBus", "Circuit ID", "Tap Initial"]
+    dtypes = {
+        "Transformer No.": int,
+        "From Bus": str,
+        "To\nBus": str,
+        "Circuit ID": int,
+        "Tap Initial": float,
+    }
+    cols = dtypes.keys()
     if isinstance(raw_data, str):
         # To parse "doc", it is necessary to convert it into "docx"
         with tempfile.TemporaryDirectory() as temp_dir:
             path_docx = os.path.join(temp_dir, "jeas_118.docx")
             doc_to_docx(raw_data, path_docx)
 
-            # Convert table with transformers into dataframe
+            # Convert table into dataframe
             trafos = docx_to_pandas(path_docx, table_num=4, header_num=1)
-            trafos = trafos[columns]
+            trafos = trafos[cols].astype(dtypes)
     else:
-        trafos = raw_data[columns]
+        trafos = raw_data[cols].astype(dtypes)
 
     # Rename variables
     trafos.rename(
@@ -49,7 +55,6 @@ def parse_jeas118_trafos(
     )
 
     # Change trafo and bus names
-    trafos["name"] = trafos["name"].astype(int)
     trafos.sort_values(by="name", inplace=True, ignore_index=True)
     trafos["name"] = "trafo_" + trafos["name"].astype(str)
     trafos["from_bus"] = "bus_" + trafos["from_bus"]
@@ -71,6 +76,4 @@ if __name__ == "__main__":
         )
 
     # Run
-    path_raw_data = sys.argv[1]
-    path_parsed_data = sys.argv[2]
-    parse_jeas118_trafos(path_raw_data, path_parsed_data)
+    parse_jeas118_trafos(raw_data=sys.argv[1], path_parsed_data=sys.argv[2])

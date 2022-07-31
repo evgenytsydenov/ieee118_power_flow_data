@@ -2,92 +2,92 @@ schema: '2.0'
 stages:
   parse_nrel118_bus_data:
     cmd: python src/data/parse_nrel118_buses.py data/raw/nrel118/additional-files-mti-118/Buses.csv
-      data/parsed/buses_nrel118.csv
+      data/parsed/nrel118_buses.csv
     deps:
     - path: data/raw/nrel118/additional-files-mti-118/Buses.csv
       md5: 53359601ce73b4f6d166e6a37141ed1b
       size: 2360
     - path: src/data/parse_nrel118_buses.py
-      md5: 040a24e55885e3e6ff6a0d645b7dd1db
-      size: 1707
+      md5: bc26d04dd1352c850e54775cb17b2d3e
+      size: 1726
     outs:
-    - path: data/parsed/buses_nrel118.csv
+    - path: data/parsed/nrel118_buses.csv
       md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
       size: 2540
   parse_nrel118_line_data:
     cmd: python src/data/parse_nrel118_lines.py data/raw/nrel118/additional-files-mti-118/Lines.csv
-      data/parsed/lines_nrel118.csv
+      data/parsed/nrel118_lines.csv
     deps:
     - path: data/raw/nrel118/additional-files-mti-118/Lines.csv
       md5: 682db21351902ecc0d885892be9fc9ee
       size: 8436
     - path: src/data/parse_nrel118_lines.py
-      md5: 621640627109a8dcf8387b16544b2b65
-      size: 1931
+      md5: 8e979d71319a0943a281496dd39c938e
+      size: 2008
     outs:
-    - path: data/parsed/lines_nrel118.csv
-      md5: 6ecc08f8b32b00c87885ff9c603c90bb
-      size: 8100
+    - path: data/parsed/nrel118_lines.csv
+      md5: b1c5f0873b44b8fe84799eb5aa44518a
+      size: 8472
   parse_jeas118_line_data:
     cmd: python src/data/parse_jeas118_lines.py data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/lines_jeas118.csv
+      data/parsed/jeas118_lines.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.doc
       md5: 115121e48f534b9f720cecbdd6a9dbae
       size: 663040
     - path: src/data/parse_jeas118_lines.py
-      md5: ab6e0f2861ccdf07361d1dd89fa9a6fc
-      size: 2344
+      md5: cfb9d80c5499581eef1a202db51bcb72
+      size: 2302
     outs:
-    - path: data/parsed/lines_jeas118.csv
-      md5: 7077a43e23624864a8cb0cb527532a85
-      size: 6450
+    - path: data/parsed/jeas118_lines.csv
+      md5: 4a8da15c42f4b404419da792ca79a3c3
+      size: 6468
   prepare_bus_data:
-    cmd: python src/data/prepare_buses.py data/parsed/buses_nrel118.csv data/prepared/buses.csv
+    cmd: python src/data/prepare_buses.py data/parsed/nrel118_buses.csv data/prepared/buses.csv
     deps:
-    - path: data/parsed/buses_nrel118.csv
+    - path: data/parsed/nrel118_buses.csv
       md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
       size: 2540
     - path: src/data/prepare_buses.py
-      md5: a3bd6a8fee7e5c0be615fd438814b97a
-      size: 1597
+      md5: 2a1fcc364e1564256b8e602e2b736bf7
+      size: 1472
     outs:
     - path: data/prepared/buses.csv
       md5: 5d31dafc475a1d496d7599d5e8170d14
       size: 2406
   parse_jeas118_trafo_data:
     cmd: python src/data/parse_jeas118_trafos.py data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/trafos_jeas118.csv
+      data/parsed/jeas118_trafos.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.doc
       md5: 115121e48f534b9f720cecbdd6a9dbae
       size: 663040
     - path: src/data/parse_jeas118_trafos.py
-      md5: 947f773c9547c0f18bb4779952b15d8c
-      size: 2412
+      md5: e74ef5540616b65fcb4b4232b8e29774
+      size: 2358
     outs:
-    - path: data/parsed/trafos_jeas118.csv
+    - path: data/parsed/jeas118_trafos.csv
       md5: 4f460fce1790a10ea22d7cac9c380c92
       size: 317
   prepare_branch_data:
-    cmd: python src/data/prepare_branches.py data/parsed/lines_nrel118.csv data/parsed/lines_jeas118.csv
-      data/parsed/trafos_jeas118.csv data/prepared/buses.csv data/prepared/branches.csv
+    cmd: python src/data/prepare_branches.py data/parsed/nrel118_lines.csv data/parsed/jeas118_lines.csv
+      data/parsed/jeas118_trafos.csv data/prepared/buses.csv data/prepared/branches.csv
     deps:
-    - path: data/parsed/lines_jeas118.csv
-      md5: 7077a43e23624864a8cb0cb527532a85
-      size: 6450
-    - path: data/parsed/lines_nrel118.csv
-      md5: 6ecc08f8b32b00c87885ff9c603c90bb
-      size: 8100
-    - path: data/parsed/trafos_jeas118.csv
+    - path: data/parsed/jeas118_lines.csv
+      md5: 4a8da15c42f4b404419da792ca79a3c3
+      size: 6468
+    - path: data/parsed/jeas118_trafos.csv
       md5: 4f460fce1790a10ea22d7cac9c380c92
       size: 317
+    - path: data/parsed/nrel118_lines.csv
+      md5: b1c5f0873b44b8fe84799eb5aa44518a
+      size: 8472
     - path: data/prepared/buses.csv
       md5: 5d31dafc475a1d496d7599d5e8170d14
       size: 2406
     - path: src/data/prepare_branches.py
-      md5: 116948c0cd31603925d7ed30ae6f81d5
-      size: 3773
+      md5: 8dc890245c0e622ea63ec6b8e1e4a8c9
+      size: 4031
     outs:
     - path: data/prepared/branches.csv
       md5: 33ca65a5ca689ba4503380b1d98753ec

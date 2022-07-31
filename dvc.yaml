@@ -2,65 +2,65 @@ stages:
   parse_nrel118_bus_data:
     cmd: python src/data/parse_nrel118_buses.py
       data/raw/nrel118/additional-files-mti-118/Buses.csv
-      data/parsed/buses_nrel118.csv
+      data/parsed/nrel118_buses.csv
     deps:
       - data/raw/nrel118/additional-files-mti-118/Buses.csv
       - src/data/parse_nrel118_buses.py
     outs:
-      - data/parsed/buses_nrel118.csv
+      - data/parsed/nrel118_buses.csv
 
   parse_nrel118_line_data:
     cmd: python src/data/parse_nrel118_lines.py
       data/raw/nrel118/additional-files-mti-118/Lines.csv
-      data/parsed/lines_nrel118.csv
+      data/parsed/nrel118_lines.csv
     deps:
       - data/raw/nrel118/additional-files-mti-118/Lines.csv
       - src/data/parse_nrel118_lines.py
     outs:
-      - data/parsed/lines_nrel118.csv
+      - data/parsed/nrel118_lines.csv
 
   parse_jeas118_line_data:
     cmd: python src/data/parse_jeas118_lines.py
       data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/lines_jeas118.csv
+      data/parsed/jeas118_lines.csv
     deps:
       - data/raw/jeas118/JEAS_IEEE118.doc
       - src/data/parse_jeas118_lines.py
     outs:
-      - data/parsed/lines_jeas118.csv
+      - data/parsed/jeas118_lines.csv
 
   parse_jeas118_trafo_data:
     cmd: python src/data/parse_jeas118_trafos.py
       data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/trafos_jeas118.csv
+      data/parsed/jeas118_trafos.csv
     deps:
       - src/data/parse_jeas118_trafos.py
       - data/raw/jeas118/JEAS_IEEE118.doc
     outs:
-      - data/parsed/trafos_jeas118.csv
+      - data/parsed/jeas118_trafos.csv
 
   prepare_bus_data:
     cmd: python src/data/prepare_buses.py
-      data/parsed/buses_nrel118.csv
+      data/parsed/nrel118_buses.csv
       data/prepared/buses.csv
     deps:
-      - data/parsed/buses_nrel118.csv
+      - data/parsed/nrel118_buses.csv
       - src/data/prepare_buses.py
     outs:
       - data/prepared/buses.csv
 
   prepare_branch_data:
     cmd: python src/data/prepare_branches.py
-      data/parsed/lines_nrel118.csv
-      data/parsed/lines_jeas118.csv
-      data/parsed/trafos_jeas118.csv
+      data/parsed/nrel118_lines.csv
+      data/parsed/jeas118_lines.csv
+      data/parsed/jeas118_trafos.csv
       data/prepared/buses.csv
       data/prepared/branches.csv
     deps:
       - src/data/prepare_branches.py
-      - data/parsed/lines_nrel118.csv
-      - data/parsed/lines_jeas118.csv
-      - data/parsed/trafos_jeas118.csv
+      - data/parsed/nrel118_lines.csv
+      - data/parsed/jeas118_lines.csv
+      - data/parsed/jeas118_trafos.csv
       - data/prepared/buses.csv
     outs:
       - data/prepared/branches.csv
