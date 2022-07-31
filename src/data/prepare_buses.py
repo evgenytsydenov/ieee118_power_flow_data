@@ -31,10 +31,11 @@ def prepare_buses(
     buses.loc[[num - 1 for num in buses_345], "v_rated__kv"] = 345
 
     # Return results
+    cols = ["name", "region", "in_service", "v_rated__kv"]
     if path_prepared_data:
-        buses.to_csv(path_prepared_data, header=True, index=False)
+        buses[cols].to_csv(path_prepared_data, header=True, index=False)
     else:
-        return buses
+        return buses[cols]
 
 
 if __name__ == "__main__":

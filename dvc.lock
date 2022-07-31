@@ -49,8 +49,8 @@ stages:
       md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
       size: 2540
     - path: src/data/prepare_buses.py
-      md5: a27913346f73c9e9b522b4224aafd282
-      size: 1525
+      md5: a3bd6a8fee7e5c0be615fd438814b97a
+      size: 1597
     outs:
     - path: data/prepared/buses.csv
       md5: 5d31dafc475a1d496d7599d5e8170d14
@@ -86,8 +86,8 @@ stages:
       md5: 5d31dafc475a1d496d7599d5e8170d14
       size: 2406
     - path: src/data/prepare_branches.py
-      md5: f1d7bd82ca67560d1142fa81da6d2ad9
-      size: 3652
+      md5: 116948c0cd31603925d7ed30ae6f81d5
+      size: 3773
     outs:
     - path: data/prepared/branches.csv
       md5: 33ca65a5ca689ba4503380b1d98753ec
