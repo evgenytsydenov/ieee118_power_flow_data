@@ -1,7 +1,12 @@
+import os
 import sys
 from typing import Optional
 
 import pandas as pd
+
+sys.path.append(os.getcwd())
+
+from src.utils.data_loader import load_df_data
 
 
 def parse_nrel118_buses(
@@ -17,11 +22,7 @@ def parse_nrel118_buses(
         Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
     dtypes = {"Bus Name": str, "Region": str, "Load Participation Factor": float}
-    cols = dtypes.keys()
-    if isinstance(raw_data, str):
-        buses = pd.read_csv(raw_data, header=0, dtype=dtypes, usecols=cols)
-    else:
-        buses = raw_data[cols].astype(dtypes)
+    buses = load_df_data(raw_data, dtypes)
 
     # Load raw bus data
     buses.rename(

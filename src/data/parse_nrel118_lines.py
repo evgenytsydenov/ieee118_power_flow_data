@@ -1,7 +1,12 @@
+import os
 import sys
 from typing import Optional
 
 import pandas as pd
+
+sys.path.append(os.getcwd())
+
+from src.utils.data_loader import load_df_data
 
 
 def parse_nrel118_lines(
@@ -24,11 +29,7 @@ def parse_nrel118_lines(
         "Reactance (p.u.)": float,
         "Resistance (p.u.)": float,
     }
-    cols = dtypes.keys()
-    if isinstance(raw_data, str):
-        lines = pd.read_csv(raw_data, header=0, usecols=cols, dtype=dtypes)
-    else:
-        lines = raw_data[cols].astype(dtypes)
+    lines = load_df_data(raw_data, dtypes)
 
     # Rename variables
     lines.rename(

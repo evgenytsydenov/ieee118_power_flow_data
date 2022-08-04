@@ -1,7 +1,12 @@
+import os
 import sys
 from typing import Optional
 
 import pandas as pd
+
+sys.path.append(os.getcwd())
+
+from src.utils.data_loader import load_df_data
 
 
 def prepare_buses(
@@ -17,11 +22,7 @@ def prepare_buses(
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
     dtypes = {"name": str, "region": str}
-    cols = dtypes.keys()
-    if isinstance(parsed_data, str):
-        buses = pd.read_csv(parsed_data, header=0, usecols=cols, dtype=dtypes)
-    else:
-        buses = parsed_data[cols].astype(dtypes)
+    buses = load_df_data(parsed_data, dtypes)
 
     # All buses are in service
     buses["in_service"] = True

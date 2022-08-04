@@ -1,27 +1,14 @@
+import os
 import sys
 from typing import Optional
 
 import pandas as pd
 
+sys.path.append(os.getcwd())
+from src.utils.data_loader import load_df_data
+
 # Base power
 S_BASE__MVA = 100
-
-
-def load_data(data: str | pd.DataFrame, dtypes: dict) -> pd.DataFrame:
-    """Auxiliary function to load data.
-
-    Args:
-        dtypes: Path for each column/
-        data: Path or dataframe with data.
-
-    Returns:
-        Loaded data as a dataframe.
-    """
-    cols = dtypes.keys()
-    if isinstance(data, str):
-        return pd.read_csv(data, header=0, usecols=cols, dtype=dtypes)
-    else:
-        return data[cols].astype(dtypes)
 
 
 def prepare_branches(
@@ -44,7 +31,7 @@ def prepare_branches(
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
     # Load data
-    nrel118_lines = load_data(
+    nrel118_lines = load_df_data(
         parsed_nrel118_lines,
         {
             "name": str,
@@ -55,10 +42,10 @@ def prepare_branches(
             "r__pu": float,
         },
     )
-    jeas118_lines = load_data(
+    jeas118_lines = load_df_data(
         parsed_jeas118_lines, {"name": str, "parallel": str, "b__pu": float}
     )
-    jeas118_trafos = load_data(
+    jeas118_trafos = load_df_data(
         parsed_jeas118_trafos,
         {
             "from_bus": str,
@@ -67,7 +54,7 @@ def prepare_branches(
             "trafo_ratio": float,
         },
     )
-    buses = load_data(prepared_buses, {"name": str, "v_rated__kv": float})
+    buses = load_df_data(prepared_buses, {"name": str, "v_rated__kv": float})
 
     # Combine data
     branches = pd.merge(nrel118_lines, jeas118_lines, on="name", how="left")
