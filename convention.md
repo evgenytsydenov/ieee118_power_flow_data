@@ -21,3 +21,12 @@
 - "b__µs" --- branch active conductance in microsiemens
 - "trafo_ratio" --- transformation ratio if the branch is a transformer
 - "max_i__ka" --- maximum current over the branch in kiloamperes
+
+### Loads
+
+- "name" --- load name in form "load_{number}"
+- "bus_name" --- name of bus where the load is placed
+- "in_service" --- if the load is in service
+- "p__mw" --- active power of the load in megawatts
+- "q__mvar" --- reactive power of the load in megavolt-amperes
+- "datetime" --- date and time of variable measurement

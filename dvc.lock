@@ -22,8 +22,8 @@ stages:
       md5: 682db21351902ecc0d885892be9fc9ee
       size: 8436
     - path: src/data/parse_nrel118_lines.py
-      md5: fc428d85274782f567ffb7426bf66d8f
-      size: 1953
+      md5: ff262e1ce9ba4ef838d375e516a7c615
+      size: 1949
     outs:
     - path: data/parsed/nrel118_lines.csv
       md5: b1c5f0873b44b8fe84799eb5aa44518a
@@ -49,8 +49,8 @@ stages:
       md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
       size: 2540
     - path: src/data/prepare_buses.py
-      md5: 02e8267e8a81e23e9773b8ab3b27e9e7
-      size: 1411
+      md5: eb58bfaa8c101cac962cb11549591277
+      size: 1407
     outs:
     - path: data/prepared/buses.csv
       md5: 5d31dafc475a1d496d7599d5e8170d14
@@ -86,9 +86,89 @@ stages:
       md5: 5d31dafc475a1d496d7599d5e8170d14
       size: 2406
     - path: src/data/prepare_branches.py
-      md5: 754b8c91a89a6c2e78dff454b1765bda
-      size: 3703
+      md5: 418e5b2deee03bb08db2e78de51a6ce6
+      size: 3677
     outs:
     - path: data/prepared/branches.csv
       md5: 33ca65a5ca689ba4503380b1d98753ec
       size: 17712
+  parse_jeas118_load_data:
+    cmd: python src/data/parse_jeas118_loads.py data/raw/jeas118/JEAS_IEEE118.doc
+      data/parsed/jeas118_loads.csv
+    deps:
+    - path: data/raw/jeas118/JEAS_IEEE118.doc
+      md5: 115121e48f534b9f720cecbdd6a9dbae
+      size: 663040
+    - path: src/data/parse_jeas118_loads.py
+      md5: a7e1ddb9cdf94983cf474a80d5926b95
+      size: 2068
+    outs:
+    - path: data/parsed/jeas118_loads.csv
+      md5: aa929aa09cf4ae869b4218adaf3e6eaa
+      size: 1696
+  parse_nrel118_load_ts_data:
+    cmd: python src/data/parse_nrel118_load_ts.py "data/raw/nrel118/Input files/RT/Load"
+      data/parsed/nrel118_loads_ts.csv
+    deps:
+    - path: data/raw/nrel118/Input files/RT/Load
+      md5: 15de5344806c746934ee61dfb508704b.dir
+      size: 860632
+      nfiles: 4
+    - path: src/data/parse_nrel118_load_ts.py
+      md5: 7dbaacb07d180d21d7d498daf4e2d4b4
+      size: 1262
+    outs:
+    - path: data/parsed/nrel118_loads_ts.csv
+      md5: e1006251e8c3b97d6b4ec725f03fb2d5
+      size: 629482
+  prepare_load_data:
+    cmd: python src/data/prepare_loads.py data/interim/loads.csv data/parsed/nrel118_loads_ts.csv
+      data/prepared/loads.csv
+    deps:
+    - path: data/interim/loads.csv
+      md5: c14b44a8a905331c36cb1ebb20abc365
+      size: 4584
+    - path: data/parsed/nrel118_loads_ts.csv
+      md5: e1006251e8c3b97d6b4ec725f03fb2d5
+      size: 629482
+    - path: src/data/prepare_loads.py
+      md5: 8b6630359d930902519f2e3e90fa7535
+      size: 2302
+    outs:
+    - path: data/prepared/loads.csv
+      md5: 9c38a8f122cfe5e35af4844e06df80c2
+      size: 4832
+  transform_load_data:
+    cmd: python src/data/transform_loads.py data/parsed/nrel118_buses.csv data/parsed/jeas118_loads.csv
+      data/interim/loads.csv
+    deps:
+    - path: data/parsed/jeas118_loads.csv
+      md5: aa929aa09cf4ae869b4218adaf3e6eaa
+      size: 1696
+    - path: data/parsed/nrel118_buses.csv
+      md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
+      size: 2540
+    - path: src/data/transform_loads.py
+      md5: d4eebd0b1e2fc4fc58e889cdc20527fd
+      size: 2473
+    outs:
+    - path: data/interim/loads.csv
+      md5: c14b44a8a905331c36cb1ebb20abc365
+      size: 4584
+  prepare_load_ts_data:
+    cmd: python src/data/prepare_loads_ts.py data/interim/loads.csv data/parsed/nrel118_loads_ts.csv
+      data/prepared/loads_ts.csv
+    deps:
+    - path: data/interim/loads.csv
+      md5: c14b44a8a905331c36cb1ebb20abc365
+      size: 4584
+    - path: data/parsed/nrel118_loads_ts.csv
+      md5: e1006251e8c3b97d6b4ec725f03fb2d5
+      size: 629482
+    - path: src/data/prepare_loads_ts.py
+      md5: 41cb7c99ed5ea8379738c76116f03efa
+      size: 2508
+    outs:
+    - path: data/prepared/loads_ts.csv
+      md5: 9e1d4aae2dfdcd71fd80479bea6d36c7
+      size: 56376911

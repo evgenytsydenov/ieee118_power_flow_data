@@ -43,6 +43,41 @@ stages:
     outs:
       - data/parsed/jeas118_trafos.csv
 
+  parse_jeas118_load_data:
+    desc: "Parse load data from JEAS-118 dataset"
+    cmd: python src/data/parse_jeas118_loads.py
+      data/raw/jeas118/JEAS_IEEE118.doc
+      data/parsed/jeas118_loads.csv
+    deps:
+      - src/data/parse_jeas118_loads.py
+      - data/raw/jeas118/JEAS_IEEE118.doc
+    outs:
+      - data/parsed/jeas118_loads.csv
+
+  parse_nrel118_load_ts_data:
+    desc: "Parse time-series load data from NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_load_ts.py
+      "data/raw/nrel118/Input files/RT/Load"
+      data/parsed/nrel118_loads_ts.csv
+    deps:
+      - src/data/parse_nrel118_load_ts.py
+      - data/raw/nrel118/Input files/RT/Load
+    outs:
+      - data/parsed/nrel118_loads_ts.csv
+
+  transform_load_data:
+    desc: "Combine necessary load variables for prepare stages"
+    cmd: python src/data/transform_loads.py
+      data/parsed/nrel118_buses.csv
+      data/parsed/jeas118_loads.csv
+      data/interim/loads.csv
+    deps:
+      - data/parsed/nrel118_buses.csv
+      - data/parsed/jeas118_loads.csv
+      - src/data/transform_loads.py
+    outs:
+      - data/interim/loads.csv
+
   prepare_bus_data:
     desc: "Build final bus dataset"
     cmd: python src/data/prepare_buses.py
@@ -70,3 +105,29 @@ stages:
       - data/prepared/buses.csv
     outs:
       - data/prepared/branches.csv
+
+  prepare_load_data:
+    desc: "Build final dataset with load info"
+    cmd: python src/data/prepare_loads.py
+      data/interim/loads.csv
+      data/parsed/nrel118_loads_ts.csv
+      data/prepared/loads.csv
+    deps:
+      - src/data/prepare_loads.py
+      - data/interim/loads.csv
+      - data/parsed/nrel118_loads_ts.csv
+    outs:
+      - data/prepared/loads.csv
+
+  prepare_load_ts_data:
+    desc: "Build final dataset with load time-series data"
+    cmd: python src/data/prepare_loads_ts.py
+      data/interim/loads.csv
+      data/parsed/nrel118_loads_ts.csv
+      data/prepared/loads_ts.csv
+    deps:
+      - src/data/prepare_loads_ts.py
+      - data/interim/loads.csv
+      - data/parsed/nrel118_loads_ts.csv
+    outs:
+      - data/prepared/loads_ts.csv
