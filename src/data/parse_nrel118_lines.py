@@ -12,7 +12,7 @@ from src.utils.data_loader import load_df_data
 def parse_nrel118_lines(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Parse raw line data from NREL-118 dataset.
+    """Parse raw line data from the NREL-118 dataset.
 
     Args:
         raw_data: Path or dataframe with raw data.

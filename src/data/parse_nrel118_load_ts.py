@@ -12,7 +12,7 @@ from src.utils.data_loader import load_ts_data
 def parse_nrel118_load_ts(
     raw_data: str, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Parse time-series data about loads from NREL-118 dataset.
+    """Parse time-series data about loads from the NREL-118 dataset.
 
     Args:
         raw_data: Path to the raw data.

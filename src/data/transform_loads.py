@@ -18,9 +18,10 @@ def transform_loads(
     """Transform load data.
 
     Args:
-        parsed_nrel118_buses: Path or dataframe with bus data from NREL-118 dataset.
-        parsed_jeas118_loads: Path or dataframe with load data from NREL-118 dataset.
-        path_transformed_data: Path to save prepared data.
+        parsed_nrel118_buses: Path or dataframe with bus data from the NREL-118 dataset.
+        parsed_jeas118_loads: Path or dataframe with load data
+          from the JEAS-118 dataset.
+        path_transformed_data: Path to save transformed data.
 
     Returns:
         Transformed data or None if `path_transformed_data` is passed

@@ -1,6 +1,6 @@
 stages:
   parse_nrel118_bus_data:
-    desc: "Parse bus data from NREL-118 dataset"
+    desc: "Parse bus data from the NREL-118 dataset"
     cmd: python src/data/parse_nrel118_buses.py
       data/raw/nrel118/additional-files-mti-118/Buses.csv
       data/parsed/nrel118_buses.csv
@@ -11,7 +11,7 @@ stages:
       - data/parsed/nrel118_buses.csv
 
   parse_nrel118_line_data:
-    desc: "Parse line data from NREL-118 dataset"
+    desc: "Parse line data from the NREL-118 dataset"
     cmd: python src/data/parse_nrel118_lines.py
       data/raw/nrel118/additional-files-mti-118/Lines.csv
       data/parsed/nrel118_lines.csv
@@ -22,7 +22,7 @@ stages:
       - data/parsed/nrel118_lines.csv
 
   parse_jeas118_line_data:
-    desc: "Parse line data from JEAS-118 dataset"
+    desc: "Parse line data from the JEAS-118 dataset"
     cmd: python src/data/parse_jeas118_lines.py
       data/raw/jeas118/JEAS_IEEE118.doc
       data/parsed/jeas118_lines.csv
@@ -33,7 +33,7 @@ stages:
       - data/parsed/jeas118_lines.csv
 
   parse_jeas118_trafo_data:
-    desc: "Parse transformer data from JEAS-118 dataset"
+    desc: "Parse transformer data from the JEAS-118 dataset"
     cmd: python src/data/parse_jeas118_trafos.py
       data/raw/jeas118/JEAS_IEEE118.doc
       data/parsed/jeas118_trafos.csv
@@ -44,7 +44,7 @@ stages:
       - data/parsed/jeas118_trafos.csv
 
   parse_jeas118_load_data:
-    desc: "Parse load data from JEAS-118 dataset"
+    desc: "Parse load data from the JEAS-118 dataset"
     cmd: python src/data/parse_jeas118_loads.py
       data/raw/jeas118/JEAS_IEEE118.doc
       data/parsed/jeas118_loads.csv
@@ -55,7 +55,7 @@ stages:
       - data/parsed/jeas118_loads.csv
 
   parse_nrel118_load_ts_data:
-    desc: "Parse time-series load data from NREL-118 dataset"
+    desc: "Parse time-series load data from the NREL-118 dataset"
     cmd: python src/data/parse_nrel118_load_ts.py
       "data/raw/nrel118/Input files/RT/Load"
       data/parsed/nrel118_loads_ts.csv
@@ -66,17 +66,17 @@ stages:
       - data/parsed/nrel118_loads_ts.csv
 
   transform_load_data:
-    desc: "Combine necessary load variables for prepare stages"
+    desc: "Combine necessary load variables for preparation stages"
     cmd: python src/data/transform_loads.py
       data/parsed/nrel118_buses.csv
       data/parsed/jeas118_loads.csv
-      data/interim/loads.csv
+      data/transformed/loads.csv
     deps:
       - data/parsed/nrel118_buses.csv
       - data/parsed/jeas118_loads.csv
       - src/data/transform_loads.py
     outs:
-      - data/interim/loads.csv
+      - data/transformed/loads.csv
 
   prepare_bus_data:
     desc: "Build final bus dataset"
@@ -109,12 +109,12 @@ stages:
   prepare_load_data:
     desc: "Build final dataset with load info"
     cmd: python src/data/prepare_loads.py
-      data/interim/loads.csv
+      data/transformed/loads.csv
       data/parsed/nrel118_loads_ts.csv
       data/prepared/loads.csv
     deps:
       - src/data/prepare_loads.py
-      - data/interim/loads.csv
+      - data/transformed/loads.csv
       - data/parsed/nrel118_loads_ts.csv
     outs:
       - data/prepared/loads.csv
@@ -122,12 +122,12 @@ stages:
   prepare_load_ts_data:
     desc: "Build final dataset with load time-series data"
     cmd: python src/data/prepare_loads_ts.py
-      data/interim/loads.csv
+      data/transformed/loads.csv
       data/parsed/nrel118_loads_ts.csv
       data/prepared/loads_ts.csv
     deps:
       - src/data/prepare_loads_ts.py
-      - data/interim/loads.csv
+      - data/transformed/loads.csv
       - data/parsed/nrel118_loads_ts.csv
     outs:
       - data/prepared/loads_ts.csv

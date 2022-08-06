@@ -13,7 +13,7 @@ from src.utils.converters import doc_to_docx, docx_to_pandas
 def parse_jeas118_loads(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Parse raw load data from JEAS-118 dataset.
+    """Parse raw load data from the JEAS-118 dataset.
 
     Args:
         raw_data: Path or dataframe with raw data.
