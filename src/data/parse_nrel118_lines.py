@@ -29,7 +29,7 @@ def parse_nrel118_lines(
         "Reactance (p.u.)": float,
         "Resistance (p.u.)": float,
     }
-    lines = load_df_data(raw_data, dtypes)
+    lines = load_df_data(data=raw_data, dtypes=dtypes)
 
     # Rename variables
     lines.rename(

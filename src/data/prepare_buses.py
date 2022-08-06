@@ -21,8 +21,7 @@ def prepare_buses(
     Returns:
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
-    dtypes = {"name": str, "region": str}
-    buses = load_df_data(parsed_data, dtypes)
+    buses = load_df_data(data=parsed_data, dtypes={"name": str, "region": str})
 
     # All buses are in service
     buses["in_service"] = True

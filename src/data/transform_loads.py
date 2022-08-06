@@ -29,11 +29,12 @@ def transform_loads(
     """
     # Load data
     nrel118_buses = load_df_data(
-        parsed_nrel118_buses,
-        {"name": str, "region": str, "load_participation_factor": float},
+        data=parsed_nrel118_buses,
+        dtypes={"name": str, "region": str, "load_participation_factor": float},
     )
     jeas118_loads = load_df_data(
-        parsed_jeas118_loads, {"bus_name": str, "p__mw": float, "q__mvar": float}
+        data=parsed_jeas118_loads,
+        dtypes={"bus_name": str, "p__mw": float, "q__mvar": float},
     )
 
     # Create load dataset

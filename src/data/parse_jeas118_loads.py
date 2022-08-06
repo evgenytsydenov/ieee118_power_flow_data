@@ -28,10 +28,10 @@ def parse_jeas118_loads(
         # To parse "doc", it is necessary to convert it into "docx"
         with tempfile.TemporaryDirectory() as temp_dir:
             path_docx = os.path.join(temp_dir, "jeas_118.docx")
-            doc_to_docx(raw_data, path_docx)
+            doc_to_docx(path_doc=raw_data, path_docx=path_docx)
 
             # Convert table into dataframe
-            loads = docx_to_pandas(path_docx, table_num=6, header_num=1)
+            loads = docx_to_pandas(path_docx=path_docx, table_num=6, header_num=1)
             loads = loads[cols].astype(dtypes)
     else:
         loads = raw_data[cols].astype(dtypes)

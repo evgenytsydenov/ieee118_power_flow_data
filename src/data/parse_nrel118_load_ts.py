@@ -23,7 +23,7 @@ def parse_nrel118_load_ts(
     """
     # Load data
     name_pattern = r"Load(?P<name>\w+)RT\.csv"
-    load_ts = load_ts_data(raw_data, name_pattern)
+    load_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
     load_ts.columns = [col.lower() for col in load_ts.columns]

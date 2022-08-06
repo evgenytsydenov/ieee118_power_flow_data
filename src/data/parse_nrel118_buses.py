@@ -22,7 +22,7 @@ def parse_nrel118_buses(
         Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
     dtypes = {"Bus Name": str, "Region": str, "Load Participation Factor": float}
-    buses = load_df_data(raw_data, dtypes)
+    buses = load_df_data(data=raw_data, dtypes=dtypes)
 
     # Load raw bus data
     buses.rename(

@@ -33,8 +33,8 @@ def prepare_branches(
     """
     # Load data
     nrel118_lines = load_df_data(
-        parsed_nrel118_lines,
-        {
+        data=parsed_nrel118_lines,
+        dtypes={
             "name": str,
             "from_bus": str,
             "to_bus": str,
@@ -44,18 +44,20 @@ def prepare_branches(
         },
     )
     jeas118_lines = load_df_data(
-        parsed_jeas118_lines, {"name": str, "parallel": str, "b__pu": float}
+        data=parsed_jeas118_lines, dtypes={"name": str, "parallel": str, "b__pu": float}
     )
     jeas118_trafos = load_df_data(
-        parsed_jeas118_trafos,
-        {
+        data=parsed_jeas118_trafos,
+        dtypes={
             "from_bus": str,
             "to_bus": str,
             "parallel": str,
             "trafo_ratio": float,
         },
     )
-    buses = load_df_data(prepared_buses, {"name": str, "v_rated__kv": float})
+    buses = load_df_data(
+        data=prepared_buses, dtypes={"name": str, "v_rated__kv": float}
+    )
 
     # Combine data
     branches = pd.merge(nrel118_lines, jeas118_lines, on="name", how="left")

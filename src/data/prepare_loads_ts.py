@@ -28,8 +28,8 @@ def prepare_loads_ts(
     """
     # Load data
     interim_loads = load_df_data(
-        transformed_loads,
-        {
+        data=transformed_loads,
+        dtypes={
             "name": str,
             "region": str,
             "load_participation_factor": float,
@@ -37,8 +37,8 @@ def prepare_loads_ts(
         },
     )
     nrel118_loads_ts = load_df_data(
-        parsed_nrel118_loads_ts,
-        {"r1": float, "r2": float, "r3": float, "datetime": str},
+        data=parsed_nrel118_loads_ts,
+        dtypes={"r1": float, "r2": float, "r3": float, "datetime": str},
     )
 
     # Calculate active and reactive load at each bus
