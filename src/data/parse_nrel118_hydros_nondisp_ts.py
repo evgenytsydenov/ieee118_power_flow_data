@@ -9,7 +9,7 @@ sys.path.append(os.getcwd())
 from src.utils.data_loader import load_df_data
 
 
-def parse_nrel118_hydro_nondisp_ts(
+def parse_nrel118_hydros_nondisp_ts(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
     """Parse raw data about non-dispatchable hydro plants from the NREL-118 dataset.
@@ -27,7 +27,7 @@ def parse_nrel118_hydro_nondisp_ts(
     # Rename variables
     hydros.rename(
         columns={
-            "Generator": "name",
+            "Generator": "gen_name",
             "Value": "value",
             "Timeslice": "month",
         },
@@ -38,7 +38,7 @@ def parse_nrel118_hydro_nondisp_ts(
     hydros = hydros[~hydros["month"].isna()].reset_index(drop=True)
 
     # Unify generator names
-    hydros["name"] = hydros["name"].str.replace("Hydro ", "hydro_")
+    hydros["gen_name"] = hydros["gen_name"].str.replace("Hydro ", "hydro_")
 
     # Convert datetime
     hydros["year"] = 2024
@@ -47,7 +47,7 @@ def parse_nrel118_hydro_nondisp_ts(
     hydros["datetime"] = pd.to_datetime(hydros[["year", "month", "day"]])
 
     # Return results
-    cols = ["datetime", "name", "value"]
+    cols = ["datetime", "gen_name", "value"]
     if path_parsed_data:
         hydros[cols].to_csv(path_parsed_data, header=True, index=False)
     else:
@@ -59,8 +59,8 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_hydro_nondisp_ts.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_hydros_nondisp_ts.py path_raw_data path_parsed_data\n"
         )
 
     # Run
-    parse_nrel118_hydro_nondisp_ts(raw_data=sys.argv[1], path_parsed_data=sys.argv[2])
+    parse_nrel118_hydros_nondisp_ts(raw_data=sys.argv[1], path_parsed_data=sys.argv[2])

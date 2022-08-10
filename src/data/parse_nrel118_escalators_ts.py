@@ -10,7 +10,7 @@ from src.utils.common_names import gen_types
 from src.utils.data_loader import load_df_data
 
 
-def parse_nrel118_escalator_ts(
+def parse_nrel118_escalators_ts(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
     """Parse raw escalators data from the NREL-118 dataset.
@@ -31,7 +31,7 @@ def parse_nrel118_escalator_ts(
     # Rename variables
     escalators.rename(
         columns={
-            "Escalator": "name",
+            "Escalator": "gen_name",
             "Value": "value",
             "Timeslice (month)": "month",
         },
@@ -40,9 +40,9 @@ def parse_nrel118_escalator_ts(
 
     # Unify generator names
     name_pattern = r"^(?P<plant_type>[\w\s]+)\s(?P<plant_number>\d+)$"
-    names = escalators["name"].str.extract(pat=name_pattern, expand=True)
+    names = escalators["gen_name"].str.extract(pat=name_pattern, expand=True)
     names["plant_type"].replace(gen_types, inplace=True)
-    escalators["name"] = names["plant_type"] + "_" + names["plant_number"]
+    escalators["gen_name"] = names["plant_type"] + "_" + names["plant_number"]
 
     # Convert datetime
     escalators["year"] = 2024
@@ -51,7 +51,7 @@ def parse_nrel118_escalator_ts(
     escalators["datetime"] = pd.to_datetime(escalators[["year", "month", "day"]])
 
     # Return results
-    cols = ["datetime", "name", "value"]
+    cols = ["datetime", "gen_name", "value"]
     if path_parsed_data:
         escalators[cols].to_csv(path_parsed_data, header=True, index=False)
     else:
@@ -63,8 +63,8 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_escalator_ts.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_escalators_ts.py path_raw_data path_parsed_data\n"
         )
 
     # Run
-    parse_nrel118_escalator_ts(raw_data=sys.argv[1], path_parsed_data=sys.argv[2])
+    parse_nrel118_escalators_ts(raw_data=sys.argv[1], path_parsed_data=sys.argv[2])
