@@ -172,3 +172,118 @@ stages:
     - path: data/prepared/loads_ts.csv
       md5: 9e1d4aae2dfdcd71fd80479bea6d36c7
       size: 56376911
+  parse_nrel118_gen_data:
+    cmd: python src/data/parse_nrel118_gens.py data/raw/nrel118/additional-files-mti-118/Generators.csv
+      data/parsed/nrel118_gens.csv
+    deps:
+    - path: data/raw/nrel118/additional-files-mti-118/Generators.csv
+      md5: 8b014c583d06d4c0b62270829082db5d
+      size: 43221
+    - path: src/data/parse_nrel118_gens.py
+      md5: 31d28be82c7f6bf3d41a54affd53efd0
+      size: 2066
+    outs:
+    - path: data/parsed/nrel118_gens.csv
+      md5: 808407409cc7407e754a67efb62094ac
+      size: 8748
+  parse_nrel118_escalator_data:
+    cmd: python src/data/parse_nrel118_escalator_ts.py data/raw/nrel118/additional-files-mti-118/Escalators.csv
+      data/parsed/nrel118_escalator_ts.csv
+    deps:
+    - path: data/raw/nrel118/additional-files-mti-118/Escalators.csv
+      md5: a28a7bc34308c1580ce3a708d751fde0
+      size: 40170
+    - path: src/data/parse_nrel118_escalator_ts.py
+      md5: 7ae3f6895411df18a3814ae073178185
+      size: 2277
+    outs:
+    - path: data/parsed/nrel118_escalator_ts.csv
+      md5: 4f12b42add7e1edbdab7fbeb9bbf0806
+      size: 73074
+  parse_nrel118_escalator_ts_data:
+    cmd: python src/data/parse_nrel118_escalator_ts.py data/raw/nrel118/additional-files-mti-118/Escalators.csv
+      data/parsed/nrel118_escalator_ts.csv
+    deps:
+    - path: data/raw/nrel118/additional-files-mti-118/Escalators.csv
+      md5: a28a7bc34308c1580ce3a708d751fde0
+      size: 40170
+    - path: src/data/parse_nrel118_escalator_ts.py
+      md5: 6c6bf06b88666c0b39a4ccee20311df4
+      size: 2277
+    outs:
+    - path: data/parsed/nrel118_escalator_ts.csv
+      md5: 4f12b42add7e1edbdab7fbeb9bbf0806
+      size: 73074
+  parse_nrel118_hydro_nondisp_ts_data:
+    cmd: python src/data/parse_nrel118_hydro_nondisp_ts.py data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+      data/parsed/nrel118_hydro_nondisp_ts.csv
+    deps:
+    - path: data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+      md5: 34517c8d7742b6687cad01cfb2c42ce6
+      size: 3408
+    - path: src/data/parse_nrel118_hydro_nondisp_ts.py
+      md5: 183c2cd394e58fc2768b94c7755da6d5
+      size: 1926
+    outs:
+    - path: data/parsed/nrel118_hydro_nondisp_ts.csv
+      md5: 6983f57ebf4700036b5b09551ca87f37
+      size: 1259
+  parse_nrel118_hydro_ts_data:
+    cmd: python src/data/parse_nrel118_hydro_ts.py "data/raw/nrel118/Input files/Hydro"
+      data/parsed/nrel118_hydro_ts.csv
+    deps:
+    - path: data/raw/nrel118/Input files/Hydro
+      md5: fd2df581c6076968d01e22ae89459d7d.dir
+      size: 4390878
+      nfiles: 24
+    - path: src/data/parse_nrel118_hydro_ts.py
+      md5: ec754ac4f2c1d8e23ce26e1fbedc9522
+      size: 1424
+    outs:
+    - path: data/parsed/nrel118_hydro_ts.csv
+      md5: b55600b353e436e9503f314bea2aaeb6
+      size: 1776181
+  parse_nrel118_solar_ts_data:
+    cmd: python src/data/parse_nrel118_solar_ts.py "data/raw/nrel118/Input files/RT/Solar"
+      data/parsed/nrel118_solar_ts.csv
+    deps:
+    - path: data/raw/nrel118/Input files/RT/Solar
+      md5: e8e3065fef2b05440af5bef1c00157c0.dir
+      size: 16761318
+      nfiles: 76
+    - path: src/data/parse_nrel118_solar_ts.py
+      md5: 53e8425155c890e38b841dca4ebea7e7
+      size: 1425
+    outs:
+    - path: data/parsed/nrel118_solar_ts.csv
+      md5: 286eb7a16e55231f8cd9138311c7d707
+      size: 7336870
+  parse_nrel118_wind_ts_data:
+    cmd: python src/data/parse_nrel118_wind_ts.py "data/raw/nrel118/Input files/RT/Wind"
+      data/parsed/nrel118_wind_ts.csv
+    deps:
+    - path: data/raw/nrel118/Input files/RT/Wind
+      md5: a46f8ccf7c19116d82cba65df615e2de.dir
+      size: 4663311
+      nfiles: 18
+    - path: src/data/parse_nrel118_wind_ts.py
+      md5: 82f0b20a4419a9ceb2619937542cd3b8
+      size: 1414
+    outs:
+    - path: data/parsed/nrel118_wind_ts.csv
+      md5: ed3ae11279fd25134a8984a9da3f436a
+      size: 2547723
+  parse_nrel118_outage_ts_data:
+    cmd: python src/data/parse_nrel118_outage_ts.py "data/raw/nrel118/Input files/Others/GenOut.csv"
+      data/parsed/nrel118_outage_ts.csv
+    deps:
+    - path: data/raw/nrel118/Input files/Others/GenOut.csv
+      md5: 9b94603c1ddd080d6bd839ef210babe0
+      size: 77018
+    - path: src/data/parse_nrel118_outage_ts.py
+      md5: e802206f9de14f0d8bb48d6cd0179608
+      size: 2132
+    outs:
+    - path: data/parsed/nrel118_outage_ts.csv
+      md5: d4ee3d36028bea9aef988e86af59b237
+      size: 130729

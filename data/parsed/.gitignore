@@ -4,3 +4,10 @@
 /nrel118_buses.csv
 /jeas118_loads.csv
 /nrel118_loads_ts.csv
+/nrel118_gens.csv
+/nrel118_escalator_ts.csv
+/nrel118_hydro_nondisp_ts.csv
+/nrel118_hydro_ts.csv
+/nrel118_solar_ts.csv
+/nrel118_wind_ts.csv
+/nrel118_outage_ts.csv

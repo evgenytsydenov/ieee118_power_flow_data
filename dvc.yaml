@@ -65,6 +65,83 @@ stages:
     outs:
       - data/parsed/nrel118_loads_ts.csv
 
+  parse_nrel118_gen_data:
+    desc: "Parse generation data from the NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_gens.py
+      data/raw/nrel118/additional-files-mti-118/Generators.csv
+      data/parsed/nrel118_gens.csv
+    deps:
+      - src/data/parse_nrel118_gens.py
+      - data/raw/nrel118/additional-files-mti-118/Generators.csv
+    outs:
+      - data/parsed/nrel118_gens.csv
+
+  parse_nrel118_escalator_ts_data:
+    desc: "Parse escalator time-series data from the NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_escalator_ts.py
+      data/raw/nrel118/additional-files-mti-118/Escalators.csv
+      data/parsed/nrel118_escalator_ts.csv
+    deps:
+      - src/data/parse_nrel118_escalator_ts.py
+      - data/raw/nrel118/additional-files-mti-118/Escalators.csv
+    outs:
+      - data/parsed/nrel118_escalator_ts.csv
+
+  parse_nrel118_hydro_nondisp_ts_data:
+    desc: "Parse hydro plants time-series data from the NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_hydro_nondisp_ts.py
+      data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+      data/parsed/nrel118_hydro_nondisp_ts.csv
+    deps:
+      - src/data/parse_nrel118_hydro_nondisp_ts.py
+      - data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+    outs:
+      - data/parsed/nrel118_hydro_nondisp_ts.csv
+
+  parse_nrel118_hydro_ts_data:
+    desc: "Parse time-series hydro plants data from the NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_hydro_ts.py
+      "data/raw/nrel118/Input files/Hydro"
+      data/parsed/nrel118_hydro_ts.csv
+    deps:
+      - src/data/parse_nrel118_hydro_ts.py
+      - data/raw/nrel118/Input files/Hydro
+    outs:
+      - data/parsed/nrel118_hydro_ts.csv
+
+  parse_nrel118_solar_ts_data:
+    desc: "Parse time-series solar plants data from the NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_solar_ts.py
+      "data/raw/nrel118/Input files/RT/Solar"
+      data/parsed/nrel118_solar_ts.csv
+    deps:
+      - src/data/parse_nrel118_solar_ts.py
+      - data/raw/nrel118/Input files/RT/Solar
+    outs:
+      - data/parsed/nrel118_solar_ts.csv
+
+  parse_nrel118_wind_ts_data:
+    desc: "Parse time-series wind plants data from the NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_wind_ts.py
+      "data/raw/nrel118/Input files/RT/Wind"
+      data/parsed/nrel118_wind_ts.csv
+    deps:
+      - src/data/parse_nrel118_wind_ts.py
+      - data/raw/nrel118/Input files/RT/Wind
+    outs:
+      - data/parsed/nrel118_wind_ts.csv
+
+  parse_nrel118_outage_ts_data:
+    desc: "Parse time-series outage data from the NREL-118 dataset"
+    cmd: python src/data/parse_nrel118_outage_ts.py
+      "data/raw/nrel118/Input files/Others/GenOut.csv"
+      data/parsed/nrel118_outage_ts.csv
+    deps:
+      - src/data/parse_nrel118_outage_ts.py
+      - data/raw/nrel118/Input files/Others/GenOut.csv
+    outs:
+      - data/parsed/nrel118_outage_ts.csv
+
   transform_load_data:
     desc: "Combine necessary load variables for preparation stages"
     cmd: python src/data/transform_loads.py

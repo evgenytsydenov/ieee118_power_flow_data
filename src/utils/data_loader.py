@@ -7,12 +7,18 @@ import pandas as pd
 
 
 def load_df_data(
-    data: str | pd.DataFrame, dtypes: dict, nrows: Optional[int] = None
+    data: str | pd.DataFrame,
+    dtypes: dict,
+    nrows: Optional[int] = None,
+    sep: str = ",",
+    decimal: str = ".",
 ) -> pd.DataFrame:
     """Load dataframes and convert data to the proper types.
 
     Args:
-        dtypes: Path for each column
+        decimal: Character to recognize as decimal point.
+        sep: Delimiter to use.
+        dtypes: Path for each column.
         data: Path or dataframe with data.
         nrows: Number of first rows to return.
 
@@ -21,17 +27,30 @@ def load_df_data(
     """
     cols = dtypes.keys()
     if isinstance(data, str):
-        return pd.read_csv(data, header=0, usecols=cols, dtype=dtypes, nrows=nrows)
+        return pd.read_csv(
+            data,
+            header=0,
+            usecols=cols,
+            dtype=dtypes,
+            nrows=nrows,
+            decimal=decimal,
+            sep=sep,
+        )
     result = data if nrows is None else data.head(nrows)
     return result[cols].astype(dtypes)
 
 
 def load_ts_data(
-    folder_path: str, name_pattern: str = r"Hydro (?P<name>\w+)\.csv"
+    folder_path: str,
+    name_pattern: str = r"Hydro (?P<name>\w+)\.csv",
+    sep: str = ",",
+    decimal: str = ".",
 ) -> pd.DataFrame:
     """Combine time-series data from multiple files.
 
     Args:
+        decimal: Character to recognize as decimal point.
+        sep: Delimiter to use.
         name_pattern: Pattern of file names to extract object number.
         folder_path: Path to folder with time-series data.
 
@@ -41,19 +60,30 @@ def load_ts_data(
     data = {}
     dates = None
     pattern = re.compile(name_pattern)
+    columns = {"DATETIME", "Value", "value", "values", "Values"}
     for file in glob.glob("*", root_dir=folder_path):
 
         # Load current file
         file_data = pd.read_csv(
             filepath_or_buffer=os.path.join(folder_path, file),
             header=0,
-            usecols=["DATETIME", "value"],
+            usecols=lambda col: col in columns,
             parse_dates=["DATETIME"],
-            dtype={"value": float},
+            dtype={"value": float, "Value": float, "values": float, "Values": float},
+            decimal=decimal,
+            sep=sep,
         )
 
         # Change column names
-        file_data.rename(columns={"DATETIME": "datetime"}, inplace=True)
+        file_data.rename(
+            columns={
+                "DATETIME": "datetime",
+                "Value": "value",
+                "values": "value",
+                "Values": "value",
+            },
+            inplace=True,
+        )
 
         # Assume all files have the same dates
         if dates is None:
