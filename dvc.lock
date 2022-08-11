@@ -296,8 +296,11 @@ stages:
       size: 860632
       nfiles: 4
     - path: src/data/parse_nrel118_loads_ts.py
-      md5: 99c444131bef447a4eba4e722fbad3f5
-      size: 1294
+      md5: 0c9099b40f0c60c722e021d201d37a24
+      size: 1295
+    - path: src/utils/data_loaders/load_ts_data.py
+      md5: ccc4b6a8c00ed72a51c4dfff8917d06c
+      size: 1880
     outs:
     - path: data/parsed/nrel118_loads_ts.csv
       md5: e1006251e8c3b97d6b4ec725f03fb2d5
@@ -310,8 +313,11 @@ stages:
       md5: 53359601ce73b4f6d166e6a37141ed1b
       size: 2360
     - path: src/data/parse_nrel118_buses.py
-      md5: 06ae207ed9c0def6eaad0a75cde809b6
-      size: 1683
+      md5: 805ce52f9574a948d588116d04a6c1f6
+      size: 1684
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
     outs:
     - path: data/parsed/nrel118_buses.csv
       md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
@@ -326,6 +332,9 @@ stages:
     - path: src/data/parse_jeas118_loads.py
       md5: f28e51dbe251cb4a18c141643f4d6d53
       size: 2101
+    - path: src/utils/converters.py
+      md5: 509c7a4de2d3baafa99fa38c0e6d8600
+      size: 2046
     outs:
     - path: data/parsed/jeas118_loads.csv
       md5: aa929aa09cf4ae869b4218adaf3e6eaa
@@ -341,8 +350,11 @@ stages:
       md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
       size: 2540
     - path: src/data/transform_loads.py
-      md5: e3ff578e1adb0c273a4cf49d5cab2b8b
-      size: 2529
+      md5: 6b7f588c5aba480ed8be20d98b769a8e
+      size: 2530
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
     outs:
     - path: data/transformed/loads.csv
       md5: c14b44a8a905331c36cb1ebb20abc365
@@ -358,8 +370,11 @@ stages:
       md5: c14b44a8a905331c36cb1ebb20abc365
       size: 4584
     - path: src/data/prepare_loads.py
-      md5: 01ea6c0c05d39bc7183386dd671397db
-      size: 2334
+      md5: 16ed7fccbe405ee96e6a7e4d1e641f0f
+      size: 2335
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
     outs:
     - path: data/prepared/loads.csv
       md5: 9c38a8f122cfe5e35af4844e06df80c2
@@ -372,8 +387,11 @@ stages:
       md5: 34517c8d7742b6687cad01cfb2c42ce6
       size: 3408
     - path: src/data/parse_nrel118_hydros_nondisp_ts.py
-      md5: 91e3c4e4afee1be0f0bb5c8db9f80f13
-      size: 1945
+      md5: c0f5fe7714c205d86bf797e5e610c4b7
+      size: 1946
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
     outs:
     - path: data/parsed/nrel118_hydros_nondisp_ts.csv
       md5: 6923159214a04506573c84f3faedea52
@@ -387,8 +405,11 @@ stages:
       size: 4390878
       nfiles: 24
     - path: src/data/parse_nrel118_hydros_ts.py
-      md5: b5755c88caedb958f49840404535b627
-      size: 1427
+      md5: 4feb0ce00a703b3a35a9194eddebe32e
+      size: 1428
+    - path: src/utils/data_loaders/load_ts_data.py
+      md5: ccc4b6a8c00ed72a51c4dfff8917d06c
+      size: 1880
     outs:
     - path: data/parsed/nrel118_hydros_ts.csv
       md5: b55600b353e436e9503f314bea2aaeb6
@@ -402,8 +423,11 @@ stages:
       size: 16761318
       nfiles: 76
     - path: src/data/parse_nrel118_solars_ts.py
-      md5: 99ea549b95ebc1dcd968047a4f038f66
-      size: 1428
+      md5: 54f95117474b9c2050e425253adb549a
+      size: 1429
+    - path: src/utils/data_loaders/load_ts_data.py
+      md5: ccc4b6a8c00ed72a51c4dfff8917d06c
+      size: 1880
     outs:
     - path: data/parsed/nrel118_solars_ts.csv
       md5: 286eb7a16e55231f8cd9138311c7d707
@@ -416,8 +440,11 @@ stages:
       md5: 682db21351902ecc0d885892be9fc9ee
       size: 8436
     - path: src/data/parse_nrel118_lines.py
-      md5: 21d0e83ada05fe83240a89e63717b342
-      size: 1965
+      md5: c55a5e94008cff89360505f413ff4fba
+      size: 1966
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
     outs:
     - path: data/parsed/nrel118_lines.csv
       md5: b1c5f0873b44b8fe84799eb5aa44518a
@@ -430,8 +457,26 @@ stages:
       md5: 8b014c583d06d4c0b62270829082db5d
       size: 43221
     - path: src/data/parse_nrel118_gens.py
-      md5: a863f0580f74968a04f3349dfe23377b
-      size: 2055
+      md5: f7978b7a88846d77ed2efd6c2a0fcf4f
+      size: 2056
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        GEN_TYPES:
+          Biomass: biomass
+          Hydro: hydro
+          Solar: solar
+          Wind: wind
+          CC NG: combined_cycle_gas
+          CT NG: combustion_gas
+          CT Oil: combustion_oil
+          Geo: geothermal
+          ICE NG: ' internal_combustion_gas'
+          ST Coal: steam_coal
+          ST NG: steam_gas
+          ST Other: steam_other
     outs:
     - path: data/parsed/nrel118_gens.csv
       md5: 808407409cc7407e754a67efb62094ac
@@ -447,8 +492,11 @@ stages:
       md5: c14b44a8a905331c36cb1ebb20abc365
       size: 4584
     - path: src/data/prepare_loads_ts.py
-      md5: 3a4f3f1d607458c491153aca8fe239bb
-      size: 2515
+      md5: 58830d8e3fa1eba8e43bd52ff85e20d0
+      size: 2516
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
     outs:
     - path: data/prepared/loads_ts.csv
       md5: 9e1d4aae2dfdcd71fd80479bea6d36c7
@@ -462,8 +510,11 @@ stages:
       size: 4663311
       nfiles: 18
     - path: src/data/parse_nrel118_winds_ts.py
-      md5: 9bbbc054a0ecd9f5b534908d5e60e9af
-      size: 1417
+      md5: 5a28c4e99b283b38ffe2311cd8227ca7
+      size: 1418
+    - path: src/utils/data_loaders/load_ts_data.py
+      md5: ccc4b6a8c00ed72a51c4dfff8917d06c
+      size: 1880
     outs:
     - path: data/parsed/nrel118_winds_ts.csv
       md5: ed3ae11279fd25134a8984a9da3f436a
@@ -476,8 +527,26 @@ stages:
       md5: a28a7bc34308c1580ce3a708d751fde0
       size: 40170
     - path: src/data/parse_nrel118_escalators_ts.py
-      md5: a8166ddaf2b5aa381db37012c6f4ef40
-      size: 2285
+      md5: fc231d3637c7d897b831b97702b61997
+      size: 2286
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        GEN_TYPES:
+          Biomass: biomass
+          Hydro: hydro
+          Solar: solar
+          Wind: wind
+          CC NG: combined_cycle_gas
+          CT NG: combustion_gas
+          CT Oil: combustion_oil
+          Geo: geothermal
+          ICE NG: ' internal_combustion_gas'
+          ST Coal: steam_coal
+          ST NG: steam_gas
+          ST Other: steam_other
     outs:
     - path: data/parsed/nrel118_escalators_ts.csv
       md5: bd2ad8c97acb65093445095139f3e9eb
@@ -492,6 +561,9 @@ stages:
     - path: src/data/parse_jeas118_lines.py
       md5: 0c39b39e21342302d608e50c53c4dd35
       size: 2335
+    - path: src/utils/converters.py
+      md5: 509c7a4de2d3baafa99fa38c0e6d8600
+      size: 2046
     outs:
     - path: data/parsed/jeas118_lines.csv
       md5: 4a8da15c42f4b404419da792ca79a3c3
@@ -503,8 +575,11 @@ stages:
       md5: 4a2a6c23ff0d3af81c2d96b70c870fcd
       size: 2540
     - path: src/data/prepare_buses.py
-      md5: 0d5ecc1b91cf76c997c16b160086e91d
-      size: 1398
+      md5: d3bf7eed0b81599fad6b1432d588831a
+      size: 1399
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
     outs:
     - path: data/prepared/buses.csv
       md5: 5d31dafc475a1d496d7599d5e8170d14
@@ -519,6 +594,9 @@ stages:
     - path: src/data/parse_jeas118_trafos.py
       md5: 0cf1b2c21c030fbc491da88647aaec8a
       size: 2391
+    - path: src/utils/converters.py
+      md5: 509c7a4de2d3baafa99fa38c0e6d8600
+      size: 2046
     outs:
     - path: data/parsed/jeas118_trafos.csv
       md5: 4f460fce1790a10ea22d7cac9c380c92
@@ -531,8 +609,26 @@ stages:
       md5: 9b94603c1ddd080d6bd839ef210babe0
       size: 77018
     - path: src/data/parse_nrel118_outages_ts.py
-      md5: c414589e7d0992be184d7f59ff6aac65
-      size: 2158
+      md5: cb4c41d7118f29cfc74549093d2e5ce8
+      size: 2159
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        GEN_TYPES:
+          Biomass: biomass
+          Hydro: hydro
+          Solar: solar
+          Wind: wind
+          CC NG: combined_cycle_gas
+          CT NG: combustion_gas
+          CT Oil: combustion_oil
+          Geo: geothermal
+          ICE NG: ' internal_combustion_gas'
+          ST Coal: steam_coal
+          ST NG: steam_gas
+          ST Other: steam_other
     outs:
     - path: data/parsed/nrel118_outages_ts.csv
       md5: 345960b9b00dc607a63e0831352df2fb
@@ -554,8 +650,14 @@ stages:
       md5: 5d31dafc475a1d496d7599d5e8170d14
       size: 2406
     - path: src/data/prepare_branches.py
-      md5: 4590a2df4b840a78a64a3971824f2396
-      size: 3745
+      md5: 15adc01d7550604290f5eeff4e4a029d
+      size: 3746
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        S_BASE__MVA: 100
     outs:
     - path: data/prepared/branches.csv
       md5: 33ca65a5ca689ba4503380b1d98753ec

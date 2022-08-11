@@ -6,7 +6,7 @@ import pandas as pd
 
 sys.path.append(os.getcwd())
 
-from src.utils.data_loader import load_ts_data
+from src.utils.data_loaders import load_ts_data
 
 
 def parse_nrel118_winds_ts(

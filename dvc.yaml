@@ -7,6 +7,7 @@ stages:
     deps:
       - data/raw/nrel118/additional-files-mti-118/Buses.csv
       - src/data/parse_nrel118_buses.py
+      - src/utils/data_loaders/load_df_data.py
     outs:
       - data/parsed/nrel118_buses.csv
 
@@ -18,6 +19,7 @@ stages:
     deps:
       - data/raw/nrel118/additional-files-mti-118/Lines.csv
       - src/data/parse_nrel118_lines.py
+      - src/utils/data_loaders/load_df_data.py
     outs:
       - data/parsed/nrel118_lines.csv
 
@@ -29,6 +31,7 @@ stages:
     deps:
       - data/raw/jeas118/JEAS_IEEE118.doc
       - src/data/parse_jeas118_lines.py
+      - src/utils/converters.py
     outs:
       - data/parsed/jeas118_lines.csv
 
@@ -40,6 +43,7 @@ stages:
     deps:
       - src/data/parse_jeas118_trafos.py
       - data/raw/jeas118/JEAS_IEEE118.doc
+      - src/utils/converters.py
     outs:
       - data/parsed/jeas118_trafos.csv
 
@@ -51,6 +55,7 @@ stages:
     deps:
       - src/data/parse_jeas118_loads.py
       - data/raw/jeas118/JEAS_IEEE118.doc
+      - src/utils/converters.py
     outs:
       - data/parsed/jeas118_loads.csv
 
@@ -62,6 +67,7 @@ stages:
     deps:
       - src/data/parse_nrel118_loads_ts.py
       - data/raw/nrel118/Input files/RT/Load
+      - src/utils/data_loaders/load_ts_data.py
     outs:
       - data/parsed/nrel118_loads_ts.csv
 
@@ -73,6 +79,10 @@ stages:
     deps:
       - src/data/parse_nrel118_gens.py
       - data/raw/nrel118/additional-files-mti-118/Generators.csv
+      - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - GEN_TYPES
     outs:
       - data/parsed/nrel118_gens.csv
 
@@ -84,6 +94,10 @@ stages:
     deps:
       - src/data/parse_nrel118_escalators_ts.py
       - data/raw/nrel118/additional-files-mti-118/Escalators.csv
+      - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - GEN_TYPES
     outs:
       - data/parsed/nrel118_escalators_ts.csv
 
@@ -95,6 +109,7 @@ stages:
     deps:
       - src/data/parse_nrel118_hydros_nondisp_ts.py
       - data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+      - src/utils/data_loaders/load_df_data.py
     outs:
       - data/parsed/nrel118_hydros_nondisp_ts.csv
 
@@ -106,6 +121,7 @@ stages:
     deps:
       - src/data/parse_nrel118_hydros_ts.py
       - data/raw/nrel118/Input files/Hydro
+      - src/utils/data_loaders/load_ts_data.py
     outs:
       - data/parsed/nrel118_hydros_ts.csv
 
@@ -117,6 +133,7 @@ stages:
     deps:
       - src/data/parse_nrel118_solars_ts.py
       - data/raw/nrel118/Input files/RT/Solar
+      - src/utils/data_loaders/load_ts_data.py
     outs:
       - data/parsed/nrel118_solars_ts.csv
 
@@ -128,6 +145,7 @@ stages:
     deps:
       - src/data/parse_nrel118_winds_ts.py
       - data/raw/nrel118/Input files/RT/Wind
+      - src/utils/data_loaders/load_ts_data.py
     outs:
       - data/parsed/nrel118_winds_ts.csv
 
@@ -139,6 +157,10 @@ stages:
     deps:
       - src/data/parse_nrel118_outages_ts.py
       - data/raw/nrel118/Input files/Others/GenOut.csv
+      - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - GEN_TYPES
     outs:
       - data/parsed/nrel118_outages_ts.csv
 
@@ -152,6 +174,7 @@ stages:
       - data/parsed/nrel118_buses.csv
       - data/parsed/jeas118_loads.csv
       - src/data/transform_loads.py
+      - src/utils/data_loaders/load_df_data.py
     outs:
       - data/transformed/loads.csv
 
@@ -163,6 +186,7 @@ stages:
     deps:
       - data/parsed/nrel118_buses.csv
       - src/data/prepare_buses.py
+      - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/buses.csv
 
@@ -180,6 +204,10 @@ stages:
       - data/parsed/jeas118_lines.csv
       - data/parsed/jeas118_trafos.csv
       - data/prepared/buses.csv
+      - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - S_BASE__MVA
     outs:
       - data/prepared/branches.csv
 
@@ -193,6 +221,7 @@ stages:
       - src/data/prepare_loads.py
       - data/transformed/loads.csv
       - data/parsed/nrel118_loads_ts.csv
+      - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/loads.csv
 
@@ -206,5 +235,6 @@ stages:
       - src/data/prepare_loads_ts.py
       - data/transformed/loads.csv
       - data/parsed/nrel118_loads_ts.csv
+      - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/loads_ts.csv

@@ -7,7 +7,7 @@ import pandas as pd
 sys.path.append(os.getcwd())
 
 from definitions import GEN_TYPES
-from src.utils.data_loader import load_df_data
+from src.utils.data_loaders import load_df_data
 
 
 def parse_nrel118_gens(

@@ -7,7 +7,7 @@ import pandas as pd
 
 sys.path.append(os.getcwd())
 
-from src.utils.data_loader import load_df_data
+from src.utils.data_loaders import load_df_data
 
 
 def transform_loads(
