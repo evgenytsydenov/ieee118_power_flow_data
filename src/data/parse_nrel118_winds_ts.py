@@ -26,11 +26,8 @@ def parse_nrel118_winds_ts(
     wind_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
-    col_names = {}
-    for col in wind_ts.columns:
-        if col != "datetime":
-            col_names[col] = f"wind_{col}"
-    wind_ts.rename(columns=col_names, inplace=True)
+    wind_ts.rename(columns={"name": "gen_name", "value": "gen_value"}, inplace=True)
+    wind_ts["gen_name"] = "wind_" + wind_ts["gen_name"]
 
     # Return results
     if path_parsed_data:

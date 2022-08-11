@@ -38,28 +38,20 @@ def prepare_loads_ts(
     )
     nrel118_loads_ts = load_df_data(
         data=parsed_nrel118_loads_ts,
-        dtypes={"r1": float, "r2": float, "r3": float, "datetime": str},
+        dtypes={"region_load": float, "region_name": str, "datetime": str},
     )
 
     # Calculate active and reactive load at each bus
-    loads_ts = pd.melt(
-        nrel118_loads_ts,
-        id_vars=["datetime"],
-        value_vars=["r1", "r2", "r3"],
-        var_name="region",
-        value_name="region_load",
+    loads_ts = nrel118_loads_ts.merge(
+        interim_loads, how="right", right_on="region", left_on="region_name"
     )
-    loads_ts = loads_ts.merge(interim_loads, how="right", on="region")
     loads_ts["p__mw"] = loads_ts["region_load"] * loads_ts["load_participation_factor"]
     loads_ts["q__mvar"] = loads_ts["p__mw"] * np.tan(
         np.arccos(loads_ts["load_power_factor"])
     )
 
-    # Create additional variables
-    loads_ts["in_service"] = True
-
     # Return results
-    cols = ["datetime", "name", "in_service", "p__mw", "q__mvar"]
+    cols = ["datetime", "name", "p__mw", "q__mvar"]
     if path_prepared_data:
         loads_ts[cols].to_csv(path_prepared_data, header=True, index=False)
     else:

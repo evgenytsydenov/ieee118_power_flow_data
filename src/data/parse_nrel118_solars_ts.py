@@ -26,11 +26,8 @@ def parse_nrel118_solars_ts(
     solar_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
-    col_names = {}
-    for col in solar_ts.columns:
-        if col != "datetime":
-            col_names[col] = f"solar_{col}"
-    solar_ts.rename(columns=col_names, inplace=True)
+    solar_ts.rename(columns={"name": "gen_name", "value": "gen_value"}, inplace=True)
+    solar_ts["gen_name"] = "solar_" + solar_ts["gen_name"]
 
     # Return results
     if path_parsed_data:

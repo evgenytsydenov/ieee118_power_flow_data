@@ -6,7 +6,7 @@ import pandas as pd
 
 sys.path.append(os.getcwd())
 
-from definitions import GEN_TYPES
+from definitions import DATE_FORMAT, GEN_TYPES
 from src.utils.data_loaders import load_df_data
 
 
@@ -32,7 +32,7 @@ def parse_nrel118_escalators_ts(
     escalators.rename(
         columns={
             "Escalator": "gen_name",
-            "Value": "value",
+            "Value": "gen_factor",
             "Timeslice (month)": "month",
         },
         inplace=True,
@@ -48,10 +48,12 @@ def parse_nrel118_escalators_ts(
     escalators["year"] = 2024
     escalators["day"] = 1
     escalators["month"] = escalators["month"].str.lstrip("M").astype(int)
-    escalators["datetime"] = pd.to_datetime(escalators[["year", "month", "day"]])
+    escalators["datetime"] = pd.to_datetime(
+        escalators[["year", "month", "day"]]
+    ).dt.strftime(DATE_FORMAT)
 
     # Return results
-    cols = ["datetime", "gen_name", "value"]
+    cols = ["datetime", "gen_name", "gen_factor"]
     if path_parsed_data:
         escalators[cols].to_csv(path_parsed_data, header=True, index=False)
     else:

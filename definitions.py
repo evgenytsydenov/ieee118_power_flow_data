@@ -16,3 +16,6 @@ GEN_TYPES = {
     "ST NG": "steam_gas",
     "ST Other": "steam_other",
 }
+
+# Date format used in data
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"

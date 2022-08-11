@@ -6,7 +6,7 @@ import pandas as pd
 
 sys.path.append(os.getcwd())
 
-from definitions import GEN_TYPES
+from definitions import DATE_FORMAT, GEN_TYPES
 from src.utils.data_loaders import load_df_data
 
 
@@ -46,7 +46,9 @@ def parse_nrel118_outages_ts(
     )
 
     # Compute date
-    outages["datetime"] = pd.to_datetime(outages[["year", "month", "day", "hour"]])
+    outages["datetime"] = pd.to_datetime(
+        outages[["year", "month", "day", "hour"]]
+    ).dt.strftime(DATE_FORMAT)
 
     # Unify generator names
     name_pattern = r"^(?P<plant_type>[\w\s]+)\s(?P<plant_number>\d+)$"

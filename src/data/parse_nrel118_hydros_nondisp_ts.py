@@ -6,6 +6,7 @@ import pandas as pd
 
 sys.path.append(os.getcwd())
 
+from definitions import DATE_FORMAT
 from src.utils.data_loaders import load_df_data
 
 
@@ -28,7 +29,7 @@ def parse_nrel118_hydros_nondisp_ts(
     hydros.rename(
         columns={
             "Generator": "gen_name",
-            "Value": "value",
+            "Value": "gen_value",
             "Timeslice": "month",
         },
         inplace=True,
@@ -44,10 +45,12 @@ def parse_nrel118_hydros_nondisp_ts(
     hydros["year"] = 2024
     hydros["day"] = 1
     hydros["month"] = hydros["month"].str.lstrip("M").astype(int)
-    hydros["datetime"] = pd.to_datetime(hydros[["year", "month", "day"]])
+    hydros["datetime"] = pd.to_datetime(hydros[["year", "month", "day"]]).dt.strftime(
+        DATE_FORMAT
+    )
 
     # Return results
-    cols = ["datetime", "gen_name", "value"]
+    cols = ["datetime", "gen_name", "gen_value"]
     if path_parsed_data:
         hydros[cols].to_csv(path_parsed_data, header=True, index=False)
     else:

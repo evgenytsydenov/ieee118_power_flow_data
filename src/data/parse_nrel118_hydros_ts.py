@@ -26,11 +26,8 @@ def parse_nrel118_hydros_ts(
     hydro_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
-    col_names = {}
-    for col in hydro_ts.columns:
-        if col != "datetime":
-            col_names[col] = f"hydro_{col}"
-    hydro_ts.rename(columns=col_names, inplace=True)
+    hydro_ts.rename(columns={"name": "gen_name", "value": "gen_value"}, inplace=True)
+    hydro_ts["gen_name"] = "hydro_" + hydro_ts["gen_name"]
 
     # Return results
     if path_parsed_data:

@@ -83,6 +83,7 @@ stages:
     params:
       - definitions.py:
           - GEN_TYPES
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_gens.csv
 
@@ -98,6 +99,7 @@ stages:
     params:
       - definitions.py:
           - GEN_TYPES
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_escalators_ts.csv
 
@@ -110,6 +112,9 @@ stages:
       - src/data/parse_nrel118_hydros_nondisp_ts.py
       - data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
       - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_hydros_nondisp_ts.csv
 
@@ -161,6 +166,7 @@ stages:
     params:
       - definitions.py:
           - GEN_TYPES
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_outages_ts.csv
 
@@ -215,12 +221,10 @@ stages:
     desc: "Build final dataset with load info"
     cmd: python src/data/prepare_loads.py
       data/transformed/loads.csv
-      data/parsed/nrel118_loads_ts.csv
       data/prepared/loads.csv
     deps:
       - src/data/prepare_loads.py
       - data/transformed/loads.csv
-      - data/parsed/nrel118_loads_ts.csv
       - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/loads.csv

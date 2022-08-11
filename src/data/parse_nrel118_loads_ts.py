@@ -26,7 +26,10 @@ def parse_nrel118_loads_ts(
     load_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
-    load_ts.columns = [col.lower() for col in load_ts.columns]
+    load_ts.rename(
+        columns={"name": "region_name", "value": "region_load"}, inplace=True
+    )
+    load_ts["region_name"] = load_ts["region_name"].str.lower()
 
     # Return results
     if path_parsed_data:
