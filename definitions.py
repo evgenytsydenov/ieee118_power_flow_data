@@ -1,4 +1,8 @@
-gen_types = {
+# Base power
+S_BASE__MVA = 100
+
+# Unify generation types
+GEN_TYPES = {
     "Biomass": "biomass",
     "Hydro": "hydro",
     "Solar": "solar",

@@ -6,7 +6,7 @@ import pandas as pd
 
 sys.path.append(os.getcwd())
 
-from src.utils.common_names import gen_types
+from definitions import GEN_TYPES
 from src.utils.data_loader import load_df_data
 
 
@@ -46,7 +46,7 @@ def parse_nrel118_gens(
     # Unify generator names
     name_pattern = r"^(?P<plant_type>[\w\s]+)\s(?P<plant_number>\d+)$"
     names = gens["name"].str.extract(pat=name_pattern, expand=True)
-    names["plant_type"].replace(gen_types, inplace=True)
+    names["plant_type"].replace(GEN_TYPES, inplace=True)
     gens["name"] = names["plant_type"] + "_" + names["plant_number"].str.lstrip("0")
     gens["bus_name"] = "bus_" + gens["bus_name"].str.lstrip("node0")
 
