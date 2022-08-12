@@ -31,9 +31,6 @@ def prepare_loads(
         },
     )
 
-    # All loads are in service
-    loads["in_service"] = True
-
     # Return results
     if path_prepared_data:
         loads.to_csv(path_prepared_data, header=True, index=False)

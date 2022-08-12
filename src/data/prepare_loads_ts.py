@@ -50,8 +50,11 @@ def prepare_loads_ts(
         np.arccos(loads_ts["load_power_factor"])
     )
 
+    # All loads are in service
+    loads_ts["in_service"] = True
+
     # Return results
-    cols = ["datetime", "name", "p__mw", "q__mvar"]
+    cols = ["datetime", "name", "in_service", "p__mw", "q__mvar"]
     if path_prepared_data:
         loads_ts[cols].to_csv(path_prepared_data, header=True, index=False)
     else:

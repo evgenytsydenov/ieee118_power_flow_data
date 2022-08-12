@@ -366,15 +366,15 @@ stages:
       md5: c14b44a8a905331c36cb1ebb20abc365
       size: 4584
     - path: src/data/prepare_loads.py
-      md5: a7fdccfb4f7d1a0cdcf903f1393c2039
-      size: 1353
+      md5: abbb8f4c3b37edbf56ea4e5590c0a515
+      size: 1287
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     outs:
     - path: data/prepared/loads.csv
-      md5: 418b3ff455661f334ef3d3048bfce67d
-      size: 1938
+      md5: 210c3c761d0b64d27dbcc55c39e617fc
+      size: 1472
   parse_nrel118_hydros_nondisp_ts:
     cmd: python src/data/parse_nrel118_hydros_nondisp_ts.py data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
       data/parsed/nrel118_hydros_nondisp_ts.csv
@@ -473,14 +473,14 @@ stages:
           CT NG: combustion_gas
           CT Oil: combustion_oil
           Geo: geothermal
-          ICE NG: ' internal_combustion_gas'
+          ICE NG: internal_combustion_gas
           ST Coal: steam_coal
           ST NG: steam_gas
           ST Other: steam_other
     outs:
     - path: data/parsed/nrel118_gens.csv
-      md5: 808407409cc7407e754a67efb62094ac
-      size: 8748
+      md5: 9a8a42b34456001728735258c094433d
+      size: 8741
   prepare_loads_ts:
     cmd: python src/data/prepare_loads_ts.py data/transformed/loads.csv data/parsed/nrel118_loads_ts.csv
       data/prepared/loads_ts.csv
@@ -492,15 +492,15 @@ stages:
       md5: c14b44a8a905331c36cb1ebb20abc365
       size: 4584
     - path: src/data/prepare_loads_ts.py
-      md5: 694a23f49ffb9d188b0dec159a43b2ce
-      size: 2293
+      md5: 120360b5253c887a1798ec45a9b84385
+      size: 2376
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     outs:
     - path: data/prepared/loads_ts.csv
-      md5: 74174c0149cf8cec70328139c17a81e5
-      size: 52380180
+      md5: 9e1d4aae2dfdcd71fd80479bea6d36c7
+      size: 56376911
   parse_nrel118_winds_ts:
     cmd: python src/data/parse_nrel118_winds_ts.py "data/raw/nrel118/Input files/RT/Wind"
       data/parsed/nrel118_winds_ts.csv
@@ -544,14 +544,14 @@ stages:
           CT NG: combustion_gas
           CT Oil: combustion_oil
           Geo: geothermal
-          ICE NG: ' internal_combustion_gas'
+          ICE NG: internal_combustion_gas
           ST Coal: steam_coal
           ST NG: steam_gas
           ST Other: steam_other
     outs:
     - path: data/parsed/nrel118_escalators_ts.csv
-      md5: c4505a02baea6d73a7052298f1f88cc9
-      size: 92091
+      md5: 5f37fee2257d000fe728dbcdebaba408
+      size: 92007
   parse_jeas118_lines:
     cmd: python src/data/parse_jeas118_lines.py data/raw/jeas118/JEAS_IEEE118.doc
       data/parsed/jeas118_lines.csv
@@ -627,14 +627,14 @@ stages:
           CT NG: combustion_gas
           CT Oil: combustion_oil
           Geo: geothermal
-          ICE NG: ' internal_combustion_gas'
+          ICE NG: internal_combustion_gas
           ST Coal: steam_coal
           ST NG: steam_gas
           ST Other: steam_other
     outs:
     - path: data/parsed/nrel118_outages_ts.csv
-      md5: 345960b9b00dc607a63e0831352df2fb
-      size: 130733
+      md5: b316ccf16a71a923aabb4be7c8c75f50
+      size: 130618
   prepare_branches:
     cmd: python src/data/prepare_branches.py data/parsed/nrel118_lines.csv data/parsed/jeas118_lines.csv
       data/parsed/jeas118_trafos.csv data/prepared/buses.csv data/prepared/branches.csv
