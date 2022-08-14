@@ -39,7 +39,7 @@ def transform_loads(
     loads = nrel118_buses.drop(index=non_loads.index).reset_index(drop=True)
     loads["load_name"] = "load__" + (loads.index + 1).astype(str)
 
-    # Calculate load tangent at each bus
+    # Calculate load power factor at each bus
     jeas118_loads["load_power_factor"] = np.cos(
         np.arctan(jeas118_loads["q__mvar"] / jeas118_loads["p__mw"])
     )
