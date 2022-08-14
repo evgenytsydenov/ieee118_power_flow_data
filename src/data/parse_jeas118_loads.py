@@ -5,8 +5,6 @@ from typing import Optional
 
 import pandas as pd
 
-sys.path.append(os.getcwd())
-
 from src.utils.converters import doc_to_docx, docx_to_pandas
 
 

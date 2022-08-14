@@ -1,11 +1,8 @@
-import os
 import sys
 from typing import Optional
 
 import numpy as np
 import pandas as pd
-
-sys.path.append(os.getcwd())
 
 from src.utils.data_loaders import load_df_data
 

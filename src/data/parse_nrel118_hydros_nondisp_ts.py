@@ -1,10 +1,7 @@
-import os
 import sys
 from typing import Optional
 
 import pandas as pd
-
-sys.path.append(os.getcwd())
 
 from definitions import DATE_FORMAT
 from src.utils.data_loaders import load_df_data
