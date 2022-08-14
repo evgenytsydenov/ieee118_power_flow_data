@@ -184,6 +184,20 @@ stages:
     outs:
       - data/transformed/loads.csv
 
+  transform_gens_escalated_ts:
+    desc: "Combine max output of generators and escalator values"
+    cmd: python src/data/transform_gens_escalated_ts.py
+      data/parsed/nrel118_gens.csv
+      data/parsed/nrel118_escalators_ts.csv
+      data/transformed/gens_escalated_ts.csv
+    deps:
+      - data/parsed/nrel118_gens.csv
+      - data/parsed/nrel118_escalators_ts.csv
+      - src/data/transform_gens_escalated_ts.py
+      - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/transformed/gens_escalated_ts.csv
+
   prepare_buses:
     desc: "Build final bus dataset"
     cmd: python src/data/prepare_buses.py
@@ -242,3 +256,37 @@ stages:
       - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/loads_ts.csv
+
+  prepare_gens:
+    desc: "Build final dataset with generation info"
+    cmd: python src/data/prepare_gens.py
+      data/parsed/nrel118_gens.csv
+      data/prepared/gens.csv
+    deps:
+      - src/data/prepare_gens.py
+      - data/parsed/nrel118_gens.csv
+      - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/prepared/gens.csv
+
+  prepare_gens_ts:
+    desc: "Build final dataset with generation time-series data"
+    cmd: python src/data/prepare_gens_ts.py
+      data/parsed/nrel118_winds_ts.csv
+      data/parsed/nrel118_solars_ts.csv
+      data/parsed/nrel118_hydros_ts.csv
+      data/parsed/nrel118_hydros_nondisp_ts.csv
+      data/transformed/gens_escalated_ts.csv
+      data/parsed/nrel118_outages_ts.csv
+      data/prepared/gens_ts.csv
+    deps:
+      - src/data/prepare_gens_ts.py
+      - data/parsed/nrel118_winds_ts.csv
+      - data/parsed/nrel118_solars_ts.csv
+      - data/parsed/nrel118_hydros_ts.csv
+      - data/parsed/nrel118_hydros_nondisp_ts.csv
+      - data/transformed/gens_escalated_ts.csv
+      - data/parsed/nrel118_outages_ts.csv
+      - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/prepared/gens_ts.csv

@@ -30,3 +30,13 @@
 - "p__mw" --- active power of the load in megawatts
 - "q__mvar" --- reactive power of the load in megavolt-amperes
 - "datetime" --- date and time of variable measurement
+
+### Generators
+
+- "name" --- generator name in form "{gen_type}_{number}"
+- "bus_name" --- name of bus where the generator is placeds
+- "q_max__mvar" and "q_min__mvar" --- max and min limits of reactive power in megavolt-amperes
+- "v_set__kv" --- set voltage of the generator in kilovolts
+- "in_service" --- if the generator is in service
+- "p__mw" --- active power of the generator in megawatts
+- "datetime" --- date and time of variable measurement
