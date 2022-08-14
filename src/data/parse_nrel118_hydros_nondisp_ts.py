@@ -3,7 +3,7 @@ from typing import Optional
 
 import pandas as pd
 
-from definitions import DATE_FORMAT
+from definitions import DATE_FORMAT, GEN_TYPES
 from src.utils.data_loaders import load_df_data
 
 
@@ -36,7 +36,10 @@ def parse_nrel118_hydros_nondisp_ts(
     hydros = hydros[~hydros["month"].isna()].reset_index(drop=True)
 
     # Unify generator names
-    hydros["gen_name"] = hydros["gen_name"].str.replace("Hydro ", "hydro__")
+    name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
+    names = hydros["gen_name"].str.extract(pat=name_pattern, expand=True)
+    names["gen_type"].replace(GEN_TYPES, inplace=True)
+    hydros["gen_name"] = names["gen_type"] + "__" + names["gen_number"]
 
     # Convert datetime
     hydros["year"] = 2024

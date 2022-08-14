@@ -3,7 +3,7 @@ from typing import Optional
 
 import pandas as pd
 
-from definitions import DATE_FORMAT
+from definitions import DATE_FORMAT, GEN_TYPES
 from src.utils.data_loaders import load_ts_data
 
 
@@ -25,7 +25,7 @@ def parse_nrel118_hydros_ts(
 
     # Change column names
     hydro_ts.rename(columns={"name": "gen_name", "value": "p__mw"}, inplace=True)
-    hydro_ts["gen_name"] = "hydro__" + hydro_ts["gen_name"]
+    hydro_ts["gen_name"] = GEN_TYPES["Hydro"] + "__" + hydro_ts["gen_name"]
 
     # Unify date format
     hydro_ts["datetime"] = hydro_ts["datetime"].dt.strftime(DATE_FORMAT)

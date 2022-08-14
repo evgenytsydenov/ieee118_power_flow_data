@@ -116,6 +116,7 @@ stages:
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
+          - GEN_TYPES
           - DATE_FORMAT
     outs:
       - data/parsed/nrel118_hydros_nondisp_ts.csv
@@ -131,6 +132,7 @@ stages:
       - src/utils/data_loaders/load_ts_data.py
     params:
       - definitions.py:
+          - GEN_TYPES
           - DATE_FORMAT
     outs:
       - data/parsed/nrel118_hydros_ts.csv
@@ -146,6 +148,7 @@ stages:
       - src/utils/data_loaders/load_ts_data.py
     params:
       - definitions.py:
+          - GEN_TYPES
           - DATE_FORMAT
     outs:
       - data/parsed/nrel118_solars_ts.csv
@@ -161,6 +164,7 @@ stages:
       - src/utils/data_loaders/load_ts_data.py
     params:
       - definitions.py:
+          - GEN_TYPES
           - DATE_FORMAT
     outs:
       - data/parsed/nrel118_winds_ts.csv
