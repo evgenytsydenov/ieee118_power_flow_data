@@ -14,7 +14,7 @@ def transform_gens_escalated_ts(
     parsed_nrel118_escalators_ts: str | pd.DataFrame,
     path_transformed_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
-    """Transform data of generators which do not have time-series information.
+    """Transform data of generators which have info about escalation factor.
 
     Args:
         parsed_nrel118_gens: Path or dataframe with parsed generation data.
@@ -29,23 +29,21 @@ def transform_gens_escalated_ts(
     nrel118_gens = load_df_data(
         data=parsed_nrel118_gens,
         dtypes={
-            "name": str,
+            "gen_name": str,
             "max_p__mw": float,
         },
     )
 
     nrel118_escalators_ts = load_df_data(
         data=parsed_nrel118_escalators_ts,
-        dtypes={"datetime": str, "gen_name": str, "gen_factor": float},
+        dtypes={"datetime": str, "gen_name": str, "escalator_ratio": float},
     )
 
     # Merge
-    gens = nrel118_gens.merge(
-        nrel118_escalators_ts, left_on="name", right_on="gen_name", how="right"
-    )
-    gens["gen_value"] = gens["gen_factor"] * gens["max_p__mw"]
+    gens = nrel118_gens.merge(nrel118_escalators_ts, on="gen_name", how="right")
+    gens["p__mw"] = gens["escalator_ratio"] * gens["max_p__mw"]
 
-    cols = ["datetime", "gen_name", "gen_value"]
+    cols = ["datetime", "gen_name", "p__mw"]
     if path_transformed_data:
         gens[cols].to_csv(path_transformed_data, header=True, index=False)
     else:
@@ -57,7 +55,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "transform_gens_nonts.py path_parsed_nrel118_gens "
+            "transform_gens_escalated_ts.py path_parsed_nrel118_gens "
             "path_parsed_nrel118_escalators_ts path_transformed_data\n"
         )
 

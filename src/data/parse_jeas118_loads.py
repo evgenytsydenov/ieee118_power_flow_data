@@ -48,7 +48,7 @@ def parse_jeas118_loads(
 
     # Change bus names
     loads.sort_values(by="bus_name", inplace=True, ignore_index=True)
-    loads["bus_name"] = "bus_" + loads["bus_name"].astype(str)
+    loads["bus_name"] = "bus__" + loads["bus_name"].astype(str)
 
     # Return results
     if path_parsed_data:
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_jeas118_loads.py path_raw_data path_parsed_data\n"
+            "parse_jeas118_loads.py path_raw_jeas118 path_parsed_data\n"
         )
 
     # Run

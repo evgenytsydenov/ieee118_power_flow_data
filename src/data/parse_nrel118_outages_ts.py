@@ -13,7 +13,7 @@ from src.utils.data_loaders import load_df_data
 def parse_nrel118_outages_ts(
     raw_data: str | pd.DataFrame, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Parse raw data about generator outages from the NREL-118 dataset.
+    """Parse raw time-series data of generator outages from the NREL-118 dataset.
 
     Args:
         raw_data: Path or dataframe with raw data.
@@ -51,12 +51,10 @@ def parse_nrel118_outages_ts(
     ).dt.strftime(DATE_FORMAT)
 
     # Unify generator names
-    name_pattern = r"^(?P<plant_type>[\w\s]+)\s(?P<plant_number>\d+)$"
+    name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
     names = outages["gen_name"].str.extract(pat=name_pattern, expand=True)
-    names["plant_type"].replace(GEN_TYPES, inplace=True)
-    outages["gen_name"] = (
-        names["plant_type"] + "_" + names["plant_number"].str.lstrip("0")
-    )
+    names["gen_type"].replace(GEN_TYPES, inplace=True)
+    outages["gen_name"] = names["gen_type"] + "__" + names["gen_number"].str.lstrip("0")
 
     # Return results
     cols = ["datetime", "gen_name", "in_outage"]
@@ -71,7 +69,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_outages_ts.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_outages_ts.py path_raw_nrel118_outages_ts path_parsed_data\n"
         )
 
     # Run

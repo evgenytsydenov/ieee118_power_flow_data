@@ -45,7 +45,7 @@ def parse_jeas118_trafos(
     # Rename variables
     trafos.rename(
         columns={
-            "Transformer No.": "name",
+            "Transformer No.": "branch_name",
             "From Bus": "from_bus",
             "To\nBus": "to_bus",
             "Circuit ID": "parallel",
@@ -55,10 +55,10 @@ def parse_jeas118_trafos(
     )
 
     # Change trafo and bus names
-    trafos.sort_values(by="name", inplace=True, ignore_index=True)
-    trafos["name"] = "trafo_" + trafos["name"].astype(str)
-    trafos["from_bus"] = "bus_" + trafos["from_bus"]
-    trafos["to_bus"] = "bus_" + trafos["to_bus"]
+    trafos.sort_values(by="branch_name", inplace=True, ignore_index=True)
+    trafos["branch_name"] = "trafo__" + trafos["branch_name"].astype(str)
+    trafos["from_bus"] = "bus__" + trafos["from_bus"]
+    trafos["to_bus"] = "bus__" + trafos["to_bus"]
 
     # Return results
     if path_parsed_data:
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_jeas118_trafos.py path_raw_data path_parsed_data\n"
+            "parse_jeas118_trafos.py path_raw_jeas118 path_parsed_data\n"
         )
 
     # Run

@@ -27,16 +27,16 @@ def parse_nrel118_buses(
     # Load raw bus data
     buses.rename(
         columns={
-            "Bus Name": "name",
+            "Bus Name": "bus_name",
             "Region": "region",
             "Load Participation Factor": "load_participation_factor",
         },
         inplace=True,
     )
-    buses.sort_values(by="name", inplace=True, ignore_index=True)
+    buses.sort_values(by="bus_name", inplace=True, ignore_index=True)
 
     # Unify bus names
-    buses["name"] = "bus_" + buses["name"].str.lstrip("bus0")
+    buses["bus_name"] = "bus__" + buses["bus_name"].str.lstrip("bus0")
 
     # Convert regions to lowercase
     buses["region"] = buses["region"].str.lower()
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_buses.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_buses.py path_raw_nrel118_buses path_parsed_data\n"
         )
 
     # Run

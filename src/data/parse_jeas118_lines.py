@@ -45,7 +45,7 @@ def parse_jeas118_lines(
     # Rename variables
     lines.rename(
         columns={
-            "Line No.": "name",
+            "Line No.": "branch_name",
             "From Bus": "from_bus",
             "To Bus": "to_bus",
             "Circuit ID": "parallel",
@@ -55,10 +55,10 @@ def parse_jeas118_lines(
     )
 
     # Change line and bus names
-    lines.sort_values(by="name", inplace=True, ignore_index=True)
-    lines["name"] = "branch_" + lines["name"].astype(str)
-    lines["from_bus"] = "bus_" + lines["from_bus"]
-    lines["to_bus"] = "bus_" + lines["to_bus"]
+    lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
+    lines["branch_name"] = "branch__" + lines["branch_name"].astype(str)
+    lines["from_bus"] = "bus__" + lines["from_bus"]
+    lines["to_bus"] = "bus__" + lines["to_bus"]
 
     # Return results
     if path_parsed_data:
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_jeas118_lines.py path_raw_data path_parsed_data\n"
+            "parse_jeas118_lines.py path_raw_jeas118 path_parsed_data\n"
         )
 
     # Run

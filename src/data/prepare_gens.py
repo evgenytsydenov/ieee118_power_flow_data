@@ -10,13 +10,13 @@ from src.utils.data_loaders import load_df_data
 
 
 def prepare_gens(
-    parsed_data: str | pd.DataFrame,
+    parsed_nrel118_gens: str | pd.DataFrame,
     path_prepared_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
     """Prepare final generation data.
 
     Args:
-        parsed_data: Path or dataframe with parsed generation data.
+        parsed_nrel118_gens: Path or dataframe with parsed generation data.
         path_prepared_data: Path to save prepared data.
 
     Returns:
@@ -24,9 +24,9 @@ def prepare_gens(
     """
     # Load data
     gens = load_df_data(
-        data=parsed_data,
+        data=parsed_nrel118_gens,
         dtypes={
-            "name": str,
+            "gen_name": str,
             "bus_name": str,
         },
     )
@@ -43,11 +43,11 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "prepare_gens.py path_parsed_gens path_prepared_data\n"
+            "prepare_gens.py path_parsed_nrel118_gens path_prepared_data\n"
         )
 
     # Run
     prepare_gens(
-        parsed_data=sys.argv[1],
+        parsed_nrel118_gens=sys.argv[1],
         path_prepared_data=sys.argv[2],
     )

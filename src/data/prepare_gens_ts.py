@@ -51,7 +51,7 @@ def prepare_gens_ts(
     ]:
         gen_data = load_df_data(
             data=data,
-            dtypes={"datetime": str, "gen_name": str, "gen_value": float},
+            dtypes={"datetime": str, "gen_name": str, "p__mw": float},
         )
         gen_ts.append(gen_data)
     outages_ts = load_df_data(
@@ -65,13 +65,8 @@ def prepare_gens_ts(
     # Add info about outages
     gens = gens.merge(outages_ts, how="left", on=["datetime", "gen_name"])
     mask = ~gens["in_outage"].isna()
-    gens.loc[mask, "in_outage"] = ~gens.loc[mask, "in_outage"].astype(bool)
-
-    # Set proper names
-    gens.rename(
-        columns={"gen_name": "name", "gen_value": "p__mw", "in_outage": "in_service"},
-        inplace=True,
-    )
+    gens["in_service"] = np.nan
+    gens.loc[mask, "in_service"] = ~gens.loc[mask, "in_outage"].astype(bool)
 
     # Temporary assumption
     gens["v_set__kv"] = np.nan
@@ -81,7 +76,7 @@ def prepare_gens_ts(
     # Return results
     cols = [
         "datetime",
-        "name",
+        "gen_name",
         "in_service",
         "p__mw",
         "q_min__mvar",

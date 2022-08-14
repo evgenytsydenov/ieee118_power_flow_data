@@ -35,20 +35,20 @@ def parse_nrel118_gens(
     # Rename variables
     gens.rename(
         columns={
-            "Generator Name": "name",
+            "Generator Name": "gen_name",
             "Node of connection": "bus_name",
             "Max Capacity (MW)": "max_p__mw",
         },
         inplace=True,
     )
-    gens.sort_values(by="name", inplace=True, ignore_index=True)
+    gens.sort_values(by="gen_name", inplace=True, ignore_index=True)
 
     # Unify generator names
-    name_pattern = r"^(?P<plant_type>[\w\s]+)\s(?P<plant_number>\d+)$"
-    names = gens["name"].str.extract(pat=name_pattern, expand=True)
-    names["plant_type"].replace(GEN_TYPES, inplace=True)
-    gens["name"] = names["plant_type"] + "_" + names["plant_number"].str.lstrip("0")
-    gens["bus_name"] = "bus_" + gens["bus_name"].str.lstrip("node0")
+    name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
+    names = gens["gen_name"].str.extract(pat=name_pattern, expand=True)
+    names["gen_type"].replace(GEN_TYPES, inplace=True)
+    gens["gen_name"] = names["gen_type"] + "__" + names["gen_number"].str.lstrip("0")
+    gens["bus_name"] = "bus__" + gens["bus_name"].str.lstrip("node0")
 
     # Return results
     if path_parsed_data:
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_gens.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_gens.py path_raw_nrel118_gens path_parsed_data\n"
         )
 
     # Run

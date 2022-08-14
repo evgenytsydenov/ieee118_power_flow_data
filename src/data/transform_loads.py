@@ -30,7 +30,7 @@ def transform_loads(
     # Load data
     nrel118_buses = load_df_data(
         data=parsed_nrel118_buses,
-        dtypes={"name": str, "region": str, "load_participation_factor": float},
+        dtypes={"bus_name": str, "region": str, "load_participation_factor": float},
     )
     jeas118_loads = load_df_data(
         data=parsed_jeas118_loads,
@@ -39,12 +39,8 @@ def transform_loads(
 
     # Create load dataset
     non_loads = nrel118_buses[nrel118_buses["load_participation_factor"] == 0]
-    loads = (
-        nrel118_buses.drop(index=non_loads.index)
-        .reset_index(drop=True)
-        .rename(columns={"name": "bus_name"})
-    )
-    loads["name"] = "load_" + (loads.index + 1).astype(str)
+    loads = nrel118_buses.drop(index=non_loads.index).reset_index(drop=True)
+    loads["load_name"] = "load__" + (loads.index + 1).astype(str)
 
     # Calculate load tangent at each bus
     jeas118_loads["load_power_factor"] = np.cos(
@@ -56,7 +52,7 @@ def transform_loads(
 
     # Return results
     cols = [
-        "name",
+        "load_name",
         "bus_name",
         "region",
         "load_participation_factor",

@@ -12,7 +12,7 @@ from src.utils.data_loaders import load_ts_data
 def parse_nrel118_loads_ts(
     raw_data: str, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Parse time-series data about loads from the NREL-118 dataset.
+    """Parse raw time-series data of loads from the NREL-118 dataset.
 
     Args:
         raw_data: Path to the raw data.
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_loads_ts.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_loads_ts.py path_raw_nrel118_loads_ts path_parsed_data\n"
         )
 
     # Run

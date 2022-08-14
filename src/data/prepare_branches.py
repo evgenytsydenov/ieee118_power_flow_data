@@ -33,7 +33,7 @@ def prepare_branches(
     nrel118_lines = load_df_data(
         data=parsed_nrel118_lines,
         dtypes={
-            "name": str,
+            "branch_name": str,
             "from_bus": str,
             "to_bus": str,
             "max_p__mw": float,
@@ -42,23 +42,19 @@ def prepare_branches(
         },
     )
     jeas118_lines = load_df_data(
-        data=parsed_jeas118_lines, dtypes={"name": str, "parallel": str, "b__pu": float}
+        data=parsed_jeas118_lines,
+        dtypes={"branch_name": str, "parallel": str, "b__pu": float},
     )
     jeas118_trafos = load_df_data(
         data=parsed_jeas118_trafos,
-        dtypes={
-            "from_bus": str,
-            "to_bus": str,
-            "parallel": str,
-            "trafo_ratio": float,
-        },
+        dtypes={"from_bus": str, "to_bus": str, "parallel": str, "trafo_ratio": float},
     )
     buses = load_df_data(
-        data=prepared_buses, dtypes={"name": str, "v_rated__kv": float}
+        data=prepared_buses, dtypes={"bus_name": str, "v_rated__kv": float}
     )
 
     # Combine data
-    branches = pd.merge(nrel118_lines, jeas118_lines, on="name", how="left")
+    branches = pd.merge(nrel118_lines, jeas118_lines, on="branch_name", how="left")
     branches = branches.merge(
         jeas118_trafos, on=["from_bus", "to_bus", "parallel"], how="left"
     )
@@ -67,7 +63,6 @@ def prepare_branches(
     branches["in_service"] = True
 
     # Convert from pu to ohm
-    buses.rename(columns={"name": "bus_name"}, inplace=True)
     branches = branches.merge(
         buses[["bus_name", "v_rated__kv"]],
         left_on="from_bus",
@@ -85,7 +80,7 @@ def prepare_branches(
 
     # Return results
     cols = [
-        "name",
+        "branch_name",
         "from_bus",
         "to_bus",
         "parallel",

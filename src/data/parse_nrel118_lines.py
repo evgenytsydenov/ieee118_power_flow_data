@@ -34,7 +34,7 @@ def parse_nrel118_lines(
     # Rename variables
     lines.rename(
         columns={
-            "Line Name": "name",
+            "Line Name": "branch_name",
             "Bus from ": "from_bus",
             "Bus to": "to_bus",
             "Max Flow (MW)": "max_p__mw",
@@ -43,12 +43,12 @@ def parse_nrel118_lines(
         },
         inplace=True,
     )
-    lines.sort_values(by="name", inplace=True, ignore_index=True)
+    lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
 
     # Unify line and bus names
-    lines["name"] = "branch_" + lines["name"].str.lstrip("line0")
-    lines["from_bus"] = "bus_" + lines["from_bus"].str.lstrip("bus0")
-    lines["to_bus"] = "bus_" + lines["to_bus"].str.lstrip("bus0")
+    lines["branch_name"] = "branch__" + lines["branch_name"].str.lstrip("line0")
+    lines["from_bus"] = "bus__" + lines["from_bus"].str.lstrip("bus0")
+    lines["to_bus"] = "bus__" + lines["to_bus"].str.lstrip("bus0")
 
     # Return results
     if path_parsed_data:
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_lines.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_lines.py path_raw_nrel118_lines path_parsed_data\n"
         )
 
     # Run

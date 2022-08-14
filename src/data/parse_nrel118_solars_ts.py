@@ -12,7 +12,7 @@ from src.utils.data_loaders import load_ts_data
 def parse_nrel118_solars_ts(
     raw_data: str, path_parsed_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
-    """Parse time-series data about solar plants from the NREL-118 dataset.
+    """Parse raw time-series data of solar plants from the NREL-118 dataset.
 
     Args:
         raw_data: Path to the raw data.
@@ -26,8 +26,8 @@ def parse_nrel118_solars_ts(
     solar_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
-    solar_ts.rename(columns={"name": "gen_name", "value": "gen_value"}, inplace=True)
-    solar_ts["gen_name"] = "solar_" + solar_ts["gen_name"]
+    solar_ts.rename(columns={"name": "gen_name", "value": "p__mw"}, inplace=True)
+    solar_ts["gen_name"] = "solar__" + solar_ts["gen_name"]
 
     # Return results
     if path_parsed_data:
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "parse_nrel118_solars_ts.py path_raw_data path_parsed_data\n"
+            "parse_nrel118_solars_ts.py path_raw_nrel118_solars_ts path_parsed_data\n"
         )
 
     # Run

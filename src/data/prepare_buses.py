@@ -10,18 +10,20 @@ from src.utils.data_loaders import load_df_data
 
 
 def prepare_buses(
-    parsed_data: str | pd.DataFrame, path_prepared_data: Optional[str] = None
+    parsed_nrel118_buses: str | pd.DataFrame, path_prepared_data: Optional[str] = None
 ) -> Optional[pd.DataFrame]:
     """Prepare final bus data.
 
     Args:
-        parsed_data: Path or dataframe to parsed data.
+        parsed_nrel118_buses: Path or dataframe to parsed data.
         path_prepared_data: Path to save prepared data.
 
     Returns:
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
-    buses = load_df_data(data=parsed_data, dtypes={"name": str, "region": str})
+    buses = load_df_data(
+        data=parsed_nrel118_buses, dtypes={"bus_name": str, "region": str}
+    )
 
     # All buses are in service
     buses["in_service"] = True
@@ -43,8 +45,8 @@ if __name__ == "__main__":
     if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "prepare_buses.py path_parsed_data path_prepared_data\n"
+            "prepare_buses.py path_parsed_nrel118_buses path_prepared_data\n"
         )
 
     # Run
-    prepare_buses(parsed_data=sys.argv[1], path_prepared_data=sys.argv[2])
+    prepare_buses(parsed_nrel118_buses=sys.argv[1], path_prepared_data=sys.argv[2])

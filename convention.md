@@ -4,16 +4,16 @@
 
 ### Buses
 
-- "name" --- bus name in form "bus_{number}"
+- "bus_name" --- bus name in form "bus__{number}"
 - "region" --- name of region where the bus is located
 - "in_service" --- if the bus is in service (not in maintenance)
 - "v_rated__kv" --- rated voltage of the bus in kilovolts
 
 ### Branches
 
-- "name" --- branch name in form "branch_{number}"
-- "from_bus" --- bus name where the branch starts
-- "to_bus" --- bus name where the branch ends
+- "branch_name" --- branch name in form "branch__{number}" or "trafo__{number}"
+- "from_bus" --- name of the bus where the branch starts
+- "to_bus" --- name of the bus where the branch ends
 - "parallel" --- number of the branch in parallel branches
 - "in_service" --- if the branch is in service (not in maintenance)
 - "r__ohm" --- branch resistance in ohms
@@ -24,19 +24,20 @@
 
 ### Loads
 
-- "name" --- load name in form "load_{number}"
-- "bus_name" --- name of bus where the load is placed
+- "load_name" --- load name in form "load__{number}"
+- "bus_name" --- name of the bus where the load is placed
 - "in_service" --- if the load is in service
-- "p__mw" --- active power of the load in megawatts
-- "q__mvar" --- reactive power of the load in megavolt-amperes
+- "p__mw" --- active demand of the load in megawatts
+- "q__mvar" --- reactive demand of the load in megavolt-amperes
 - "datetime" --- date and time of variable measurement
 
 ### Generators
 
-- "name" --- generator name in form "{gen_type}_{number}"
-- "bus_name" --- name of bus where the generator is placeds
-- "q_max__mvar" and "q_min__mvar" --- max and min limits of reactive power in megavolt-amperes
+- "gen_name" --- generator name in form "{gen_type}__{number}"
+- "bus_name" --- name of the bus where the generator is placed
+- "q_max__mvar" --- max limit of reactive output in megavolt-amperes
+- "q_min__mvar" --- min limit of reactive output in megavolt-amperes
 - "v_set__kv" --- set voltage of the generator in kilovolts
-- "in_service" --- if the generator is in service
-- "p__mw" --- active power of the generator in megawatts
+- "in_service" --- if the generator is in service (not in maintenance)
+- "p__mw" --- active output of the generator in megawatts
 - "datetime" --- date and time of variable measurement

@@ -25,10 +25,7 @@ def prepare_loads(
     # Load data
     loads = load_df_data(
         data=transformed_loads,
-        dtypes={
-            "name": str,
-            "bus_name": str,
-        },
+        dtypes={"load_name": str, "bus_name": str},
     )
 
     # Return results

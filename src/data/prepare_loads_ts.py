@@ -30,7 +30,7 @@ def prepare_loads_ts(
     interim_loads = load_df_data(
         data=transformed_loads,
         dtypes={
-            "name": str,
+            "load_name": str,
             "region": str,
             "load_participation_factor": float,
             "load_power_factor": float,
@@ -54,7 +54,7 @@ def prepare_loads_ts(
     loads_ts["in_service"] = True
 
     # Return results
-    cols = ["datetime", "name", "in_service", "p__mw", "q__mvar"]
+    cols = ["datetime", "load_name", "in_service", "p__mw", "q__mvar"]
     if path_prepared_data:
         loads_ts[cols].to_csv(path_prepared_data, header=True, index=False)
     else:

@@ -27,6 +27,7 @@ def load_ts_data(
     data = []
     pattern = re.compile(name_pattern)
     for file in glob.glob("*", root_dir=folder_path):
+
         # Load current file
         file_data = pd.read_csv(
             filepath_or_buffer=os.path.join(folder_path, file),
