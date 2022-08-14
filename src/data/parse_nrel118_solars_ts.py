@@ -3,6 +3,7 @@ from typing import Optional
 
 import pandas as pd
 
+from definitions import DATE_FORMAT
 from src.utils.data_loaders import load_ts_data
 
 
@@ -25,6 +26,9 @@ def parse_nrel118_solars_ts(
     # Change column names
     solar_ts.rename(columns={"name": "gen_name", "value": "p__mw"}, inplace=True)
     solar_ts["gen_name"] = "solar__" + solar_ts["gen_name"]
+
+    # Unify date format
+    solar_ts["datetime"] = solar_ts["datetime"].dt.strftime(DATE_FORMAT)
 
     # Return results
     if path_parsed_data:

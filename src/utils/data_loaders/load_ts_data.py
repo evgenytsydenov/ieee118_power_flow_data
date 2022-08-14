@@ -4,8 +4,6 @@ import re
 
 import pandas as pd
 
-from definitions import DATE_FORMAT
-
 
 def load_ts_data(
     folder_path: str,
@@ -50,5 +48,4 @@ def load_ts_data(
 
     # Combine
     result = pd.concat(data).sort_values(by="datetime", ignore_index=True)
-    result["datetime"] = result["datetime"].dt.strftime(DATE_FORMAT)
     return result[["datetime", "name", "value"]]

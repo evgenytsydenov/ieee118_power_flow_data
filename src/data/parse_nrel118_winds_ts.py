@@ -3,6 +3,7 @@ from typing import Optional
 
 import pandas as pd
 
+from definitions import DATE_FORMAT
 from src.utils.data_loaders import load_ts_data
 
 
@@ -25,6 +26,9 @@ def parse_nrel118_winds_ts(
     # Change column names
     wind_ts.rename(columns={"name": "gen_name", "value": "p__mw"}, inplace=True)
     wind_ts["gen_name"] = "wind__" + wind_ts["gen_name"]
+
+    # Unify date format
+    wind_ts["datetime"] = wind_ts["datetime"].dt.strftime(DATE_FORMAT)
 
     # Return results
     if path_parsed_data:

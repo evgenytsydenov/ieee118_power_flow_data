@@ -3,6 +3,7 @@ from typing import Optional
 
 import pandas as pd
 
+from definitions import DATE_FORMAT
 from src.utils.data_loaders import load_ts_data
 
 
@@ -27,6 +28,9 @@ def parse_nrel118_loads_ts(
         columns={"name": "region_name", "value": "region_load"}, inplace=True
     )
     load_ts["region_name"] = load_ts["region_name"].str.lower()
+
+    # Unify date format
+    load_ts["datetime"] = load_ts["datetime"].dt.strftime(DATE_FORMAT)
 
     # Return results
     if path_parsed_data:

@@ -68,6 +68,9 @@ stages:
       - src/data/parse_nrel118_loads_ts.py
       - data/raw/nrel118/Input files/RT/Load
       - src/utils/data_loaders/load_ts_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_loads_ts.csv
 
@@ -83,7 +86,6 @@ stages:
     params:
       - definitions.py:
           - GEN_TYPES
-          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_gens.csv
 
@@ -127,6 +129,9 @@ stages:
       - src/data/parse_nrel118_hydros_ts.py
       - data/raw/nrel118/Input files/Hydro
       - src/utils/data_loaders/load_ts_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_hydros_ts.csv
 
@@ -139,6 +144,9 @@ stages:
       - src/data/parse_nrel118_solars_ts.py
       - data/raw/nrel118/Input files/RT/Solar
       - src/utils/data_loaders/load_ts_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_solars_ts.csv
 
@@ -151,6 +159,9 @@ stages:
       - src/data/parse_nrel118_winds_ts.py
       - data/raw/nrel118/Input files/RT/Wind
       - src/utils/data_loaders/load_ts_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
     outs:
       - data/parsed/nrel118_winds_ts.csv
 

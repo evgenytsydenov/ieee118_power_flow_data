@@ -296,11 +296,14 @@ stages:
       size: 860632
       nfiles: 4
     - path: src/data/parse_nrel118_loads_ts.py
-      md5: f5c590304abcaca191119000b1b04590
-      size: 1373
+      md5: 9069818e11c81fa58511d8e8863849af
+      size: 1509
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 19409c6819f28a8100d0941560f8e594
-      size: 1539
+      md5: 6d51344b030841502594c83d77e1d49a
+      size: 1430
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
     outs:
     - path: data/parsed/nrel118_loads_ts.csv
       md5: 171fd7ce080d11855268c086bb04adde
@@ -404,11 +407,14 @@ stages:
       size: 4390878
       nfiles: 24
     - path: src/data/parse_nrel118_hydros_ts.py
-      md5: 32e7723e0b5319020fa808ec588da336
-      size: 1358
+      md5: 287f2f5afbba03abee9e3c01c5f4184f
+      size: 1496
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 19409c6819f28a8100d0941560f8e594
-      size: 1539
+      md5: 6d51344b030841502594c83d77e1d49a
+      size: 1430
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
     outs:
     - path: data/parsed/nrel118_hydros_ts.csv
       md5: 04129409c076f6b9657c76e8f3904450
@@ -422,11 +428,14 @@ stages:
       size: 16761318
       nfiles: 76
     - path: src/data/parse_nrel118_solars_ts.py
-      md5: 801b2e730c722408317a06df4a5ac891
-      size: 1360
+      md5: 8e742f79ab26cc235ed13232f25d9c98
+      size: 1498
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 19409c6819f28a8100d0941560f8e594
-      size: 1539
+      md5: 6d51344b030841502594c83d77e1d49a
+      size: 1430
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
     outs:
     - path: data/parsed/nrel118_solars_ts.csv
       md5: 626b3a752302cb55da2de275dba1e80f
@@ -510,11 +519,14 @@ stages:
       size: 4663311
       nfiles: 18
     - path: src/data/parse_nrel118_winds_ts.py
-      md5: b7f46be5281d1a1493cba633042457d2
-      size: 1347
+      md5: e530825544d692d85507a397d85ff036
+      size: 1483
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 19409c6819f28a8100d0941560f8e594
-      size: 1539
+      md5: 6d51344b030841502594c83d77e1d49a
+      size: 1430
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
     outs:
     - path: data/parsed/nrel118_winds_ts.csv
       md5: db44f3ca288f5c9c1231769839163e3a
