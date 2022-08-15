@@ -19,3 +19,13 @@ GEN_TYPES = {
 
 # Date format used in data
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+# Date range to extract from time-series data
+# The format: (<start_date>, <end_date>, <frequency>)
+# Start date must be grater than "2024-01-01 00:00:00"
+# End date is not included and must not be grater than "2025-01-01 00:00:00"
+DATE_RANGE = ("2024-01-01 00:00:00", "2025-01-01 00:00:00", "1h")
+
+# How to fill NaNs if info for timestamp is not provided
+# "pad" --- propagate last valid observation forward to next valid
+FILL_METHOD = "pad"

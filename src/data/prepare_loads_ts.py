@@ -4,6 +4,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+from definitions import DATE_FORMAT, DATE_RANGE, FILL_METHOD
 from src.utils.data_loaders import load_df_data
 
 
@@ -39,23 +40,39 @@ def prepare_loads_ts(
     )
 
     # Calculate active and reactive load at each bus
-    loads_ts = nrel118_loads_ts.merge(
+    loads = nrel118_loads_ts.merge(
         interim_loads, how="right", right_on="region", left_on="region_name"
     )
-    loads_ts["p__mw"] = loads_ts["region_load"] * loads_ts["load_participation_factor"]
-    loads_ts["q__mvar"] = loads_ts["p__mw"] * np.tan(
-        np.arccos(loads_ts["load_power_factor"])
+    loads["p__mw"] = loads["region_load"] * loads["load_participation_factor"]
+    loads["q__mvar"] = loads["p__mw"] * np.tan(np.arccos(loads["load_power_factor"]))
+
+    # Assume all loads are in service
+    loads["in_service"] = True
+
+    # Set datetime as index, drop unused variables
+    loads["datetime"] = pd.to_datetime(loads["datetime"], format=DATE_FORMAT)
+    loads = loads.pivot(
+        index="datetime",
+        columns=["load_name"],
+        values=["in_service", "p__mw", "q__mvar"],
     )
 
-    # All loads are in service
-    loads_ts["in_service"] = True
+    # Extract necessary date range
+    start_date, end_date, frequency = DATE_RANGE
+    mask = (loads.index >= start_date) & (loads.index < end_date)
+    if FILL_METHOD == "pad":
+        loads = loads[mask].asfreq(frequency, method="pad")
+    else:
+        raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
 
     # Return results
-    cols = ["datetime", "load_name", "in_service", "p__mw", "q__mvar"]
+    loads.columns = [f"{col[1]}__{col[0]}" for col in loads.columns]
     if path_prepared_data:
-        loads_ts[cols].to_csv(path_prepared_data, header=True, index=False)
+        loads.to_csv(
+            path_prepared_data, header=True, index=True, date_format=DATE_FORMAT
+        )
     else:
-        return loads_ts[cols]
+        return loads
 
 
 if __name__ == "__main__":

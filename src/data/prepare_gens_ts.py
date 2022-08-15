@@ -4,6 +4,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+from definitions import DATE_FORMAT, DATE_RANGE, FILL_METHOD
 from src.utils.data_loaders import load_df_data
 
 
@@ -37,7 +38,7 @@ def prepare_gens_ts(
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
 
-    # Load data
+    # Load gens data
     gen_ts = []
     for data in [
         parsed_nrel118_winds_ts,
@@ -51,39 +52,57 @@ def prepare_gens_ts(
             dtypes={"datetime": str, "gen_name": str, "p__mw": float},
         )
         gen_ts.append(gen_data)
-    outages_ts = load_df_data(
-        data=parsed_nrel118_outages_ts,
-        dtypes={"datetime": str, "gen_name": str, "in_outage": bool},
-    )
-
-    # Concatenate
     gens = pd.concat(gen_ts, ignore_index=True)
 
-    # Add info about outages
-    gens = gens.merge(outages_ts, how="left", on=["datetime", "gen_name"])
-    mask = ~gens["in_outage"].isna()
-    gens["in_service"] = np.nan
-    gens.loc[mask, "in_service"] = ~gens.loc[mask, "in_outage"].astype(bool)
-
-    # Temporary assumption
+    # Temporary assumptions
     gens["v_set__kv"] = np.nan
     gens["q_max__mvar"] = np.nan
     gens["q_min__mvar"] = np.nan
 
-    # Return results
-    cols = [
-        "datetime",
-        "gen_name",
-        "in_service",
-        "p__mw",
-        "q_min__mvar",
-        "q_max__mvar",
-        "v_set__kv",
-    ]
-    if path_prepared_data:
-        gens[cols].to_csv(path_prepared_data, header=True, index=False)
+    # Set datetime as index, drop unused variables
+    gens["datetime"] = pd.to_datetime(gens["datetime"], format=DATE_FORMAT)
+    gens = gens.pivot(
+        index="datetime",
+        columns=["gen_name"],
+        values=["p__mw", "q_min__mvar", "q_max__mvar", "v_set__kv"],
+    )
+    if FILL_METHOD == "pad":
+        fill_method = "pad"
     else:
-        return gens[cols]
+        raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
+    gens.fillna(method=fill_method, inplace=True)
+    gens.columns = [f"{col[1]}__{col[0]}" for col in gens.columns]
+
+    # Extract necessary date range
+    start_date, end_date, frequency = DATE_RANGE
+    mask = (gens.index >= start_date) & (gens.index < end_date)
+    gens = gens[mask].asfreq(frequency, method=fill_method)
+
+    # Add info about outages
+    outages_ts = load_df_data(
+        data=parsed_nrel118_outages_ts,
+        dtypes={"datetime": str, "gen_name": str, "in_outage": bool},
+    )
+    outages_ts["datetime"] = pd.to_datetime(outages_ts["datetime"], format=DATE_FORMAT)
+    outages_ts["in_service"] = ~outages_ts["in_outage"]
+    outages_ts = outages_ts.pivot(
+        index="datetime",
+        columns=["gen_name"],
+        values=["in_service"],
+    )
+    outages_ts.fillna(method="pad", inplace=True)
+    mask = (outages_ts.index >= start_date) & (outages_ts.index < end_date)
+    outages_ts = outages_ts[mask].asfreq(frequency, method="pad")
+    outages_ts.columns = [f"{col[0]}__in_service" for col in outages_ts.columns]
+
+    # Return results
+    gens = pd.concat([gens, outages_ts], axis=1)
+    if path_prepared_data:
+        gens.to_csv(
+            path_prepared_data, header=True, index=True, date_format=DATE_FORMAT
+        )
+    else:
+        return gens
 
 
 if __name__ == "__main__":

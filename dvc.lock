@@ -540,15 +540,23 @@ stages:
       md5: 3d3695e78cfcfedc93fd8a5924b6162d
       size: 4771
     - path: src/data/prepare_loads_ts.py
-      md5: af86133b51e498418f21ee3118a93e27
-      size: 2343
+      md5: eda5bfa824edea3722e0e4bfadb6d3f8
+      size: 3012
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
+        DATE_RANGE:
+        - '2024-01-01 00:00:00'
+        - '2025-01-01 00:00:00'
+        - 1h
+        FILL_METHOD: pad
     outs:
     - path: data/prepared/loads_ts.csv
-      md5: 02a3bb479410ebe8ae65a0e4e13c919b
-      size: 57176260
+      md5: fd30ef5d8e592cb6552c504406fc2f53
+      size: 33464194
   parse_nrel118_winds_ts:
     cmd: python src/data/parse_nrel118_winds_ts.py "data/raw/nrel118/Input files/RT/Wind"
       data/parsed/nrel118_winds_ts.csv
@@ -772,15 +780,23 @@ stages:
       md5: 9ce463009e04d4b0facec823c68abd79
       size: 103164
     - path: src/data/prepare_gens_ts.py
-      md5: 54c9cd4b81a495f6d33d1358ffe3393b
-      size: 3800
+      md5: b90ecb56df09c428adf7a52800e96828
+      size: 4861
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
+        DATE_RANGE:
+        - '2024-01-01 00:00:00'
+        - '2025-01-01 00:00:00'
+        - 1h
+        FILL_METHOD: pad
     outs:
     - path: data/prepared/gens_ts.csv
-      md5: 4590d02745b1c3c15e8178ae48eeba50
-      size: 46592686
+      md5: dfb4b541b04440b8c40a9e3161a224d7
+      size: 47300886
   prepare_gens:
     cmd: python src/data/prepare_gens.py data/parsed/nrel118_gens.csv data/prepared/gens.csv
     deps:

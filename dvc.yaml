@@ -269,6 +269,11 @@ stages:
       - data/transformed/loads.csv
       - data/parsed/nrel118_loads_ts.csv
       - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
+          - DATE_RANGE
+          - FILL_METHOD
     outs:
       - data/prepared/loads_ts.csv
 
@@ -303,5 +308,10 @@ stages:
       - data/transformed/gens_escalated_ts.csv
       - data/parsed/nrel118_outages_ts.csv
       - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
+          - DATE_RANGE
+          - FILL_METHOD
     outs:
       - data/prepared/gens_ts.csv
