@@ -26,9 +26,9 @@ def prepare_buses(
     buses["in_service"] = True
 
     # Add info about voltage levels
-    buses["v_rated__kv"] = 138
+    buses["v_rated_kv"] = 138
     buses_345 = [8, 9, 10, 26, 30, 38, 63, 64, 65, 68, 81, 116]
-    buses.loc[[num - 1 for num in buses_345], "v_rated__kv"] = 345
+    buses.loc[[num - 1 for num in buses_345], "v_rated_kv"] = 345
 
     # Return results
     if path_prepared_data:

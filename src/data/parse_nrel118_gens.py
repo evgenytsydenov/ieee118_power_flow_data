@@ -34,7 +34,7 @@ def parse_nrel118_gens(
         columns={
             "Generator Name": "gen_name",
             "Node of connection": "bus_name",
-            "Max Capacity (MW)": "max_p__mw",
+            "Max Capacity (MW)": "max_p_mw",
         },
         inplace=True,
     )
@@ -44,8 +44,8 @@ def parse_nrel118_gens(
     name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
     names = gens["gen_name"].str.extract(pat=name_pattern, expand=True)
     names["gen_type"].replace(GEN_TYPES, inplace=True)
-    gens["gen_name"] = names["gen_type"] + "__" + names["gen_number"].str.lstrip("0")
-    gens["bus_name"] = "bus__" + gens["bus_name"].str.lstrip("node0")
+    gens["gen_name"] = names["gen_type"] + "_" + names["gen_number"].str.lstrip("0")
+    gens["bus_name"] = "bus_" + gens["bus_name"].str.lstrip("node0")
 
     # Return results
     if path_parsed_data:

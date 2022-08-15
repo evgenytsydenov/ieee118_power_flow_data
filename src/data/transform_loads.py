@@ -31,17 +31,17 @@ def transform_loads(
     )
     jeas118_loads = load_df_data(
         data=parsed_jeas118_loads,
-        dtypes={"bus_name": str, "p__mw": float, "q__mvar": float},
+        dtypes={"bus_name": str, "p_mw": float, "q_mvar": float},
     )
 
     # Create load dataset
     non_loads = nrel118_buses[nrel118_buses["load_participation_factor"] == 0]
     loads = nrel118_buses.drop(index=non_loads.index).reset_index(drop=True)
-    loads["load_name"] = "load__" + (loads.index + 1).astype(str)
+    loads["load_name"] = "load_" + (loads.index + 1).astype(str)
 
     # Calculate load power factor at each bus
     jeas118_loads["load_power_factor"] = np.cos(
-        np.arctan(jeas118_loads["q__mvar"] / jeas118_loads["p__mw"])
+        np.arctan(jeas118_loads["q_mvar"] / jeas118_loads["p_mw"])
     )
     loads = loads.merge(
         jeas118_loads[["bus_name", "load_power_factor"]], how="left", on="bus_name"

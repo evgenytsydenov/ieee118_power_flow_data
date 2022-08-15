@@ -27,7 +27,7 @@ def transform_gens_escalated_ts(
         data=parsed_nrel118_gens,
         dtypes={
             "gen_name": str,
-            "max_p__mw": float,
+            "max_p_mw": float,
         },
     )
     nrel118_escalators_ts = load_df_data(
@@ -37,10 +37,10 @@ def transform_gens_escalated_ts(
 
     # Merge
     gens = nrel118_gens.merge(nrel118_escalators_ts, on="gen_name", how="right")
-    gens["p__mw"] = gens["escalator_ratio"] * gens["max_p__mw"]
+    gens["p_mw"] = gens["escalator_ratio"] * gens["max_p_mw"]
 
     # Return results
-    cols = ["datetime", "gen_name", "p__mw"]
+    cols = ["datetime", "gen_name", "p_mw"]
     if path_transformed_data:
         gens[cols].to_csv(path_transformed_data, header=True, index=False)
     else:

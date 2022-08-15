@@ -51,7 +51,7 @@ def parse_nrel118_outages_ts(
     name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
     names = outages["gen_name"].str.extract(pat=name_pattern, expand=True)
     names["gen_type"].replace(GEN_TYPES, inplace=True)
-    outages["gen_name"] = names["gen_type"] + "__" + names["gen_number"].str.lstrip("0")
+    outages["gen_name"] = names["gen_type"] + "_" + names["gen_number"].str.lstrip("0")
 
     # Return results
     cols = ["datetime", "gen_name", "in_outage"]

@@ -38,15 +38,15 @@ def parse_jeas118_loads(
     loads.rename(
         columns={
             "Bus No": "bus_name",
-            "Pd\n   (MW)": "p__mw",
-            "  Qd\n   (MVAR)": "q__mvar",
+            "Pd\n   (MW)": "p_mw",
+            "  Qd\n   (MVAR)": "q_mvar",
         },
         inplace=True,
     )
 
     # Change bus names
     loads.sort_values(by="bus_name", inplace=True, ignore_index=True)
-    loads["bus_name"] = "bus__" + loads["bus_name"].astype(str)
+    loads["bus_name"] = "bus_" + loads["bus_name"].astype(str)
 
     # Return results
     if path_parsed_data:

@@ -24,8 +24,8 @@ def parse_nrel118_hydros_ts(
     hydro_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
-    hydro_ts.rename(columns={"name": "gen_name", "value": "p__mw"}, inplace=True)
-    hydro_ts["gen_name"] = GEN_TYPES["Hydro"] + "__" + hydro_ts["gen_name"]
+    hydro_ts.rename(columns={"name": "gen_name", "value": "p_mw"}, inplace=True)
+    hydro_ts["gen_name"] = GEN_TYPES["Hydro"] + "_" + hydro_ts["gen_name"]
 
     # Unify date format
     hydro_ts["datetime"] = hydro_ts["datetime"].dt.strftime(DATE_FORMAT)

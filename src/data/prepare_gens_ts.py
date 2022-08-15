@@ -49,22 +49,22 @@ def prepare_gens_ts(
     ]:
         gen_data = load_df_data(
             data=data,
-            dtypes={"datetime": str, "gen_name": str, "p__mw": float},
+            dtypes={"datetime": str, "gen_name": str, "p_mw": float},
         )
         gen_ts.append(gen_data)
     gens = pd.concat(gen_ts, ignore_index=True)
 
     # Temporary assumptions
-    gens["v_set__kv"] = np.nan
-    gens["q_max__mvar"] = np.nan
-    gens["q_min__mvar"] = np.nan
+    gens["v_set_kv"] = np.nan
+    gens["q_max_mvar"] = np.nan
+    gens["q_min_mvar"] = np.nan
 
     # Set datetime as index, drop unused variables
     gens["datetime"] = pd.to_datetime(gens["datetime"], format=DATE_FORMAT)
     gens = gens.pivot(
         index="datetime",
         columns=["gen_name"],
-        values=["p__mw", "q_min__mvar", "q_max__mvar", "v_set__kv"],
+        values=["p_mw", "q_min_mvar", "q_max_mvar", "v_set_kv"],
     )
     if FILL_METHOD == "pad":
         fill_method = "pad"

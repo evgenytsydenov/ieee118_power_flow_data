@@ -3,7 +3,7 @@ from typing import Optional
 
 import pandas as pd
 
-from definitions import S_BASE__MVA
+from definitions import S_BASE_MVA
 from src.utils.data_loaders import load_df_data
 
 
@@ -33,21 +33,21 @@ def prepare_branches(
             "branch_name": str,
             "from_bus": str,
             "to_bus": str,
-            "max_p__mw": float,
-            "x__pu": float,
-            "r__pu": float,
+            "max_p_mw": float,
+            "x_pu": float,
+            "r_pu": float,
         },
     )
     jeas118_lines = load_df_data(
         data=parsed_jeas118_lines,
-        dtypes={"branch_name": str, "parallel": str, "b__pu": float},
+        dtypes={"branch_name": str, "parallel": str, "b_pu": float},
     )
     jeas118_trafos = load_df_data(
         data=parsed_jeas118_trafos,
         dtypes={"from_bus": str, "to_bus": str, "parallel": str, "trafo_ratio": float},
     )
     buses = load_df_data(
-        data=prepared_buses, dtypes={"bus_name": str, "v_rated__kv": float}
+        data=prepared_buses, dtypes={"bus_name": str, "v_rated_kv": float}
     )
 
     # Combine data
@@ -61,19 +61,17 @@ def prepare_branches(
 
     # Convert from pu to ohm
     branches = branches.merge(
-        buses[["bus_name", "v_rated__kv"]],
+        buses[["bus_name", "v_rated_kv"]],
         left_on="from_bus",
         right_on="bus_name",
         how="left",
     )
-    branches["r__ohm"] = branches["r__pu"] * branches["v_rated__kv"] ** 2 / S_BASE__MVA
-    branches["x__ohm"] = branches["x__pu"] * branches["v_rated__kv"] ** 2 / S_BASE__MVA
-    branches["b__µs"] = (
-        branches["b__pu"] * S_BASE__MVA * 1e6 / branches["v_rated__kv"] ** 2
-    )
+    branches["r_ohm"] = branches["r_pu"] * branches["v_rated_kv"] ** 2 / S_BASE_MVA
+    branches["x_ohm"] = branches["x_pu"] * branches["v_rated_kv"] ** 2 / S_BASE_MVA
+    branches["b_µs"] = branches["b_pu"] * S_BASE_MVA * 1e6 / branches["v_rated_kv"] ** 2
 
     # Calculate max current
-    branches["max_i__ka"] = branches["max_p__mw"] / (branches["v_rated__kv"] * 3**0.5)
+    branches["max_i_ka"] = branches["max_p_mw"] / (branches["v_rated_kv"] * 3**0.5)
 
     # Return results
     cols = [
@@ -82,11 +80,11 @@ def prepare_branches(
         "to_bus",
         "parallel",
         "in_service",
-        "r__ohm",
-        "x__ohm",
-        "b__µs",
+        "r_ohm",
+        "x_ohm",
+        "b_µs",
         "trafo_ratio",
-        "max_i__ka",
+        "max_i_ka",
     ]
     if path_prepared_data:
         branches[cols].to_csv(path_prepared_data, header=True, index=False)

@@ -34,18 +34,18 @@ def parse_nrel118_lines(
             "Line Name": "branch_name",
             "Bus from ": "from_bus",
             "Bus to": "to_bus",
-            "Max Flow (MW)": "max_p__mw",
-            "Reactance (p.u.)": "x__pu",
-            "Resistance (p.u.)": "r__pu",
+            "Max Flow (MW)": "max_p_mw",
+            "Reactance (p.u.)": "x_pu",
+            "Resistance (p.u.)": "r_pu",
         },
         inplace=True,
     )
     lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
 
     # Unify line and bus names
-    lines["branch_name"] = "branch__" + lines["branch_name"].str.lstrip("line0")
-    lines["from_bus"] = "bus__" + lines["from_bus"].str.lstrip("bus0")
-    lines["to_bus"] = "bus__" + lines["to_bus"].str.lstrip("bus0")
+    lines["branch_name"] = "branch_" + lines["branch_name"].str.lstrip("line0")
+    lines["from_bus"] = "bus_" + lines["from_bus"].str.lstrip("bus0")
+    lines["to_bus"] = "bus_" + lines["to_bus"].str.lstrip("bus0")
 
     # Return results
     if path_parsed_data:

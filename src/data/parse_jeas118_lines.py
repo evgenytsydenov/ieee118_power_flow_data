@@ -47,16 +47,16 @@ def parse_jeas118_lines(
             "From Bus": "from_bus",
             "To Bus": "to_bus",
             "Circuit ID": "parallel",
-            "B (pu)": "b__pu",
+            "B (pu)": "b_pu",
         },
         inplace=True,
     )
 
     # Change line and bus names
     lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
-    lines["branch_name"] = "branch__" + lines["branch_name"].astype(str)
-    lines["from_bus"] = "bus__" + lines["from_bus"]
-    lines["to_bus"] = "bus__" + lines["to_bus"]
+    lines["branch_name"] = "branch_" + lines["branch_name"].astype(str)
+    lines["from_bus"] = "bus_" + lines["from_bus"]
+    lines["to_bus"] = "bus_" + lines["to_bus"]
 
     # Return results
     if path_parsed_data:

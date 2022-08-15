@@ -24,8 +24,8 @@ def parse_nrel118_winds_ts(
     wind_ts = load_ts_data(folder_path=raw_data, name_pattern=name_pattern)
 
     # Change column names
-    wind_ts.rename(columns={"name": "gen_name", "value": "p__mw"}, inplace=True)
-    wind_ts["gen_name"] = GEN_TYPES["Wind"] + "__" + wind_ts["gen_name"]
+    wind_ts.rename(columns={"name": "gen_name", "value": "p_mw"}, inplace=True)
+    wind_ts["gen_name"] = GEN_TYPES["Wind"] + "_" + wind_ts["gen_name"]
 
     # Unify date format
     wind_ts["datetime"] = wind_ts["datetime"].dt.strftime(DATE_FORMAT)

@@ -1,5 +1,5 @@
 # Base power
-S_BASE__MVA = 100
+S_BASE_MVA = 100
 
 # Unify generation types
 GEN_TYPES = {

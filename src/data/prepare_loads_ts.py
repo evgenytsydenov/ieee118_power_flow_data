@@ -43,8 +43,8 @@ def prepare_loads_ts(
     loads = nrel118_loads_ts.merge(
         interim_loads, how="right", right_on="region", left_on="region_name"
     )
-    loads["p__mw"] = loads["region_load"] * loads["load_participation_factor"]
-    loads["q__mvar"] = loads["p__mw"] * np.tan(np.arccos(loads["load_power_factor"]))
+    loads["p_mw"] = loads["region_load"] * loads["load_participation_factor"]
+    loads["q_mvar"] = loads["p_mw"] * np.tan(np.arccos(loads["load_power_factor"]))
 
     # Assume all loads are in service
     loads["in_service"] = True
@@ -54,7 +54,7 @@ def prepare_loads_ts(
     loads = loads.pivot(
         index="datetime",
         columns=["load_name"],
-        values=["in_service", "p__mw", "q__mvar"],
+        values=["in_service", "p_mw", "q_mvar"],
     )
 
     # Extract necessary date range

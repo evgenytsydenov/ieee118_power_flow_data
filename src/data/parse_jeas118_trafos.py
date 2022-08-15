@@ -54,9 +54,9 @@ def parse_jeas118_trafos(
 
     # Change trafo and bus names
     trafos.sort_values(by="branch_name", inplace=True, ignore_index=True)
-    trafos["branch_name"] = "trafo__" + trafos["branch_name"].astype(str)
-    trafos["from_bus"] = "bus__" + trafos["from_bus"]
-    trafos["to_bus"] = "bus__" + trafos["to_bus"]
+    trafos["branch_name"] = "trafo_" + trafos["branch_name"].astype(str)
+    trafos["from_bus"] = "bus_" + trafos["from_bus"]
+    trafos["to_bus"] = "bus_" + trafos["to_bus"]
 
     # Return results
     if path_parsed_data:

@@ -242,7 +242,7 @@ stages:
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
-          - S_BASE__MVA
+          - S_BASE_MVA
     outs:
       - data/prepared/branches.csv
 

@@ -33,7 +33,7 @@ def parse_nrel118_buses(
     buses.sort_values(by="bus_name", inplace=True, ignore_index=True)
 
     # Unify bus names
-    buses["bus_name"] = "bus__" + buses["bus_name"].str.lstrip("bus0")
+    buses["bus_name"] = "bus_" + buses["bus_name"].str.lstrip("bus0")
 
     # Convert regions to lowercase
     buses["region"] = buses["region"].str.lower()
