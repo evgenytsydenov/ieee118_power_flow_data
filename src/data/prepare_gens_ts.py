@@ -66,17 +66,19 @@ def prepare_gens_ts(
         columns=["gen_name"],
         values=["p_mw", "q_min_mvar", "q_max_mvar", "v_set_kv"],
     )
-    if FILL_METHOD == "pad":
-        fill_method = "pad"
-    else:
-        raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
-    gens.fillna(method=fill_method, inplace=True)
-    gens.columns = [f"{col[1]}__{col[0]}" for col in gens.columns]
+
+    # Each generator has at least one measurement at "2024-01-01 00:00:00"
+    # One part of generators have measurements per hour
+    # Other part --- once per month
+    gens.fillna(method="pad", inplace=True)
 
     # Extract necessary date range
     start_date, end_date, frequency = DATE_RANGE
     mask = (gens.index >= start_date) & (gens.index < end_date)
-    gens = gens[mask].asfreq(frequency, method=fill_method)
+    if FILL_METHOD == "pad":
+        gens = gens[mask].asfreq(frequency, method="pad")
+    else:
+        raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
 
     # Add info about outages
     outages_ts = load_df_data(
@@ -90,13 +92,13 @@ def prepare_gens_ts(
         columns=["gen_name"],
         values=["in_service"],
     )
-    outages_ts.fillna(method="pad", inplace=True)
-    mask = (outages_ts.index >= start_date) & (outages_ts.index < end_date)
-    outages_ts = outages_ts[mask].asfreq(frequency, method="pad")
-    outages_ts.columns = [f"{col[0]}__in_service" for col in outages_ts.columns]
+
+    # Align timestamps
+    # Each generator has at least one state measurement at "2024-01-01 00:00:00"
+    outages_ts, _ = outages_ts.align(gens, join="outer", axis=0, method="pad")
 
     # Return results
-    gens = pd.concat([gens, outages_ts], axis=1)
+    gens = pd.concat([gens, outages_ts], axis=1, join="inner")
     if path_prepared_data:
         gens.to_csv(
             path_prepared_data, header=True, index=True, date_format=DATE_FORMAT

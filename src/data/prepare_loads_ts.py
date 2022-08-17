@@ -66,7 +66,6 @@ def prepare_loads_ts(
         raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
 
     # Return results
-    loads.columns = [f"{col[1]}__{col[0]}" for col in loads.columns]
     if path_prepared_data:
         loads.to_csv(
             path_prepared_data, header=True, index=True, date_format=DATE_FORMAT
