@@ -36,7 +36,9 @@ def parse_nrel118_escalators_ts(
     name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
     names = escalators["gen_name"].str.extract(pat=name_pattern, expand=True)
     names["gen_type"].replace(GEN_TYPES, inplace=True)
-    escalators["gen_name"] = names["gen_type"] + "_" + names["gen_number"]
+    escalators["gen_name"] = (
+        names["gen_type"] + "_" + names["gen_number"].str.lstrip("0")
+    )
 
     # Convert datetime
     escalators["year"] = 2024
