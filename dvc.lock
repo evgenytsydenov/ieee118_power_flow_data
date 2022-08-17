@@ -812,3 +812,27 @@ stages:
     - path: data/prepared/gens.csv
       md5: 6a283eb5c2248b3c0f158d29242fd1f4
       size: 7012
+  check_buses:
+    cmd: python src/data/check_buses.py data/prepared/buses.csv
+    deps:
+    - path: data/prepared/buses.csv
+      md5: 77547fcc9bfdf49313cf4d0f30110544
+      size: 2409
+    - path: src/data/check_buses.py
+      md5: ba1c6f40f6c7dbbc708917947e5b11a8
+      size: 1020
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+  check_branches:
+    cmd: python src/data/check_branches.py data/prepared/branches.csv
+    deps:
+    - path: data/prepared/branches.csv
+      md5: 6be89ddabaee19c03ec3627532e29603
+      size: 17715
+    - path: src/data/check_branches.py
+      md5: f448dcd056c4c6d3ef789026969acac9
+      size: 1903
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953

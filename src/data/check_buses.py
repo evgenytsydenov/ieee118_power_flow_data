@@ -1,0 +1,41 @@
+import sys
+
+import pandas as pd
+
+from src.utils.data_loaders import load_df_data
+
+
+def check_buses(prepared_buses: str | pd.DataFrame) -> None:
+    """Check that bus parameters are correct.
+
+    Args:
+        prepared_buses: Path or dataframe to prepared data.
+    """
+    # Load data
+    buses = load_df_data(
+        data=prepared_buses,
+        dtypes={
+            "bus_name": str,
+            "region": str,
+            "in_service": bool,
+            "v_rated_kv": float,
+        },
+    )
+
+    # Ensure there are no NaNs
+    assert not buses.isna().values.any(), "There are NaNs in the dataset"
+
+    # Ensure bus names are unique
+    assert buses["bus_name"].is_unique, "There are duplicated bus names"
+
+
+if __name__ == "__main__":
+    # Check params
+    if len(sys.argv) != 2:
+        raise ValueError(
+            "Incorrect arguments. Usage:\n\tpython "
+            "check_buses.py path_prepared_buses\n"
+        )
+
+    # Run
+    check_buses(prepared_buses=sys.argv[1])

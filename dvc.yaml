@@ -315,3 +315,21 @@ stages:
           - FILL_METHOD
     outs:
       - data/prepared/gens_ts.csv
+
+  check_buses:
+    desc: "Check that bus parameters are correct"
+    cmd: python src/data/check_buses.py
+      data/prepared/buses.csv
+    deps:
+      - data/prepared/buses.csv
+      - src/data/check_buses.py
+      - src/utils/data_loaders/load_df_data.py
+
+  check_branches:
+    desc: "Check that branch parameters are correct"
+    cmd: python src/data/check_branches.py
+      data/prepared/branches.csv
+    deps:
+      - data/prepared/branches.csv
+      - src/data/check_branches.py
+      - src/utils/data_loaders/load_df_data.py
