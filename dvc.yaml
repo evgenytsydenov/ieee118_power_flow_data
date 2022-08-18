@@ -333,3 +333,32 @@ stages:
       - data/prepared/branches.csv
       - src/data/check_branches.py
       - src/utils/data_loaders/load_df_data.py
+
+  check_gens:
+    desc: "Check that generator parameters are correct"
+    cmd: python src/data/check_gens.py
+      data/prepared/gens.csv
+    deps:
+      - data/prepared/gens.csv
+      - src/data/check_gens.py
+      - src/utils/data_loaders/load_df_data.py
+
+  check_loads:
+    desc: "Check that load parameters are correct"
+    cmd: python src/data/check_loads.py
+      data/prepared/loads.csv
+    deps:
+      - data/prepared/loads.csv
+      - src/data/check_loads.py
+      - src/utils/data_loaders/load_df_data.py
+
+  check_loads_ts:
+    desc: "Check that load time-series are correct"
+    cmd: python src/data/check_loads_ts.py
+      data/prepared/loads_ts.csv
+      data/prepared/loads.csv
+    deps:
+      - data/prepared/loads_ts.csv
+      - data/prepared/loads.csv
+      - src/data/check_loads_ts.py
+      - src/utils/data_loaders/load_df_data.py
