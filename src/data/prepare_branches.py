@@ -73,6 +73,10 @@ def prepare_branches(
     # Calculate max current
     branches["max_i_ka"] = branches["max_p_mw"] / (branches["v_rated_kv"] * 3**0.5)
 
+    # Round values
+    cols = ["r_ohm", "x_ohm", "b_µs", "max_i_ka", "trafo_ratio"]
+    branches.loc[:, cols] = branches.loc[:, cols].round(decimals=6)
+
     # Return results
     cols = [
         "branch_name",

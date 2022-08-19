@@ -65,6 +65,11 @@ def prepare_loads_ts(
     else:
         raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
 
+    # Round
+    cols = ["p_mw", "q_mvar"]
+    cols_idx = loads.columns.get_level_values(0).isin(cols)
+    loads.loc[:, cols_idx] = loads.loc[:, cols_idx].round(decimals=6)
+
     # Return results
     if path_prepared_data:
         loads.to_csv(

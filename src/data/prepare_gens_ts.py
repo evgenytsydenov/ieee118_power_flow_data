@@ -80,6 +80,11 @@ def prepare_gens_ts(
     else:
         raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
 
+    # Round
+    cols = ["p_mw", "q_min_mvar", "q_max_mvar", "v_set_kv"]
+    cols_idx = gens.columns.get_level_values(0).isin(cols)
+    gens.loc[:, cols_idx] = gens.loc[:, cols_idx].round(decimals=6)
+
     # Add info about outages
     outages_ts = load_df_data(
         data=parsed_nrel118_outages_ts,

@@ -539,8 +539,8 @@ stages:
       md5: 3990cd5919b7fc352a16be11408f74ef
       size: 4589
     - path: src/data/prepare_loads_ts.py
-      md5: ae8900e8fe3c2730b3e81a27d63d2b72
-      size: 2937
+      md5: f0e52fada88aa128b1bacaa72b33832a
+      size: 3115
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -723,8 +723,8 @@ stages:
       md5: 77547fcc9bfdf49313cf4d0f30110544
       size: 2409
     - path: src/data/prepare_branches.py
-      md5: 7d61e3bb70be46a051804ab65b632991
-      size: 3575
+      md5: dac18c4f8a3e50213904e072a687e3a3
+      size: 3733
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -733,8 +733,8 @@ stages:
         S_BASE_MVA: 100
     outs:
     - path: data/prepared/branches.csv
-      md5: 6be89ddabaee19c03ec3627532e29603
-      size: 17715
+      md5: 1cfa717acffb77fe3f64c7ba81db26da
+      size: 13262
   transform_gens_escalated_ts:
     cmd: python src/data/transform_gens_escalated_ts.py data/parsed/nrel118_gens.csv
       data/parsed/nrel118_escalators_ts.csv data/transformed/gens_escalated_ts.csv
@@ -779,8 +779,8 @@ stages:
       md5: e81600be0ff8eec3cc2b279faf68a3ad
       size: 101123
     - path: src/data/prepare_gens_ts.py
-      md5: 6cadfffc9a2e8f9ebdd17daaaf54b5a5
-      size: 4845
+      md5: 9a150e0230a3eaa7ada99d999b32b252
+      size: 5050
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -794,8 +794,8 @@ stages:
         FILL_METHOD: pad
     outs:
     - path: data/prepared/gens_ts.csv
-      md5: 691acf6bb92ebf4adbea39003efd45a0
-      size: 47360893
+      md5: 7d415f28d1c2c85de5c9fd8791854018
+      size: 41563662
   prepare_gens:
     cmd: python src/data/prepare_gens.py data/parsed/nrel118_gens.csv data/prepared/gens.csv
     deps:
@@ -828,8 +828,8 @@ stages:
     cmd: python src/data/check_branches.py data/prepared/branches.csv
     deps:
     - path: data/prepared/branches.csv
-      md5: 6be89ddabaee19c03ec3627532e29603
-      size: 17715
+      md5: 1cfa717acffb77fe3f64c7ba81db26da
+      size: 13262
     - path: src/data/check_branches.py
       md5: f448dcd056c4c6d3ef789026969acac9
       size: 1903
@@ -870,8 +870,23 @@ stages:
       md5: 4bf598c60c52b2c237dab294d8112a13
       size: 33463752
     - path: src/data/check_loads_ts.py
-      md5: 10d3ab3cb2a45fe84fc3fcbec4038dff
-      size: 1835
+      md5: a4bd2f9372eb2c7c165fb7cc61e1fb33
+      size: 1838
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+  check_gens_ts:
+    cmd: python src/data/check_gens_ts.py data/prepared/gens_ts.csv data/prepared/gens.csv
+    deps:
+    - path: data/prepared/gens.csv
+      md5: 6a283eb5c2248b3c0f158d29242fd1f4
+      size: 7012
+    - path: data/prepared/gens_ts.csv
+      md5: 04d5d4a3b0fa0cb91991b71d8cafdfbc
+      size: 38740237
+    - path: src/data/check_gens_ts.py
+      md5: 4dcb251a85f0200090cb390eaee485c4
+      size: 1333
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
