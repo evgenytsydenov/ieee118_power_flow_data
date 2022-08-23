@@ -1,4 +1,5 @@
 import sys
+from datetime import datetime
 from typing import Optional
 
 import numpy as np
@@ -14,7 +15,7 @@ def prepare_gens_ts(
     parsed_nrel118_hydros_ts: str | pd.DataFrame,
     parsed_nrel118_hydros_nondisp_ts: str | pd.DataFrame,
     transformed_gens_escalated_ts: str | pd.DataFrame,
-    parsed_nrel118_outages_ts: str | pd.DataFrame,
+    transformed_outages_ts: str | pd.DataFrame,
     path_prepared_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
     """Prepare final generation time-series data.
@@ -30,8 +31,7 @@ def prepare_gens_ts(
           of non-dispatchable hydro plants from the NREL-118 dataset.
         transformed_gens_escalated_ts: Path or dataframe with transformed time-series
           data of generator adjusted by escalators from the NREL-118 dataset.
-        parsed_nrel118_outages_ts: Path or dataframe with time-series outage data
-          from the NREL-118 dataset.
+        transformed_outages_ts: Path or dataframe with time-series outage data.
         path_prepared_data: Path to save prepared data.
 
     Returns:
@@ -52,6 +52,47 @@ def prepare_gens_ts(
             dtypes={"datetime": str, "gen_name": str, "p_mw": float},
         )
         gen_ts.append(gen_data)
+    gens_optimized_names = [
+        "biomass_59",
+        "biomass_60",
+        "combined_cycle_gas_40",
+        "combustion_gas_8",
+        "combustion_gas_21",
+        "combustion_gas_22",
+        "combustion_gas_23",
+        "combustion_gas_24",
+        "combustion_gas_25",
+        "combustion_gas_26",
+        "combustion_gas_46",
+        "combustion_gas_47",
+        "combustion_gas_48",
+        "combustion_gas_49",
+        "combustion_gas_72",
+        "combustion_gas_73",
+        "hydro_1",
+        "hydro_2",
+        "hydro_3",
+        "hydro_4",
+        "hydro_5",
+        "hydro_6",
+        "hydro_7",
+        "hydro_8",
+        "hydro_9",
+        "hydro_10",
+        "hydro_11",
+        "hydro_12",
+        "hydro_13",
+        "hydro_14",
+        "hydro_15",
+    ]
+    gens_optimized = pd.DataFrame(
+        data={
+            "gen_name": gens_optimized_names,
+            "datetime": datetime(2024, 1, 1, 0, 0, 0),
+            "p_mw": 0,
+        }
+    )
+    gen_ts.append(gens_optimized)
     gens = pd.concat(gen_ts, ignore_index=True)
 
     # Temporary assumptions
@@ -87,11 +128,10 @@ def prepare_gens_ts(
 
     # Add info about outages
     outages_ts = load_df_data(
-        data=parsed_nrel118_outages_ts,
-        dtypes={"datetime": str, "gen_name": str, "in_outage": bool},
+        data=transformed_outages_ts,
+        dtypes={"datetime": str, "gen_name": str, "in_service": bool},
     )
     outages_ts["datetime"] = pd.to_datetime(outages_ts["datetime"], format=DATE_FORMAT)
-    outages_ts["in_service"] = ~outages_ts["in_outage"]
     outages_ts = outages_ts.pivot(
         index="datetime",
         columns=["gen_name"],
@@ -119,7 +159,7 @@ if __name__ == "__main__":
             "Incorrect arguments. Usage:\n\tpython prepare_gens_ts.py "
             "path_parsed_nrel118_wind_ts path_parsed_nrel118_solar_ts "
             "path_parsed_nrel118_hydro_ts path_parsed_nrel118_hydro_nondisp_ts "
-            "path_transformed_gens_escalated_ts path_parsed_nrel118_outages_ts "
+            "path_transformed_gens_escalated_ts path_transformed_outages_ts "
             "path_prepared_data\n"
         )
 
@@ -130,6 +170,6 @@ if __name__ == "__main__":
         parsed_nrel118_hydros_ts=sys.argv[3],
         parsed_nrel118_hydros_nondisp_ts=sys.argv[4],
         transformed_gens_escalated_ts=sys.argv[5],
-        parsed_nrel118_outages_ts=sys.argv[6],
+        transformed_outages_ts=sys.argv[6],
         path_prepared_data=sys.argv[7],
     )

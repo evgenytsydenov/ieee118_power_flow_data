@@ -19,3 +19,4 @@ from .prepare_loads import prepare_loads
 from .prepare_loads_ts import prepare_loads_ts
 from .transform_gens_escalated_ts import transform_gens_escalated_ts
 from .transform_loads import transform_loads
+from .transform_outages_ts import transform_outages_ts
