@@ -388,3 +388,13 @@ stages:
       - data/prepared/gens.csv
       - src/data/check_gens_ts.py
       - src/utils/data_loaders/load_df_data.py
+
+  check_ts:
+    desc: "Check that time-series have the same date range"
+    cmd: python src/data/check_ts.py
+      data/prepared/loads_ts.csv
+      data/prepared/gens_ts.csv
+    deps:
+      - data/prepared/loads_ts.csv
+      - data/prepared/gens_ts.csv
+      - src/data/check_ts.py

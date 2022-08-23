@@ -910,3 +910,15 @@ stages:
     - path: data/transformed/outages_ts.csv
       md5: 0c9088f69c9a51634ca54c0582aa9a95
       size: 130963
+  check_ts:
+    cmd: python src/data/check_ts.py data/prepared/loads_ts.csv data/prepared/gens_ts.csv
+    deps:
+    - path: data/prepared/gens_ts.csv
+      md5: e8555e395a34121ec7421f739faff8ab
+      size: 43833809
+    - path: data/prepared/loads_ts.csv
+      md5: 4bf598c60c52b2c237dab294d8112a13
+      size: 33463752
+    - path: src/data/check_ts.py
+      md5: 54e9b81ea190a4cd0e9911fb746af69e
+      size: 1011
