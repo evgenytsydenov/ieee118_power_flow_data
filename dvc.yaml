@@ -331,6 +331,18 @@ stages:
     outs:
       - data/prepared/gens_ts.csv
 
+  prepare_plants:
+    desc: "Group generators by bus to represent as a power plant"
+    cmd: python src/data/prepare_plants.py
+      data/prepared/gens.csv
+      data/prepared/plants.csv
+    deps:
+      - src/data/prepare_plants.py
+      - data/prepared/gens.csv
+      - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/prepared/plants.csv
+
   check_buses:
     desc: "Check that bus parameters are correct"
     cmd: python src/data/check_buses.py
@@ -398,3 +410,12 @@ stages:
       - data/prepared/loads_ts.csv
       - data/prepared/gens_ts.csv
       - src/data/check_ts.py
+
+  check_plants:
+    desc: "Check that plant parameters are correct"
+    cmd: python src/data/check_plants.py
+      data/prepared/plants.csv
+    deps:
+      - data/prepared/plants.csv
+      - src/data/check_plants.py
+      - src/utils/data_loaders/load_df_data.py

@@ -843,8 +843,8 @@ stages:
       md5: 6a283eb5c2248b3c0f158d29242fd1f4
       size: 7012
     - path: src/data/check_gens.py
-      md5: 00fa1526cf07c07bf6de85f3d753b47c
-      size: 1070
+      md5: ee726b64f13b62ebb466186fe13c675d
+      size: 870
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -922,3 +922,31 @@ stages:
     - path: src/data/check_ts.py
       md5: 54e9b81ea190a4cd0e9911fb746af69e
       size: 1011
+  prepare_plants:
+    cmd: python src/data/prepare_plants.py data/prepared/gens.csv data/prepared/plants.csv
+    deps:
+    - path: data/prepared/gens.csv
+      md5: 6a283eb5c2248b3c0f158d29242fd1f4
+      size: 7012
+    - path: src/data/prepare_plants.py
+      md5: f988c7c85d916d267596c53dd63e260c
+      size: 1463
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    outs:
+    - path: data/prepared/plants.csv
+      md5: 2b26592e3532a9e0fded8d642e8d7c3a
+      size: 10050
+  check_plants:
+    cmd: python src/data/check_plants.py data/prepared/plants.csv
+    deps:
+    - path: data/prepared/plants.csv
+      md5: 2b26592e3532a9e0fded8d642e8d7c3a
+      size: 10050
+    - path: src/data/check_plants.py
+      md5: 6ededefa188f3130f9ceafa47d0d67cc
+      size: 1169
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
