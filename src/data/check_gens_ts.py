@@ -36,11 +36,19 @@ def check_gens_ts(
         },
     )
 
-    # Output should not be negative
+    # Some values should not be negative
     assert (gens_ts["p_mw"] >= 0).values.all(), "Some gens have negative output"
+    assert (gens_ts["v_set_kv"] >= 0).values.all(), "Some gens have negative voltage"
+
+    # Check reactive output
+    assert (
+        gens_ts["q_min_mvar"] <= gens_ts["q_max_mvar"]
+    ).values.all(), (
+        "Min level of reactive output of some gens are greater than Max level"
+    )
 
     # Ensure there are no NaNs
-    # assert not gens.isna().values.any(), "There are NaNs in the dataset"
+    assert not gens.isna().values.any(), "There are NaNs in the dataset"
 
     # Ensure there are time-series values for all gens
     for parameter in gens_ts.columns.levels[0]:

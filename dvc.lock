@@ -756,31 +756,18 @@ stages:
       md5: e81600be0ff8eec3cc2b279faf68a3ad
       size: 101123
   prepare_gens_ts:
-    cmd: python src/data/prepare_gens_ts.py data/parsed/nrel118_winds_ts.csv data/parsed/nrel118_solars_ts.csv
-      data/parsed/nrel118_hydros_ts.csv data/parsed/nrel118_hydros_nondisp_ts.csv
-      data/transformed/gens_escalated_ts.csv data/transformed/outages_ts.csv data/prepared/gens_ts.csv
+    cmd: python src/data/prepare_gens_ts.py data/transformed/gens_ts.csv data/transformed/outages_ts.csv
+      data/prepared/gens_ts.csv
     deps:
-    - path: data/parsed/nrel118_hydros_nondisp_ts.csv
-      md5: cd4166763f0fce7997a5c13cf5937bf5
-      size: 1694
-    - path: data/parsed/nrel118_hydros_ts.csv
-      md5: 867237507d7dbfae743edf05d506c86a
-      size: 7932771
-    - path: data/parsed/nrel118_solars_ts.csv
-      md5: e0b86e846d4af272c032cabb36a3d3c4
-      size: 26836698
-    - path: data/parsed/nrel118_winds_ts.csv
-      md5: 5b0c4f8bcd3e259a2f77bd90dfe3d5cc
-      size: 6614602
-    - path: data/transformed/gens_escalated_ts.csv
-      md5: e81600be0ff8eec3cc2b279faf68a3ad
-      size: 101123
+    - path: data/transformed/gens_ts.csv
+      md5: 1b67b6ba65fca1a8b83425fed2a1580b
+      size: 73580017
     - path: data/transformed/outages_ts.csv
       md5: 0c9088f69c9a51634ca54c0582aa9a95
       size: 130963
     - path: src/data/prepare_gens_ts.py
-      md5: 83c01a15676a3c146644427d43ab68e2
-      size: 6017
+      md5: 4b0bacf028708bd5a2b21fb42f0f9f49
+      size: 3410
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -794,8 +781,8 @@ stages:
         FILL_METHOD: pad
     outs:
     - path: data/prepared/gens_ts.csv
-      md5: e8555e395a34121ec7421f739faff8ab
-      size: 43833809
+      md5: e7c93717587903f6dedb76c29859791a
+      size: 98633978
   prepare_gens:
     cmd: python src/data/prepare_gens.py data/parsed/nrel118_gens.csv data/prepared/gens.csv
     deps:
@@ -882,11 +869,11 @@ stages:
       md5: 6a283eb5c2248b3c0f158d29242fd1f4
       size: 7012
     - path: data/prepared/gens_ts.csv
-      md5: e8555e395a34121ec7421f739faff8ab
-      size: 43833809
+      md5: e7c93717587903f6dedb76c29859791a
+      size: 98633978
     - path: src/data/check_gens_ts.py
-      md5: 03215b2ddb3a1f31f622c2762fd19f08
-      size: 1854
+      md5: 5ae732a386efb14ddce7a5ccc72bc46b
+      size: 2155
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -914,8 +901,8 @@ stages:
     cmd: python src/data/check_ts.py data/prepared/loads_ts.csv data/prepared/gens_ts.csv
     deps:
     - path: data/prepared/gens_ts.csv
-      md5: e8555e395a34121ec7421f739faff8ab
-      size: 43833809
+      md5: e7c93717587903f6dedb76c29859791a
+      size: 98633978
     - path: data/prepared/loads_ts.csv
       md5: 4bf598c60c52b2c237dab294d8112a13
       size: 33463752
@@ -950,3 +937,43 @@ stages:
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+  transform_gens_ts:
+    cmd: python src/data/transform_gens_ts.py data/parsed/nrel118_winds_ts.csv data/parsed/nrel118_solars_ts.csv
+      data/parsed/nrel118_hydros_ts.csv data/parsed/nrel118_hydros_nondisp_ts.csv
+      data/transformed/gens_escalated_ts.csv data/prepared/buses.csv data/prepared/gens.csv
+      data/transformed/gens_ts.csv
+    deps:
+    - path: data/parsed/nrel118_hydros_nondisp_ts.csv
+      md5: cd4166763f0fce7997a5c13cf5937bf5
+      size: 1694
+    - path: data/parsed/nrel118_hydros_ts.csv
+      md5: 867237507d7dbfae743edf05d506c86a
+      size: 7932771
+    - path: data/parsed/nrel118_solars_ts.csv
+      md5: e0b86e846d4af272c032cabb36a3d3c4
+      size: 26836698
+    - path: data/parsed/nrel118_winds_ts.csv
+      md5: 5b0c4f8bcd3e259a2f77bd90dfe3d5cc
+      size: 6614602
+    - path: data/prepared/buses.csv
+      md5: 77547fcc9bfdf49313cf4d0f30110544
+      size: 2409
+    - path: data/prepared/gens.csv
+      md5: 6a283eb5c2248b3c0f158d29242fd1f4
+      size: 7012
+    - path: data/transformed/gens_escalated_ts.csv
+      md5: e81600be0ff8eec3cc2b279faf68a3ad
+      size: 101123
+    - path: src/data/prepare_gens_ts.py
+      md5: 4b0bacf028708bd5a2b21fb42f0f9f49
+      size: 3410
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
+    outs:
+    - path: data/transformed/gens_ts.csv
+      md5: 1b67b6ba65fca1a8b83425fed2a1580b
+      size: 73580017

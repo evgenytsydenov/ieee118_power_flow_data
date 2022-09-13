@@ -1,8 +1,6 @@
 import sys
-from datetime import datetime
 from typing import Optional
 
-import numpy as np
 import pandas as pd
 
 from definitions import DATE_FORMAT, DATE_RANGE, FILL_METHOD
@@ -10,107 +8,47 @@ from src.utils.data_loaders import load_df_data
 
 
 def prepare_gens_ts(
-    parsed_nrel118_winds_ts: str | pd.DataFrame,
-    parsed_nrel118_solars_ts: str | pd.DataFrame,
-    parsed_nrel118_hydros_ts: str | pd.DataFrame,
-    parsed_nrel118_hydros_nondisp_ts: str | pd.DataFrame,
-    transformed_gens_escalated_ts: str | pd.DataFrame,
+    transformed_gens_ts: str | pd.DataFrame,
     transformed_outages_ts: str | pd.DataFrame,
     path_prepared_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
     """Prepare final generation time-series data.
 
     Args:
-        parsed_nrel118_winds_ts: Path or dataframe with time-series wind data
-          from the NREL-118 dataset.
-        parsed_nrel118_solars_ts: Path or dataframe with time-series solar data
-          from the NREL-118 dataset.
-        parsed_nrel118_hydros_ts: Path or dataframe with time-series hydro data
-          from the NREL-118 dataset.
-        parsed_nrel118_hydros_nondisp_ts: Path or dataframe with time-series data
-          of non-dispatchable hydro plants from the NREL-118 dataset.
-        transformed_gens_escalated_ts: Path or dataframe with transformed time-series
-          data of generator adjusted by escalators from the NREL-118 dataset.
         transformed_outages_ts: Path or dataframe with time-series outage data.
+        transformed_gens_ts: Path or dataframe with time-series gens data.
         path_prepared_data: Path to save prepared data.
 
     Returns:
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
-
-    # Load gens data
-    gen_ts = []
-    for data in [
-        parsed_nrel118_winds_ts,
-        parsed_nrel118_solars_ts,
-        parsed_nrel118_hydros_ts,
-        parsed_nrel118_hydros_nondisp_ts,
-        transformed_gens_escalated_ts,
-    ]:
-        gen_data = load_df_data(
-            data=data,
-            dtypes={"datetime": str, "gen_name": str, "p_mw": float},
-        )
-        gen_ts.append(gen_data)
-    gens_optimized_names = [
-        "biomass_59",
-        "biomass_60",
-        "combined_cycle_gas_40",
-        "combustion_gas_8",
-        "combustion_gas_21",
-        "combustion_gas_22",
-        "combustion_gas_23",
-        "combustion_gas_24",
-        "combustion_gas_25",
-        "combustion_gas_26",
-        "combustion_gas_46",
-        "combustion_gas_47",
-        "combustion_gas_48",
-        "combustion_gas_49",
-        "combustion_gas_72",
-        "combustion_gas_73",
-        "hydro_1",
-        "hydro_2",
-        "hydro_3",
-        "hydro_4",
-        "hydro_5",
-        "hydro_6",
-        "hydro_7",
-        "hydro_8",
-        "hydro_9",
-        "hydro_10",
-        "hydro_11",
-        "hydro_12",
-        "hydro_13",
-        "hydro_14",
-        "hydro_15",
-    ]
-    gens_optimized = pd.DataFrame(
-        data={
-            "gen_name": gens_optimized_names,
-            "datetime": datetime(2024, 1, 1, 0, 0, 0),
-            "p_mw": 0,
-        }
+    # Load data
+    gens_ts = load_df_data(
+        data=transformed_gens_ts,
+        dtypes={
+            "datetime": str,
+            "gen_name": str,
+            "p_mw": float,
+            "v_set_kv": float,
+            "q_max_mvar": float,
+            "q_min_mvar": float,
+        },
     )
-    gen_ts.append(gens_optimized)
-    gens = pd.concat(gen_ts, ignore_index=True)
-
-    # Temporary assumptions
-    gens["v_set_kv"] = np.nan
-    gens["q_max_mvar"] = np.nan
-    gens["q_min_mvar"] = np.nan
+    outages_ts = load_df_data(
+        data=transformed_outages_ts,
+        dtypes={"datetime": str, "gen_name": str, "in_service": bool},
+    )
 
     # Set datetime as index, drop unused variables
-    gens["datetime"] = pd.to_datetime(gens["datetime"], format=DATE_FORMAT)
-    gens = gens.pivot(
+    gens_ts["datetime"] = pd.to_datetime(gens_ts["datetime"], format=DATE_FORMAT)
+    gens = gens_ts.pivot(
         index="datetime",
         columns=["gen_name"],
         values=["p_mw", "q_min_mvar", "q_max_mvar", "v_set_kv"],
     )
 
     # Each generator has at least one measurement at "2024-01-01 00:00:00"
-    # One part of generators have measurements per hour
-    # Other part --- once per month
+    # One part of generators have measurements per hour, other part --- once per month
     gens.fillna(method="pad", inplace=True)
 
     # Extract necessary date range
@@ -127,10 +65,6 @@ def prepare_gens_ts(
     gens.loc[:, cols_idx] = gens.loc[:, cols_idx].round(decimals=6)
 
     # Add info about outages
-    outages_ts = load_df_data(
-        data=transformed_outages_ts,
-        dtypes={"datetime": str, "gen_name": str, "in_service": bool},
-    )
     outages_ts["datetime"] = pd.to_datetime(outages_ts["datetime"], format=DATE_FORMAT)
     outages_ts = outages_ts.pivot(
         index="datetime",
@@ -154,22 +88,15 @@ def prepare_gens_ts(
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 8:
+    if len(sys.argv) != 4:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython prepare_gens_ts.py "
-            "path_parsed_nrel118_wind_ts path_parsed_nrel118_solar_ts "
-            "path_parsed_nrel118_hydro_ts path_parsed_nrel118_hydro_nondisp_ts "
-            "path_transformed_gens_escalated_ts path_transformed_outages_ts "
-            "path_prepared_data\n"
+            "transformed_gens_ts transformed_outages_ts path_prepared_data\n"
         )
 
     # Run
     prepare_gens_ts(
-        parsed_nrel118_winds_ts=sys.argv[1],
-        parsed_nrel118_solars_ts=sys.argv[2],
-        parsed_nrel118_hydros_ts=sys.argv[3],
-        parsed_nrel118_hydros_nondisp_ts=sys.argv[4],
-        transformed_gens_escalated_ts=sys.argv[5],
-        transformed_outages_ts=sys.argv[6],
-        path_prepared_data=sys.argv[7],
+        transformed_gens_ts=sys.argv[1],
+        transformed_outages_ts=sys.argv[2],
+        path_prepared_data=sys.argv[3],
     )
