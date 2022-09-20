@@ -41,3 +41,11 @@
 - "in_service" --- if the generator is in service (not in maintenance)
 - "p_mw" --- active output of the generator in megawatts
 - "datetime" --- date and time of variable measurement
+
+## Assumptions
+1. Buses are always in service.
+2. Branches are always in service.
+3. Missing outputs of power plants are set to zero.
+4. Range of reactive generator output set from -0.35 to 0.75 of actual active output.
+5. Rated voltage of generators are equal to bus voltages.
+6. Missing power plants in the outage data are always in service.
