@@ -24,6 +24,7 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 # The format: (<start_date>, <end_date>, <frequency>)
 # Start date must not be less than "2024-01-01 00:00:00"
 # End date is not included and must not be grater than "2025-01-01 00:00:00"
+# Date format should be "%Y-%m-%d %H:%M:%S"
 DATE_RANGE = ("2024-01-01 00:00:00", "2025-01-01 00:00:00", "1h")
 
 # How to fill NaNs if info for timestamp is not provided

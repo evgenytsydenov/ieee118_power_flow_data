@@ -1,5 +1,6 @@
 import sys
 
+import numpy as np
 import pandas as pd
 
 from src.utils.data_loaders import load_df_data
@@ -23,11 +24,11 @@ def check_gens_ts(
             "gen_name": str,
         },
     )
-    gens_ts = pd.read_csv(
-        prepared_gens_ts,
-        header=[0, 1],
-        index_col=0,
-        dtype={
+    gens_ts = load_df_data(
+        data=prepared_gens_ts,
+        dtypes={
+            "datetime": str,
+            "gen_name": str,
             "in_service": bool,
             "q_max_mvar": float,
             "q_min_mvar": float,
@@ -51,14 +52,14 @@ def check_gens_ts(
     assert not gens.isna().values.any(), "There are NaNs in the dataset"
 
     # Ensure there are time-series values for all gens
-    for parameter in gens_ts.columns.levels[0]:
-        gen_names = gens_ts[parameter].columns
-        assert gen_names.isin(
-            gens["gen_name"]
-        ).all(), "There are some unknown gens in time-series data"
-        assert (
-            gens["gen_name"].isin(gen_names).all()
-        ), "Some gens are missed in time-series data"
+    gens_ts_names = gens_ts["gen_name"].unique()
+    gens_names = gens["gen_name"].unique()
+    assert np.isin(
+        gens_names, gens_ts_names, assume_unique=True
+    ).all(), "Some gens are missed in time-series data"
+    assert np.isin(
+        gens_ts_names, gens_names, assume_unique=True
+    ).all(), "There are some unknown gens in time-series data"
 
 
 if __name__ == "__main__":

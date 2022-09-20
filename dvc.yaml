@@ -240,7 +240,7 @@ stages:
       data/prepared/gens.csv
       data/transformed/gens_ts.csv
     deps:
-      - src/data/prepare_gens_ts.py
+      - src/data/transform_gens_ts.py
       - data/parsed/nrel118_winds_ts.csv
       - data/parsed/nrel118_solars_ts.csv
       - data/parsed/nrel118_hydros_ts.csv

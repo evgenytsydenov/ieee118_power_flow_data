@@ -39,45 +39,26 @@ def prepare_gens_ts(
         dtypes={"datetime": str, "gen_name": str, "in_service": bool},
     )
 
-    # Set datetime as index, drop unused variables
-    gens_ts["datetime"] = pd.to_datetime(gens_ts["datetime"], format=DATE_FORMAT)
-    gens = gens_ts.pivot(
-        index="datetime",
-        columns=["gen_name"],
-        values=["p_mw", "q_min_mvar", "q_max_mvar", "v_set_kv"],
-    )
-
+    # Select by date range
     # Each generator has at least one measurement at "2024-01-01 00:00:00"
-    # One part of generators have measurements per hour, other part --- once per month
-    gens.fillna(method="pad", inplace=True)
-
-    # Extract necessary date range
     start_date, end_date, frequency = DATE_RANGE
-    mask = (gens.index >= start_date) & (gens.index < end_date)
-    if FILL_METHOD == "pad":
-        gens = gens[mask].asfreq(frequency, method="pad")
-    else:
-        raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
-
-    # Round
-    cols = ["p_mw", "q_min_mvar", "q_max_mvar", "v_set_kv"]
-    cols_idx = gens.columns.get_level_values(0).isin(cols)
-    gens.loc[:, cols_idx] = gens.loc[:, cols_idx].round(decimals=6)
-
-    # Add info about outages
-    outages_ts["datetime"] = pd.to_datetime(outages_ts["datetime"], format=DATE_FORMAT)
-    outages_ts = outages_ts.pivot(
-        index="datetime",
-        columns=["gen_name"],
-        values=["in_service"],
+    date_range = pd.date_range(
+        start_date, end_date, freq=frequency, name="datetime", inclusive="left"
     )
-
-    # Align timestamps
-    # Each generator has at least one state measurement at "2024-01-01 00:00:00"
-    outages_ts, _ = outages_ts.align(gens, join="outer", axis=0, method="pad")
+    parts = []
+    for df in [gens_ts, outages_ts]:
+        df["datetime"] = pd.to_datetime(df["datetime"], format=DATE_FORMAT)
+        parts.append(
+            df.sort_values("datetime")
+            .set_index("datetime")
+            .groupby("gen_name")
+            .apply(lambda x: x.reindex(date_range, method=FILL_METHOD))
+            .drop(columns=["gen_name"])
+            .round(decimals=6)
+        )
+    gens = pd.concat(parts, axis=1, join="inner").round(decimals=6)
 
     # Return results
-    gens = pd.concat([gens, outages_ts], axis=1, join="inner")
     if path_prepared_data:
         gens.to_csv(
             path_prepared_data, header=True, index=True, date_format=DATE_FORMAT

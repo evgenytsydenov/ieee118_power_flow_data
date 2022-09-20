@@ -49,34 +49,30 @@ def prepare_loads_ts(
     # Assume all loads are in service
     loads["in_service"] = True
 
-    # Set datetime as index, drop unused variables
+    # Extract samples by date
+    # Each load has at least one measurement at "2024-01-01 00:00:00"
+    start_date, end_date, frequency = DATE_RANGE
+    date_range = pd.date_range(
+        start_date, end_date, freq=frequency, name="datetime", inclusive="left"
+    )
     loads["datetime"] = pd.to_datetime(loads["datetime"], format=DATE_FORMAT)
-    loads = loads.pivot(
-        index="datetime",
-        columns=["load_name"],
-        values=["in_service", "p_mw", "q_mvar"],
+    loads = (
+        loads.sort_values("datetime")
+        .set_index("datetime")
+        .groupby("load_name")
+        .apply(lambda x: x.reindex(date_range, method=FILL_METHOD))
+        .drop(columns=["load_name"])
+        .round(decimals=6)
     )
 
-    # Extract necessary date range
-    start_date, end_date, frequency = DATE_RANGE
-    mask = (loads.index >= start_date) & (loads.index < end_date)
-    if FILL_METHOD == "pad":
-        loads = loads[mask].asfreq(frequency, method="pad")
-    else:
-        raise AttributeError(f"Unknown value of FILL_METHOD: {FILL_METHOD}")
-
-    # Round
-    cols = ["p_mw", "q_mvar"]
-    cols_idx = loads.columns.get_level_values(0).isin(cols)
-    loads.loc[:, cols_idx] = loads.loc[:, cols_idx].round(decimals=6)
-
     # Return results
+    cols = ["in_service", "p_mw", "q_mvar"]
     if path_prepared_data:
-        loads.to_csv(
+        loads[cols].to_csv(
             path_prepared_data, header=True, index=True, date_format=DATE_FORMAT
         )
     else:
-        return loads
+        return loads[cols]
 
 
 if __name__ == "__main__":
