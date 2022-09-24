@@ -10,7 +10,7 @@ def check_gens_ts(
     prepared_gens_ts: str | pd.DataFrame,
     prepared_gens: str | pd.DataFrame,
 ) -> None:
-    """Check that load parameters are correct.
+    """Check that generator time-series values are correct.
 
     Args:
         prepared_gens_ts: Path or dataframe to prepared time-series data.
@@ -37,17 +37,6 @@ def check_gens_ts(
         },
     )
 
-    # Some values should not be negative
-    assert (gens_ts["p_mw"] >= 0).values.all(), "Some gens have negative output"
-    assert (gens_ts["v_set_kv"] >= 0).values.all(), "Some gens have negative voltage"
-
-    # Check reactive output
-    assert (
-        gens_ts["q_min_mvar"] <= gens_ts["q_max_mvar"]
-    ).values.all(), (
-        "Min level of reactive output of some gens are greater than Max level"
-    )
-
     # Ensure there are no NaNs
     assert not gens.isna().values.any(), "There are NaNs in the dataset"
 
@@ -60,6 +49,17 @@ def check_gens_ts(
     assert np.isin(
         gens_ts_names, gens_names, assume_unique=True
     ).all(), "There are some unknown gens in time-series data"
+
+    # Some values should not be negative
+    assert (gens_ts["p_mw"] >= 0).values.all(), "Some gens have negative output"
+    assert (gens_ts["v_set_kv"] >= 0).values.all(), "Some gens have negative voltage"
+
+    # Check reactive output
+    assert (
+        gens_ts["q_min_mvar"] <= gens_ts["q_max_mvar"]
+    ).values.all(), (
+        "Min level of reactive output of some gens are greater than Max level"
+    )
 
 
 if __name__ == "__main__":

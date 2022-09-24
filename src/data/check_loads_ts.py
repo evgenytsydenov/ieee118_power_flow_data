@@ -10,7 +10,7 @@ def check_loads_ts(
     prepared_loads_ts: str | pd.DataFrame,
     prepared_loads: str | pd.DataFrame,
 ) -> None:
-    """Check that load parameters are correct.
+    """Check that load time-series values are correct.
 
     Args:
         prepared_loads_ts: Path or dataframe to prepared time-series data.

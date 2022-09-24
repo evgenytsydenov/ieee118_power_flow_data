@@ -24,7 +24,7 @@ def check_plants(prepared_plants: str | pd.DataFrame) -> None:
     # Ensure there are no NaNs
     assert not plants.isna().values.any(), "There are NaNs in the dataset"
 
-    # Ensure gen names are unique
+    # Ensure there is only one plant per bus
     plants.drop_duplicates(["bus_name", "plant_name"], inplace=True)
     assert (
         plants["bus_name"].is_unique and plants["plant_name"].is_unique

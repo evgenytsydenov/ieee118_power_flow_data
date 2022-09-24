@@ -398,6 +398,15 @@ stages:
       - src/data/check_loads.py
       - src/utils/data_loaders/load_df_data.py
 
+  check_plants:
+    desc: "Check that plant parameters are correct"
+    cmd: python src/data/check_plants.py
+      data/prepared/plants.csv
+    deps:
+      - data/prepared/plants.csv
+      - src/data/check_plants.py
+      - src/utils/data_loaders/load_df_data.py
+
   check_loads_ts:
     desc: "Check that load time-series are correct"
     cmd: python src/data/check_loads_ts.py
@@ -429,12 +438,4 @@ stages:
       - data/prepared/loads_ts.csv
       - data/prepared/gens_ts.csv
       - src/data/check_ts.py
-
-  check_plants:
-    desc: "Check that plant parameters are correct"
-    cmd: python src/data/check_plants.py
-      data/prepared/plants.csv
-    deps:
-      - data/prepared/plants.csv
-      - src/data/check_plants.py
       - src/utils/data_loaders/load_df_data.py

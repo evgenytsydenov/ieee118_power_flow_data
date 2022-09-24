@@ -2,6 +2,8 @@ import sys
 
 import pandas as pd
 
+from src.utils.data_loaders import load_df_data
+
 
 def check_ts(
     prepared_loads_ts: str | pd.DataFrame,
@@ -13,16 +15,26 @@ def check_ts(
         prepared_loads_ts: Path or dataframe to prepared time-series data.
         prepared_gens_ts: Path or dataframe to prepared time-series data.
     """
-    # Load data
-    loads_ts = pd.read_csv(prepared_loads_ts, usecols=["datetime", "load_name"])
-    gens_ts = pd.read_csv(prepared_gens_ts, usecols=["datetime", "gen_name"])
+    date_range = None
+    for name, path in [("load", prepared_loads_ts), ("gen", prepared_gens_ts)]:
 
-    # Construct pivots
-    gen_pivot = gens_ts.pivot_table(index="datetime", columns="gen_name")
-    load_pivot = loads_ts.pivot_table(index="datetime", columns="load_name")
+        # Load data
+        data = load_df_data(data=path, dtypes={"datetime": str, f"{name}_name": str})
 
-    # Ensure date ranges are equal
-    pd.testing.assert_index_equal(gen_pivot.index, load_pivot.index, check_order=False)
+        # Construct pivot
+        data["value"] = True
+        pivot = data.pivot_table(index="datetime", columns=f"{name}_name")
+
+        # There are no NaNs in the pivot
+        assert (
+            not pivot.isna().values.any()
+        ), f"Values of {name} time-series dateset has different date ranges."
+
+        # Ensure date ranges are equal
+        if date_range is not None:
+            pd.testing.assert_index_equal(date_range, pivot.index, check_order=False)
+        else:
+            date_range = pivot.index
 
 
 if __name__ == "__main__":

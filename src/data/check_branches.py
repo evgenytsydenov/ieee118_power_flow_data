@@ -32,7 +32,7 @@ def check_branches(prepared_branches: str | pd.DataFrame) -> None:
     cols = [col for col in branches.columns if col != "trafo_ratio"]
     assert not branches[cols].isna().values.any(), "There are NaNs in the dataset"
 
-    # Ensure bus names are unique
+    # Ensure branch names are unique
     assert branches["branch_name"].is_unique, "There are duplicated branch names"
 
     # Ensure combinations (from_bus, to_bus, parallel) are unique
