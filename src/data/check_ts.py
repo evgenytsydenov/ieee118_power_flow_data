@@ -8,15 +8,21 @@ from src.utils.data_loaders import load_df_data
 def check_ts(
     prepared_loads_ts: str | pd.DataFrame,
     prepared_gens_ts: str | pd.DataFrame,
+    prepared_plants_ts: str | pd.DataFrame,
 ) -> None:
     """Check that time-series have the same date range.
 
     Args:
         prepared_loads_ts: Path or dataframe to prepared time-series data.
         prepared_gens_ts: Path or dataframe to prepared time-series data.
+        prepared_plants_ts: Path or dataframe to prepared time-series data.
     """
     date_range = None
-    for name, path in [("load", prepared_loads_ts), ("gen", prepared_gens_ts)]:
+    for name, path in [
+        ("load", prepared_loads_ts),
+        ("gen", prepared_gens_ts),
+        ("plant", prepared_plants_ts),
+    ]:
 
         # Load data
         data = load_df_data(data=path, dtypes={"datetime": str, f"{name}_name": str})
@@ -39,11 +45,15 @@ def check_ts(
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython check_ts.py "
-            "path_prepared_loads_ts path_prepared_gens_ts\n"
+            "path_prepared_loads_ts path_prepared_gens_ts path_prepared_plants_ts\n"
         )
 
     # Run
-    check_ts(prepared_loads_ts=sys.argv[1], prepared_gens_ts=sys.argv[2])
+    check_ts(
+        prepared_loads_ts=sys.argv[1],
+        prepared_gens_ts=sys.argv[2],
+        prepared_plants_ts=sys.argv[3],
+    )

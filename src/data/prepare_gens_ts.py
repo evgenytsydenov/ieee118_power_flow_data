@@ -1,6 +1,7 @@
 import sys
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 
 from definitions import DATE_FORMAT, DATE_RANGE, FILL_METHOD
@@ -57,6 +58,10 @@ def prepare_gens_ts(
             .round(decimals=6)
         )
     gens = pd.concat(parts, axis=1, join="inner").round(decimals=6)
+
+    # If gen is not in service, its parameters are undefined
+    value_cols = ["p_mw", "v_set_kv", "q_max_mvar", "q_min_mvar"]
+    gens.loc[~gens["in_service"], value_cols] = np.nan
 
     # Return results
     if path_prepared_data:

@@ -37,8 +37,35 @@ def check_gens_ts(
         },
     )
 
-    # Ensure there are no NaNs
-    assert not gens.isna().values.any(), "There are NaNs in the dataset"
+    # Ensure there are no NaNs among obligatory values
+    assert (
+        not gens_ts[["datetime", "gen_name", "in_service"]].isna().values.any()
+    ), "There are missing obligatory parameters"
+
+    # Ensure parameters are undefined when gen is out of service
+    value_cols = ["v_set_kv", "p_mw", "q_min_mvar", "q_max_mvar"]
+    assert (
+        gens_ts.loc[~gens_ts["in_service"], value_cols].isna().values.all()
+    ), "There are value of parameters when generator is out of service"
+
+    # Ensure there are no NaNs when gens are in service
+    gens_in_service = gens_ts[gens_ts["in_service"]]
+    assert (
+        not gens_in_service.isna().values.any()
+    ), "There are undefined parameters when generator is in service"
+
+    # Some values should not be negative
+    assert (gens_in_service["p_mw"] >= 0).values.all(), "Some gens have negative output"
+    assert (
+        gens_in_service["v_set_kv"] >= 0
+    ).values.all(), "Some gens have negative voltage"
+
+    # Check reactive output
+    assert (
+        gens_in_service["q_min_mvar"] <= gens_in_service["q_max_mvar"]
+    ).values.all(), (
+        "Min level of reactive output of some gens are greater than Max level"
+    )
 
     # Ensure there are time-series values for all gens
     gens_ts_names = gens_ts["gen_name"].unique()
@@ -49,17 +76,6 @@ def check_gens_ts(
     assert np.isin(
         gens_ts_names, gens_names, assume_unique=True
     ).all(), "There are some unknown gens in time-series data"
-
-    # Some values should not be negative
-    assert (gens_ts["p_mw"] >= 0).values.all(), "Some gens have negative output"
-    assert (gens_ts["v_set_kv"] >= 0).values.all(), "Some gens have negative voltage"
-
-    # Check reactive output
-    assert (
-        gens_ts["q_min_mvar"] <= gens_ts["q_max_mvar"]
-    ).values.all(), (
-        "Min level of reactive output of some gens are greater than Max level"
-    )
 
 
 if __name__ == "__main__":
