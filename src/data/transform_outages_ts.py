@@ -64,7 +64,7 @@ def transform_outages_ts(
         ("2024-12-14 11:00:00", "internal_combustion_gas_23"),
     ]
     for date, gen_name in to_fix:
-        mask = (outages["datetime"] == datetime.strptime(date, DATE_FORMAT)) & (
+        mask = (outages["datetime"] == datetime.strptime(date, "%Y-%m-%d %H:%M:%S")) & (
             outages["gen_name"] == gen_name
         )
         outages.loc[mask, "gen_name"] = "internal_combustion_gas_1"

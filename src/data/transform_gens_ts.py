@@ -89,7 +89,7 @@ def transform_gens_ts(
     gens_optimized = pd.DataFrame(
         data={
             "gen_name": gens_optimized_names,
-            "datetime": datetime(2024, 1, 1, 0, 0, 0),
+            "datetime": datetime(2024, 1, 1, 0, 0, 0).strftime(DATE_FORMAT),
             "p_mw": 0,
         }
     )
@@ -120,9 +120,7 @@ def transform_gens_ts(
     # Return results
     cols = ["datetime", "gen_name", "p_mw", "v_set_kv", "q_min_mvar", "q_max_mvar"]
     if path_transformed_data:
-        gen_ts[cols].to_csv(
-            path_transformed_data, header=True, index=False, date_format=DATE_FORMAT
-        )
+        gen_ts[cols].to_csv(path_transformed_data, header=True, index=False)
     else:
         return gen_ts[cols]
 
