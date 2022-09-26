@@ -46,7 +46,9 @@
 
 1. Buses are always in service (see [here](src/data/prepare_buses.py)).
 2. Branches are always in service (see [here](src/data/prepare_branches.py)).
-3. Missing outputs of power plants are set to zero (see [here](src/data/transform_gens_ts.py)).
-4. Range of reactive generator output set from -0.35 to 0.75 of the actual active output (see [here](src/data/transform_gens_ts.py)).
-5. Rated voltage of generators are equal to bus voltages (see [here](src/data/transform_gens_ts.py)).
-6. Missing power plants in the outage data are always in service (see [here](src/data/transform_outages_ts.py)).
+3. Loads are always in service (see [here](src/data/prepare_loads_ts.py)).
+4. Missing outputs of power plants are set to zero (see [here](src/data/transform_gens_ts.py)).
+5. Range of reactive generator output set from -0.35 to 0.75 of the actual active output (see [here](src/data/transform_gens_ts.py)).
+6. Rated voltage of generators are equal to bus voltages (see [here](src/data/transform_gens_ts.py)).
+7. Missing power plants in the outage data are always in service (see [here](src/data/transform_outages_ts.py)).
+8. When grouping generators into power plants, rated voltage is calculated as an average of generator voltages (see [here](src/data/prepare_plants_ts.py)).
