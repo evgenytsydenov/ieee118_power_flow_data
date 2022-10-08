@@ -23,13 +23,13 @@ def check_branches(prepared_branches: str | pd.DataFrame) -> None:
             "r_ohm": float,
             "x_ohm": float,
             "b_µs": float,
-            "trafo_ratio": float,
+            "trafo_ratio_rel": float,
             "max_i_ka": float,
         },
     )
 
     # Ensure there are no NaNs
-    cols = [col for col in branches.columns if col != "trafo_ratio"]
+    cols = [col for col in branches.columns if col != "trafo_ratio_rel"]
     assert not branches[cols].isna().values.any(), "There are NaNs in the dataset"
 
     # Ensure branch names are unique
@@ -45,9 +45,9 @@ def check_branches(prepared_branches: str | pd.DataFrame) -> None:
         branches[["r_ohm", "x_ohm", "b_µs", "max_i_ka"]] < 0
     ).values.any(), "There are negative impedance or current"
 
-    # Correct trafo_ratio
+    # Correct trafo_ratio_rel
     assert (
-        (branches["trafo_ratio"] > 0) | branches["trafo_ratio"].isna()
+        (branches["trafo_ratio_rel"] > 0) | branches["trafo_ratio_rel"].isna()
     ).all(), "There are non-positive transformation ratios"
 
 

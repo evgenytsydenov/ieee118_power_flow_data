@@ -44,7 +44,12 @@ def prepare_branches(
     )
     jeas118_trafos = load_df_data(
         data=parsed_jeas118_trafos,
-        dtypes={"from_bus": str, "to_bus": str, "parallel": str, "trafo_ratio": float},
+        dtypes={
+            "from_bus": str,
+            "to_bus": str,
+            "parallel": str,
+            "trafo_ratio_rel": float,
+        },
     )
     buses = load_df_data(
         data=prepared_buses, dtypes={"bus_name": str, "v_rated_kv": float}
@@ -60,6 +65,7 @@ def prepare_branches(
     branches["in_service"] = True
 
     # Convert from pu to ohm
+    # Consider from_bus is a high voltage level bus for transformers
     branches = branches.merge(
         buses[["bus_name", "v_rated_kv"]],
         left_on="from_bus",
@@ -74,7 +80,7 @@ def prepare_branches(
     branches["max_i_ka"] = branches["max_p_mw"] / (branches["v_rated_kv"] * 3**0.5)
 
     # Round values
-    cols = ["r_ohm", "x_ohm", "b_µs", "max_i_ka", "trafo_ratio"]
+    cols = ["r_ohm", "x_ohm", "b_µs", "max_i_ka", "trafo_ratio_rel"]
     branches.loc[:, cols] = branches.loc[:, cols].round(decimals=6)
 
     # Return results
@@ -87,7 +93,7 @@ def prepare_branches(
         "r_ohm",
         "x_ohm",
         "b_µs",
-        "trafo_ratio",
+        "trafo_ratio_rel",
         "max_i_ka",
     ]
     if path_prepared_data:

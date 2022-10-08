@@ -19,7 +19,7 @@
 - "r_ohm" --- branch resistance in ohms
 - "x_ohm" --- branch reactance in ohms
 - "b_µs" --- branch active conductance in microsiemens
-- "trafo_ratio" --- transformation ratio if the branch is a transformer
+- "trafo_ratio_rel" --- transformation ratio (relative to the ratio of voltage levels of the high and low sides) if the branch is a transformer
 - "max_i_ka" --- maximum current over the branch in kiloamperes
 
 ### Loads
