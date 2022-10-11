@@ -2,6 +2,7 @@ import sys
 
 import pandas as pd
 
+from definitions import PLANT_MODE
 from src.utils.data_loaders import load_df_data
 
 
@@ -19,6 +20,10 @@ def check_gens(prepared_gens: str | pd.DataFrame) -> None:
 
     # Ensure gen names are unique
     assert gens["gen_name"].is_unique, "There are duplicated gen names"
+
+    # Ensure there is only one plant per bus
+    if PLANT_MODE:
+        assert gens["bus_name"].is_unique, "Some bus contains several plants"
 
 
 if __name__ == "__main__":

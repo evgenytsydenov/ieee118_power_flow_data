@@ -199,6 +199,21 @@ stages:
     outs:
       - data/transformed/loads.csv
 
+  transform_gens:
+    desc: "Group generators into power plants if plant mode is enabled."
+    cmd: python src/data/transform_gens.py
+      data/parsed/nrel118_gens.csv
+      data/transformed/gens.csv
+    deps:
+      - data/parsed/nrel118_gens.csv
+      - src/data/transform_gens.py
+      - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - PLANT_MODE
+    outs:
+      - data/transformed/gens.csv
+
   transform_outages_ts:
     desc: "Modify dataset with outages"
     cmd: python src/data/transform_outages_ts.py
@@ -237,7 +252,7 @@ stages:
       data/parsed/nrel118_hydros_nondisp_ts.csv
       data/transformed/gens_escalated_ts.csv
       data/prepared/buses.csv
-      data/prepared/gens.csv
+      data/transformed/gens.csv
       data/transformed/gens_ts.csv
     deps:
       - src/data/transform_gens_ts.py
@@ -247,7 +262,7 @@ stages:
       - data/parsed/nrel118_hydros_nondisp_ts.csv
       - data/transformed/gens_escalated_ts.csv
       - data/prepared/buses.csv
-      - data/prepared/gens.csv
+      - data/transformed/gens.csv
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -322,23 +337,28 @@ stages:
   prepare_gens:
     desc: "Build final dataset with generation info"
     cmd: python src/data/prepare_gens.py
-      data/parsed/nrel118_gens.csv
+      data/transformed/gens.csv
       data/prepared/gens.csv
     deps:
       - src/data/prepare_gens.py
-      - data/parsed/nrel118_gens.csv
+      - data/transformed/gens.csv
       - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - PLANT_MODE
     outs:
       - data/prepared/gens.csv
 
   prepare_gens_ts:
     desc: "Build final dataset with generation time-series data"
     cmd: python src/data/prepare_gens_ts.py
+      data/transformed/gens.csv
       data/transformed/gens_ts.csv
       data/transformed/outages_ts.csv
       data/prepared/gens_ts.csv
     deps:
       - src/data/prepare_gens_ts.py
+      - data/transformed/gens.csv
       - data/transformed/gens_ts.csv
       - data/transformed/outages_ts.csv
       - src/utils/data_loaders/load_df_data.py
@@ -347,34 +367,9 @@ stages:
           - DATE_FORMAT
           - DATE_RANGE
           - FILL_METHOD
+          - PLANT_MODE
     outs:
       - data/prepared/gens_ts.csv
-
-  prepare_plants:
-    desc: "Group generators by bus to represent as a power plant"
-    cmd: python src/data/prepare_plants.py
-      data/prepared/gens.csv
-      data/prepared/plants.csv
-    deps:
-      - src/data/prepare_plants.py
-      - data/prepared/gens.csv
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/prepared/plants.csv
-
-  prepare_plants_ts:
-    desc: "Build final dataset with plant time-series data"
-    cmd: python src/data/prepare_plants_ts.py
-      data/prepared/plants.csv
-      data/prepared/gens_ts.csv
-      data/prepared/plants_ts.csv
-    deps:
-      - src/data/prepare_plants_ts.py
-      - data/prepared/plants.csv
-      - data/prepared/gens_ts.csv
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/prepared/plants_ts.csv
 
   check_buses:
     desc: "Check that bus parameters are correct"
@@ -402,6 +397,9 @@ stages:
       - data/prepared/gens.csv
       - src/data/check_gens.py
       - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - PLANT_MODE
 
   check_loads:
     desc: "Check that load parameters are correct"
@@ -410,15 +408,6 @@ stages:
     deps:
       - data/prepared/loads.csv
       - src/data/check_loads.py
-      - src/utils/data_loaders/load_df_data.py
-
-  check_plants:
-    desc: "Check that plant parameters are correct"
-    cmd: python src/data/check_plants.py
-      data/prepared/plants.csv
-    deps:
-      - data/prepared/plants.csv
-      - src/data/check_plants.py
       - src/utils/data_loaders/load_df_data.py
 
   check_loads_ts:
@@ -443,26 +432,13 @@ stages:
       - src/data/check_gens_ts.py
       - src/utils/data_loaders/load_df_data.py
 
-  check_plants_ts:
-    desc: "Check that plants time-series are correct"
-    cmd: python src/data/check_plants_ts.py
-      data/prepared/plants_ts.csv
-      data/prepared/plants.csv
-    deps:
-      - data/prepared/plants_ts.csv
-      - data/prepared/plants.csv
-      - src/data/check_plants_ts.py
-      - src/utils/data_loaders/load_df_data.py
-
   check_ts:
     desc: "Check that time-series have the same date range"
     cmd: python src/data/check_ts.py
       data/prepared/loads_ts.csv
       data/prepared/gens_ts.csv
-      data/prepared/plants_ts.csv
     deps:
       - data/prepared/loads_ts.csv
       - data/prepared/gens_ts.csv
-      - data/prepared/plants_ts.csv
       - src/data/check_ts.py
       - src/utils/data_loaders/load_df_data.py

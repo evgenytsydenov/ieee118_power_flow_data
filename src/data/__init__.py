@@ -4,7 +4,6 @@ from .check_gens import check_gens
 from .check_gens_ts import check_gens_ts
 from .check_loads import check_loads
 from .check_loads_ts import check_loads_ts
-from .check_plants import check_plants
 from .check_ts import check_ts
 from .parse_jeas118_lines import parse_jeas118_lines
 from .parse_jeas118_loads import parse_jeas118_loads
@@ -25,7 +24,7 @@ from .prepare_gens import prepare_gens
 from .prepare_gens_ts import prepare_gens_ts
 from .prepare_loads import prepare_loads
 from .prepare_loads_ts import prepare_loads_ts
-from .prepare_plants import prepare_plants
+from .transform_gens import transform_gens
 from .transform_gens_escalated_ts import transform_gens_escalated_ts
 from .transform_loads import transform_loads
 from .transform_outages_ts import transform_outages_ts

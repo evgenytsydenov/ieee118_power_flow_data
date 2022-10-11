@@ -30,3 +30,6 @@ DATE_RANGE = ("2024-01-01 00:00:00", "2025-01-01 00:00:00", "1h")
 # How to fill NaNs if info for timestamp is not provided
 # "pad" --- propagate last valid observation forward to next valid
 FILL_METHOD = "pad"
+
+# If to group generators by bus to represent as a power plant
+PLANT_MODE = True

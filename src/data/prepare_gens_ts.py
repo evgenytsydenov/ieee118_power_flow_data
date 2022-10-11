@@ -4,11 +4,12 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from definitions import DATE_FORMAT, DATE_RANGE, FILL_METHOD
+from definitions import DATE_FORMAT, DATE_RANGE, FILL_METHOD, PLANT_MODE
 from src.utils.data_loaders import load_df_data
 
 
 def prepare_gens_ts(
+    transformed_gens: str | pd.DataFrame,
     transformed_gens_ts: str | pd.DataFrame,
     transformed_outages_ts: str | pd.DataFrame,
     path_prepared_data: Optional[str] = None,
@@ -16,6 +17,7 @@ def prepare_gens_ts(
     """Prepare final generation time-series data.
 
     Args:
+        transformed_gens: Path or dataframe with transformed generation data.
         transformed_outages_ts: Path or dataframe with time-series outage data.
         transformed_gens_ts: Path or dataframe with time-series gens data.
         path_prepared_data: Path to save prepared data.
@@ -63,6 +65,36 @@ def prepare_gens_ts(
     value_cols = ["p_mw", "v_set_kv", "q_max_mvar", "q_min_mvar"]
     gens.loc[~gens["in_service"], value_cols] = np.nan
 
+    if PLANT_MODE:
+        # Load mapping of plants and gens
+        plants = load_df_data(
+            data=transformed_gens,
+            dtypes={"gen_name": str, "plant_name": str},
+        )
+
+        # Add plant names to time-series data of gens
+        gens.reset_index(inplace=True)
+        gens = pd.merge(gens, plants, how="left", on="gen_name")
+
+        # Group gen parameters
+        agg_funcs = {
+            "p_mw": "sum",
+            "q_max_mvar": "sum",
+            "q_min_mvar": "sum",
+            "v_set_kv": "mean",
+            "in_service": "sum",
+        }
+        gens = gens.groupby(["plant_name", "datetime"]).agg(agg_funcs)
+
+        # If the number of gens, which are in service, equals to zero,
+        # the plant is out of service and its parameters should be undefined
+        gens["in_service"] = gens["in_service"].astype(bool)
+        value_cols = ["p_mw", "v_set_kv", "q_max_mvar", "q_min_mvar"]
+        gens.loc[~gens["in_service"], value_cols] = np.nan
+
+        # Rename columns for consistency in future scripts
+        gens.index.names = ["gen_name", "datetime"]
+
     # Return results
     if path_prepared_data:
         gens.to_csv(
@@ -74,15 +106,17 @@ def prepare_gens_ts(
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython prepare_gens_ts.py "
-            "transformed_gens_ts transformed_outages_ts path_prepared_data\n"
+            "path_transformed_gens path_transformed_gens_ts "
+            "path_transformed_outages_ts path_prepared_data\n"
         )
 
     # Run
     prepare_gens_ts(
-        transformed_gens_ts=sys.argv[1],
-        transformed_outages_ts=sys.argv[2],
-        path_prepared_data=sys.argv[3],
+        transformed_gens=sys.argv[1],
+        transformed_gens_ts=sys.argv[2],
+        transformed_outages_ts=sys.argv[3],
+        path_prepared_data=sys.argv[4],
     )

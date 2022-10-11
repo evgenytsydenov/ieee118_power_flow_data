@@ -118,8 +118,8 @@ if __name__ == "__main__":
     # Check params
     if len(sys.argv) != 3:
         raise ValueError(
-            "Incorrect arguments. Usage:\n\tpython "
-            "transform_outages_ts.py parsed_nrel118_outages_ts path_transformed_data\n"
+            "Incorrect arguments. Usage:\n\tpython transform_outages_ts.py "
+            "path_parsed_nrel118_outages_ts path_transformed_data\n"
         )
 
     # Run

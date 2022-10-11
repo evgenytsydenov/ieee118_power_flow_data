@@ -15,13 +15,13 @@ def transform_gens_ts(
     parsed_nrel118_hydros_nondisp_ts: str | pd.DataFrame,
     transformed_gens_escalated_ts: str | pd.DataFrame,
     prepared_buses: str | pd.DataFrame,
-    prepared_gens: str | pd.DataFrame,
+    transformed_gens: str | pd.DataFrame,
     path_transformed_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
     """Combine time-series data about generator outputs.
 
     Args:
-        prepared_gens: Path or dataframe with generation data.
+        transformed_gens: Path or dataframe with generation data.
         prepared_buses: Path or dataframe with bus data.
         parsed_nrel118_winds_ts: Path or dataframe with time-series wind data
           from the NREL-118 dataset.
@@ -104,7 +104,7 @@ def transform_gens_ts(
 
     # Load gens data
     gens = load_df_data(
-        data=prepared_gens,
+        data=transformed_gens,
         dtypes={"gen_name": str, "bus_name": str},
     )
 
@@ -130,9 +130,10 @@ if __name__ == "__main__":
     if len(sys.argv) != 9:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "transform_gens_ts.py parsed_nrel118_winds_ts parsed_nrel118_solars_ts "
-            "parsed_nrel118_hydros_ts parsed_nrel118_hydros_nondisp_ts "
-            "transformed_gens_escalated_ts prepared_buses prepared_gens "
+            "transform_gens_ts.py path_parsed_nrel118_winds_ts "
+            "path_parsed_nrel118_solars_ts path_parsed_nrel118_hydros_ts "
+            "path_parsed_nrel118_hydros_nondisp_ts path_transformed_gens_escalated_ts "
+            "path_prepared_buses path_transformed_gens "
             "path_transformed_data\n"
         )
 
@@ -144,6 +145,6 @@ if __name__ == "__main__":
         parsed_nrel118_hydros_nondisp_ts=sys.argv[4],
         transformed_gens_escalated_ts=sys.argv[5],
         prepared_buses=sys.argv[6],
-        prepared_gens=sys.argv[7],
+        transformed_gens=sys.argv[7],
         path_transformed_data=sys.argv[8],
     )
