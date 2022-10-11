@@ -17,13 +17,7 @@ def check_gens_ts(
         prepared_gens: Path or dataframe to prepared data.
     """
     # Load data
-    gens = load_df_data(
-        data=prepared_gens,
-        dtypes={
-            "bus_name": str,
-            "gen_name": str,
-        },
-    )
+    gens = load_df_data(data=prepared_gens, dtypes={"gen_name": str})
     gens_ts = load_df_data(
         data=prepared_gens_ts,
         dtypes={

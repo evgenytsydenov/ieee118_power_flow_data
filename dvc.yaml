@@ -384,8 +384,10 @@ stages:
     desc: "Check that branch parameters are correct"
     cmd: python src/data/check_branches.py
       data/prepared/branches.csv
+      data/prepared/buses.csv
     deps:
       - data/prepared/branches.csv
+      - data/prepared/buses.csv
       - src/data/check_branches.py
       - src/utils/data_loaders/load_df_data.py
 
@@ -393,8 +395,10 @@ stages:
     desc: "Check that generator parameters are correct"
     cmd: python src/data/check_gens.py
       data/prepared/gens.csv
+      data/prepared/buses.csv
     deps:
       - data/prepared/gens.csv
+      - data/prepared/buses.csv
       - src/data/check_gens.py
       - src/utils/data_loaders/load_df_data.py
     params:
@@ -405,8 +409,10 @@ stages:
     desc: "Check that load parameters are correct"
     cmd: python src/data/check_loads.py
       data/prepared/loads.csv
+      data/prepared/buses.csv
     deps:
       - data/prepared/loads.csv
+      - data/prepared/buses.csv
       - src/data/check_loads.py
       - src/utils/data_loaders/load_df_data.py
 

@@ -819,26 +819,32 @@ stages:
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
   check_branches:
-    cmd: python src/data/check_branches.py data/prepared/branches.csv
+    cmd: python src/data/check_branches.py data/prepared/branches.csv data/prepared/buses.csv
     deps:
     - path: data/prepared/branches.csv
       md5: 46ccaf632b0956df96fd96932e979b4d
       size: 13266
+    - path: data/prepared/buses.csv
+      md5: 77547fcc9bfdf49313cf4d0f30110544
+      size: 2409
     - path: src/data/check_branches.py
-      md5: 9af9fc46548b52e93e805b7a5601afa1
-      size: 1926
+      md5: 89298250f55615935c087f866ee6e8a5
+      size: 2391
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
   check_gens:
-    cmd: python src/data/check_gens.py data/prepared/gens.csv
+    cmd: python src/data/check_gens.py data/prepared/gens.csv data/prepared/buses.csv
     deps:
+    - path: data/prepared/buses.csv
+      md5: 77547fcc9bfdf49313cf4d0f30110544
+      size: 2409
     - path: data/prepared/gens.csv
       md5: 41d7c7866b461a25da1b2edd2a57cc99
       size: 934
     - path: src/data/check_gens.py
-      md5: 524c9e74342a7a4e72c82e272ecc9347
-      size: 1053
+      md5: 02877f6147e67ee464af95beb540cd8f
+      size: 1434
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -846,14 +852,17 @@ stages:
       definitions.py:
         PLANT_MODE: true
   check_loads:
-    cmd: python src/data/check_loads.py data/prepared/loads.csv
+    cmd: python src/data/check_loads.py data/prepared/loads.csv data/prepared/buses.csv
     deps:
+    - path: data/prepared/buses.csv
+      md5: 77547fcc9bfdf49313cf4d0f30110544
+      size: 2409
     - path: data/prepared/loads.csv
       md5: 668187aa4d3797e4afd613b9d7977b63
       size: 1477
     - path: src/data/check_loads.py
-      md5: d8f9059996187dfeb6e900e9d22329d7
-      size: 1069
+      md5: 5ef77d682b4fcbcc3021ce3dac05a452
+      size: 1421
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -882,8 +891,8 @@ stages:
       md5: dae6135496d4728917ec5611a71bcdc0
       size: 33763305
     - path: src/data/check_gens_ts.py
-      md5: f9cd38bc61f53189cce548cfe0e6a566
-      size: 2912
+      md5: de3d417d5c946fd793b59963fd915993
+      size: 2831
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953

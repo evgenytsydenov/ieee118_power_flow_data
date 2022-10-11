@@ -5,10 +5,13 @@ import pandas as pd
 from src.utils.data_loaders import load_df_data
 
 
-def check_branches(prepared_branches: str | pd.DataFrame) -> None:
+def check_branches(
+    prepared_branches: str | pd.DataFrame, prepared_buses: str | pd.DataFrame
+) -> None:
     """Check that branch parameters are correct.
 
     Args:
+        prepared_buses: Path or dataframe to prepared data.
         prepared_branches: Path or dataframe to prepared data.
     """
     # Load data
@@ -27,6 +30,7 @@ def check_branches(prepared_branches: str | pd.DataFrame) -> None:
             "max_i_ka": float,
         },
     )
+    buses = load_df_data(data=prepared_buses, dtypes={"bus_name": str})
 
     # Ensure there are no NaNs
     cols = [col for col in branches.columns if col != "trafo_ratio_rel"]
@@ -39,6 +43,12 @@ def check_branches(prepared_branches: str | pd.DataFrame) -> None:
     assert not branches.duplicated(
         subset=["from_bus", "to_bus", "parallel"]
     ).any(), "There are duplicated (from_bus, to_bus, parallel)"
+
+    # Ensure all values (from_bus, to_bus) are in bus dataset
+    for col in ["from_bus", "to_bus"]:
+        assert (
+            branches[col].isin(buses["bus_name"]).all()
+        ), f"There are unknown bus names in column {col}"
 
     # Correct impedance and current
     assert not (
@@ -53,11 +63,11 @@ def check_branches(prepared_branches: str | pd.DataFrame) -> None:
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "check_branches.py path_prepared_branches\n"
+            "check_branches.py path_prepared_branches path_prepared_buses\n"
         )
 
     # Run
-    check_branches(prepared_branches=sys.argv[1])
+    check_branches(prepared_branches=sys.argv[1], prepared_buses=sys.argv[2])
