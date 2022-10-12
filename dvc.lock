@@ -1053,3 +1053,49 @@ stages:
     - path: data/transformed/gens.csv
       md5: 2b26592e3532a9e0fded8d642e8d7c3a
       size: 10050
+  sample_models:
+    cmd: python src/model/sampling.py data/prepared/buses.csv data/prepared/branches.csv
+      data/prepared/loads.csv data/prepared/loads_ts.csv data/prepared/gens.csv data/prepared/gens_ts.csv
+      models
+    deps:
+    - path: data/prepared/branches.csv
+      md5: 46ccaf632b0956df96fd96932e979b4d
+      size: 13266
+    - path: data/prepared/buses.csv
+      md5: 77547fcc9bfdf49313cf4d0f30110544
+      size: 2409
+    - path: data/prepared/gens.csv
+      md5: 41d7c7866b461a25da1b2edd2a57cc99
+      size: 934
+    - path: data/prepared/gens_ts.csv
+      md5: dae6135496d4728917ec5611a71bcdc0
+      size: 33763305
+    - path: data/prepared/loads.csv
+      md5: 668187aa4d3797e4afd613b9d7977b63
+      size: 1477
+    - path: data/prepared/loads_ts.csv
+      md5: 7920ea37c5cb3310004378ec29547f12
+      size: 43184187
+    - path: src/model/samplers/base.py
+      md5: 9433caf5cc8890d3d18575074aaca6d3
+      size: 5106
+    - path: src/model/samplers/pandapower.py
+      md5: 7678b59fe0c0adfe0244697efe4f0f62
+      size: 7478
+    - path: src/model/sampling.py
+      md5: fce1694d9375705dffbbee93b5ccda9e
+      size: 1982
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
+        F_HZ: 50
+        REGIME_SAMPLER: pandapower
+        S_BASE_MVA: 100
+    outs:
+    - path: models
+      md5: 6d1207652a16ffde8c4d37d9b8fdc4c3.dir
+      size: 115909
+      nfiles: 1

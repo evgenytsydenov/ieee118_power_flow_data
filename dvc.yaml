@@ -448,3 +448,34 @@ stages:
       - data/prepared/gens_ts.csv
       - src/data/check_ts.py
       - src/utils/data_loaders/load_df_data.py
+
+  sample_models:
+    desc: "Start sampling of power flow cases"
+    cmd: python src/model/sampling.py
+      data/prepared/buses.csv
+      data/prepared/branches.csv
+      data/prepared/loads.csv
+      data/prepared/loads_ts.csv
+      data/prepared/gens.csv
+      data/prepared/gens_ts.csv
+      models
+    deps:
+      - data/prepared/buses.csv
+      - data/prepared/branches.csv
+      - data/prepared/loads.csv
+      - data/prepared/loads_ts.csv
+      - data/prepared/gens.csv
+      - data/prepared/gens_ts.csv
+      - src/model/sampling.py
+      - src/model/samplers/base.py
+      - src/model/samplers/pandapower.py
+      - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - S_BASE_MVA
+          - F_HZ
+          - REGIME_SAMPLER
+          - DATE_FORMAT
+          - MODEL_NAME_FORMAT
+    outs:
+      - models

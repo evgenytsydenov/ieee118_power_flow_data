@@ -1,6 +1,9 @@
 # Base power
 S_BASE_MVA = 100
 
+# Frequency
+F_HZ = 50
+
 # Unify generation types
 GEN_TYPES = {
     "Biomass": "biomass",
@@ -33,3 +36,12 @@ FILL_METHOD = "pad"
 
 # If to group generators by bus to represent as a power plant
 PLANT_MODE = True
+
+# Which engin to use for power regime sampling
+REGIME_SAMPLER = "pandapower"
+
+# Format of model names
+# Power flow cases built for each timestamp should have unique names
+# Each name can contain timestamp parameters
+# The extension will be added automatically
+MODEL_NAME_FORMAT = "%Y_%m_%d_%H_%M_%S"
