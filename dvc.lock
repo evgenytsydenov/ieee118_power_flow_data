@@ -807,19 +807,24 @@ stages:
       md5: 41d7c7866b461a25da1b2edd2a57cc99
       size: 934
   check_buses:
-    cmd: python src/data/check/buses.py data/prepared/buses.csv
+    cmd: python src/data/check/buses.py data/prepared/buses.csv data/checks/buses.json
     deps:
     - path: data/prepared/buses.csv
       md5: 77547fcc9bfdf49313cf4d0f30110544
       size: 2409
     - path: src/data/check/buses.py
-      md5: ba1c6f40f6c7dbbc708917947e5b11a8
-      size: 1020
+      md5: 611afb9403ae55f0bdb6c39d4ff6dfb1
+      size: 1346
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    outs:
+    - path: data/checks/buses.json
+      md5: d508299a3b461d6c61df01824601b283
+      size: 70
   check_branches:
     cmd: python src/data/check/branches.py data/prepared/branches.csv data/prepared/buses.csv
+      data/checks/branches.json
     deps:
     - path: data/prepared/branches.csv
       md5: 46ccaf632b0956df96fd96932e979b4d
@@ -828,13 +833,18 @@ stages:
       md5: 77547fcc9bfdf49313cf4d0f30110544
       size: 2409
     - path: src/data/check/branches.py
-      md5: 89298250f55615935c087f866ee6e8a5
-      size: 2391
+      md5: e4cc8ac16e2309217076a5082bdcf833
+      size: 2835
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    outs:
+    - path: data/checks/branches.json
+      md5: 03bcb7ab65da056a601dd55548dffa93
+      size: 423
   check_gens:
     cmd: python src/data/check/gens.py data/prepared/gens.csv data/prepared/buses.csv
+      data/checks/gens.json
     deps:
     - path: data/prepared/buses.csv
       md5: 77547fcc9bfdf49313cf4d0f30110544
@@ -843,16 +853,21 @@ stages:
       md5: 41d7c7866b461a25da1b2edd2a57cc99
       size: 934
     - path: src/data/check/gens.py
-      md5: 02877f6147e67ee464af95beb540cd8f
-      size: 1434
+      md5: 7742bfda15e6900383d9036e1fcb53c2
+      size: 1766
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     params:
       definitions.py:
         PLANT_MODE: true
+    outs:
+    - path: data/checks/gens.json
+      md5: bf10a4105e92a84f3d853d49e9c48c51
+      size: 171
   check_loads:
     cmd: python src/data/check/loads.py data/prepared/loads.csv data/prepared/buses.csv
+      data/checks/loads.json
     deps:
     - path: data/prepared/buses.csv
       md5: 77547fcc9bfdf49313cf4d0f30110544
@@ -861,13 +876,18 @@ stages:
       md5: 668187aa4d3797e4afd613b9d7977b63
       size: 1477
     - path: src/data/check/loads.py
-      md5: 5ef77d682b4fcbcc3021ce3dac05a452
-      size: 1421
+      md5: 4a5a26c0e3451110ad6245f9070560ce
+      size: 1684
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    outs:
+    - path: data/checks/loads.json
+      md5: e46b84670741ae62f6cfcb7ac88df54c
+      size: 171
   check_loads_ts:
     cmd: python src/data/check/loads_ts.py data/prepared/loads_ts.csv data/prepared/loads.csv
+      data/checks/loads_ts.json
     deps:
     - path: data/prepared/loads.csv
       md5: 668187aa4d3797e4afd613b9d7977b63
@@ -876,13 +896,18 @@ stages:
       md5: 7920ea37c5cb3310004378ec29547f12
       size: 43184187
     - path: src/data/check/loads_ts.py
-      md5: 6a5f95365230d5a3117e025fb809b1fb
-      size: 1949
+      md5: b1a30d0eb833a89225c3ddd8c96fa8b1
+      size: 2397
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    outs:
+    - path: data/checks/loads_ts.json
+      md5: fc4a87aba196bba5f5ceddc608566293
+      size: 291
   check_gens_ts:
     cmd: python src/data/check/gens_ts.py data/prepared/gens_ts.csv data/prepared/gens.csv
+      data/checks/gens_ts.json
     deps:
     - path: data/prepared/gens.csv
       md5: 41d7c7866b461a25da1b2edd2a57cc99
@@ -891,11 +916,15 @@ stages:
       md5: dae6135496d4728917ec5611a71bcdc0
       size: 33763305
     - path: src/data/check/gens_ts.py
-      md5: de3d417d5c946fd793b59963fd915993
-      size: 2831
+      md5: f55a4716e7ba6f2a0e6985eed499b7a0
+      size: 3196
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    outs:
+    - path: data/checks/gens_ts.json
+      md5: 1af60af5d7612d0cfbc670ba3e9fc23e
+      size: 485
   transform_outages_ts:
     cmd: python src/data/transform/outages_ts.py data/parsed/nrel118_outages_ts.csv
       data/transformed/outages_ts.csv
@@ -918,6 +947,7 @@ stages:
       size: 130963
   check_ts:
     cmd: python src/data/check/ts.py data/prepared/loads_ts.csv data/prepared/gens_ts.csv
+      data/checks/ts.json
     deps:
     - path: data/prepared/gens_ts.csv
       md5: dae6135496d4728917ec5611a71bcdc0
@@ -926,11 +956,15 @@ stages:
       md5: 7920ea37c5cb3310004378ec29547f12
       size: 43184187
     - path: src/data/check/ts.py
-      md5: 2b818b439749ea34391b053d8bb41827
-      size: 1565
+      md5: 207c065d7300789bb610b5ad53002401
+      size: 2130
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    outs:
+    - path: data/checks/ts.json
+      md5: 71b705972199cab529653432fb3f01b8
+      size: 221
   prepare_plants:
     cmd: python src/data/prepare_plants.py data/prepared/gens.csv data/prepared/plants.csv
     deps:
@@ -1058,6 +1092,27 @@ stages:
       data/prepared/loads.csv data/prepared/loads_ts.csv data/prepared/gens.csv data/prepared/gens_ts.csv
       models
     deps:
+    - path: data/checks/branches.json
+      md5: 03bcb7ab65da056a601dd55548dffa93
+      size: 423
+    - path: data/checks/buses.json
+      md5: d508299a3b461d6c61df01824601b283
+      size: 70
+    - path: data/checks/gens.json
+      md5: bf10a4105e92a84f3d853d49e9c48c51
+      size: 171
+    - path: data/checks/gens_ts.json
+      md5: 1af60af5d7612d0cfbc670ba3e9fc23e
+      size: 485
+    - path: data/checks/loads.json
+      md5: e46b84670741ae62f6cfcb7ac88df54c
+      size: 171
+    - path: data/checks/loads_ts.json
+      md5: fc4a87aba196bba5f5ceddc608566293
+      size: 291
+    - path: data/checks/ts.json
+      md5: 71b705972199cab529653432fb3f01b8
+      size: 221
     - path: data/prepared/branches.csv
       md5: 46ccaf632b0956df96fd96932e979b4d
       size: 13266

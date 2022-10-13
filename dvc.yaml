@@ -375,27 +375,34 @@ stages:
     desc: "Check that bus parameters are correct"
     cmd: python src/data/check/buses.py
       data/prepared/buses.csv
+      data/checks/buses.json
     deps:
       - data/prepared/buses.csv
       - src/data/check/buses.py
       - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/checks/buses.json
 
   check_branches:
     desc: "Check that branch parameters are correct"
     cmd: python src/data/check/branches.py
       data/prepared/branches.csv
       data/prepared/buses.csv
+      data/checks/branches.json
     deps:
       - data/prepared/branches.csv
       - data/prepared/buses.csv
       - src/data/check/branches.py
       - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/checks/branches.json
 
   check_gens:
     desc: "Check that generator parameters are correct"
     cmd: python src/data/check/gens.py
       data/prepared/gens.csv
       data/prepared/buses.csv
+      data/checks/gens.json
     deps:
       - data/prepared/gens.csv
       - data/prepared/buses.csv
@@ -404,50 +411,64 @@ stages:
     params:
       - definitions.py:
           - PLANT_MODE
+    outs:
+      - data/checks/gens.json
 
   check_loads:
     desc: "Check that load parameters are correct"
     cmd: python src/data/check/loads.py
       data/prepared/loads.csv
       data/prepared/buses.csv
+      data/checks/loads.json
     deps:
       - data/prepared/loads.csv
       - data/prepared/buses.csv
       - src/data/check/loads.py
       - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/checks/loads.json
 
   check_loads_ts:
     desc: "Check that load time-series are correct"
     cmd: python src/data/check/loads_ts.py
       data/prepared/loads_ts.csv
       data/prepared/loads.csv
+      data/checks/loads_ts.json
     deps:
       - data/prepared/loads_ts.csv
       - data/prepared/loads.csv
       - src/data/check/loads_ts.py
       - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/checks/loads_ts.json
 
   check_gens_ts:
     desc: "Check that gens time-series are correct"
     cmd: python src/data/check/gens_ts.py
       data/prepared/gens_ts.csv
       data/prepared/gens.csv
+      data/checks/gens_ts.json
     deps:
       - data/prepared/gens_ts.csv
       - data/prepared/gens.csv
       - src/data/check/gens_ts.py
       - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/checks/gens_ts.json
 
   check_ts:
     desc: "Check that time-series have the same date range"
     cmd: python src/data/check/ts.py
       data/prepared/loads_ts.csv
       data/prepared/gens_ts.csv
+      data/checks/ts.json
     deps:
       - data/prepared/loads_ts.csv
       - data/prepared/gens_ts.csv
       - src/data/check/ts.py
       - src/utils/data_loaders/load_df_data.py
+    outs:
+      - data/checks/ts.json
 
   sample_models:
     desc: "Start sampling of power flow cases"
@@ -466,6 +487,13 @@ stages:
       - data/prepared/loads_ts.csv
       - data/prepared/gens.csv
       - data/prepared/gens_ts.csv
+      - data/checks/buses.json
+      - data/checks/branches.json
+      - data/checks/gens.json
+      - data/checks/loads.json
+      - data/checks/loads_ts.json
+      - data/checks/gens_ts.json
+      - data/checks/ts.json
       - src/model/sampling.py
       - src/model/samplers/base.py
       - src/model/samplers/pandapower.py
