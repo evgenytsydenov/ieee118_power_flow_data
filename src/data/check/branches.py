@@ -1,4 +1,3 @@
-import json
 import sys
 
 import pandas as pd
@@ -8,19 +7,13 @@ from src.utils.data_loaders import load_df_data
 
 def check_branches(
     prepared_branches: str | pd.DataFrame, prepared_buses: str | pd.DataFrame
-) -> dict[str, bool]:
+) -> None:
     """Check that branch parameters are correct.
 
     Args:
         prepared_buses: Path or dataframe to prepared data.
         prepared_branches: Path or dataframe to prepared data.
-
-    Returns:
-        Report of checks.
     """
-    # To save results
-    report = {}
-
     # Load data
     branches = load_df_data(
         data=prepared_branches,
@@ -41,50 +34,40 @@ def check_branches(
 
     # Ensure there are no NaNs
     cols = [col for col in branches.columns if col != "trafo_ratio_rel"]
-    report["There are no NaNs"] = not branches[cols].isna().values.any()
+    assert not branches[cols].isna().values.any(), "There are NaNs in the dataset"
 
     # Ensure branch names are unique
-    report["Branch names are unique"] = branches["branch_name"].is_unique
+    assert branches["branch_name"].is_unique, "There are duplicated branch names"
 
     # Ensure combinations (from_bus, to_bus, parallel) are unique
-    report[
-        "There are no duplicated (from_bus, to_bus, parallel)"
-    ] = not branches.duplicated(subset=["from_bus", "to_bus", "parallel"]).any()
+    assert not branches.duplicated(
+        subset=["from_bus", "to_bus", "parallel"]
+    ).any(), "There are duplicated (from_bus, to_bus, parallel)"
 
-    # Ensure all values bus names are in the bus dataset
+    # Ensure all values (from_bus, to_bus) are in bus dataset
     for col in ["from_bus", "to_bus"]:
-        report[f"All bus names in column {col} are present in the bus description"] = (
+        assert (
             branches[col].isin(buses["bus_name"]).all()
-        )
+        ), f"There are unknown bus names in column {col}"
 
     # Correct impedance and current
-    report["There are no negative impedances or currents"] = not (
+    assert not (
         branches[["r_ohm", "x_ohm", "b_µs", "max_i_ka"]] < 0
-    ).values.any()
+    ).values.any(), "There are negative impedance or current"
 
     # Correct trafo_ratio_rel
-    report["There are no non-positive transformation ratios"] = (
+    assert (
         (branches["trafo_ratio_rel"] > 0) | branches["trafo_ratio_rel"].isna()
-    ).values.all()
-    return report
+    ).all(), "There are non-positive transformation ratios"
 
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 3:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "check_branches.py path_prepared_branches path_prepared_buses path_report\n"
+            "check_branches.py path_prepared_branches path_prepared_buses\n"
         )
 
     # Run
-    report = check_branches(prepared_branches=sys.argv[1], prepared_buses=sys.argv[2])
-
-    # Raise if any check fails
-    for test_name, result in report.items():
-        assert result, f"Failed: {test_name}"
-
-    # Save
-    path_report = sys.argv[3]
-    with open(path_report, "w") as file:
-        json.dump(report, file, indent=4, default=bool)
+    check_branches(prepared_branches=sys.argv[1], prepared_buses=sys.argv[2])

@@ -288,7 +288,8 @@ stages:
       md5: d4ee3d36028bea9aef988e86af59b237
       size: 130729
   parse_nrel118_loads_ts:
-    cmd: python src/data/parse/nrel118_loads_ts.py "data/raw/nrel118/Input files/RT/Load"
+    cmd:
+    - python src/data/parse/nrel118_loads_ts.py "data/raw/nrel118/Input files/RT/Load"
       data/parsed/nrel118_loads_ts.csv
     deps:
     - path: data/raw/nrel118/Input files/RT/Load
@@ -309,7 +310,8 @@ stages:
       md5: a5043d3975fd40512477c69bfb390663
       size: 1077481
   parse_nrel118_buses:
-    cmd: python src/data/parse/nrel118_buses.py data/raw/nrel118/additional-files-mti-118/Buses.csv
+    cmd:
+    - python src/data/parse/nrel118_buses.py data/raw/nrel118/additional-files-mti-118/Buses.csv
       data/parsed/nrel118_buses.csv
     deps:
     - path: data/raw/nrel118/additional-files-mti-118/Buses.csv
@@ -326,8 +328,8 @@ stages:
       md5: ad220a656112805888fca2c2508a9b42
       size: 2652
   parse_jeas118_loads:
-    cmd: python src/data/parse/jeas118_loads.py data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/jeas118_loads.csv
+    cmd:
+    - python src/data/parse/jeas118_loads.py data/raw/jeas118/JEAS_IEEE118.doc data/parsed/jeas118_loads.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.doc
       md5: 115121e48f534b9f720cecbdd6a9dbae
@@ -343,7 +345,8 @@ stages:
       md5: c6217df93e56a59da4e31a1096f46908
       size: 1775
   transform_loads:
-    cmd: python src/data/transform/loads.py data/parsed/nrel118_buses.csv data/parsed/jeas118_loads.csv
+    cmd:
+    - python src/data/transform/loads.py data/parsed/nrel118_buses.csv data/parsed/jeas118_loads.csv
       data/transformed/loads.csv
     deps:
     - path: data/parsed/jeas118_loads.csv
@@ -363,11 +366,19 @@ stages:
       md5: f8fe6e6c375fb087ce00113520a13005
       size: 4770
   prepare_loads:
-    cmd: python src/data/prepare/loads.py data/transformed/loads.csv data/prepared/loads.csv
+    cmd:
+    - python src/data/prepare/loads.py data/transformed/loads.csv data/prepared/loads.csv
+    - python src/data/check/loads.py data/prepared/loads.csv data/prepared/buses.csv
     deps:
+    - path: data/prepared/buses.csv
+      md5: 5671ead3bd792ba22544a0dd8014eb32
+      size: 4182
     - path: data/transformed/loads.csv
       md5: f8fe6e6c375fb087ce00113520a13005
       size: 4770
+    - path: src/data/check/loads.py
+      md5: 5ef77d682b4fcbcc3021ce3dac05a452
+      size: 1421
     - path: src/data/prepare/loads.py
       md5: 0bc84b1094e81578e977209b6a523a33
       size: 1330
@@ -379,7 +390,8 @@ stages:
       md5: cce41575ae2d8e679bc2b8a3ea083046
       size: 1658
   parse_nrel118_hydros_nondisp_ts:
-    cmd: python src/data/parse/nrel118_hydros_nondisp_ts.py data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+    cmd:
+    - python src/data/parse/nrel118_hydros_nondisp_ts.py data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
       data/parsed/nrel118_hydros_nondisp_ts.csv
     deps:
     - path: data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
@@ -412,7 +424,8 @@ stages:
       md5: e179b9380617cfc574cf25f0973531d4
       size: 1742
   parse_nrel118_hydros_ts:
-    cmd: python src/data/parse/nrel118_hydros_ts.py "data/raw/nrel118/Input files/Hydro"
+    cmd:
+    - python src/data/parse/nrel118_hydros_ts.py "data/raw/nrel118/Input files/Hydro"
       data/parsed/nrel118_hydros_ts.csv
     deps:
     - path: data/raw/nrel118/Input files/Hydro
@@ -446,7 +459,8 @@ stages:
       md5: 43f2922e902707d87f8b75dc74d58e12
       size: 8144163
   parse_nrel118_solars_ts:
-    cmd: python src/data/parse/nrel118_solars_ts.py "data/raw/nrel118/Input files/RT/Solar"
+    cmd:
+    - python src/data/parse/nrel118_solars_ts.py "data/raw/nrel118/Input files/RT/Solar"
       data/parsed/nrel118_solars_ts.csv
     deps:
     - path: data/raw/nrel118/Input files/RT/Solar
@@ -480,7 +494,8 @@ stages:
       md5: 9373859ed5df68630508f18981eb0fef
       size: 27574554
   parse_nrel118_lines:
-    cmd: python src/data/parse/nrel118_lines.py data/raw/nrel118/additional-files-mti-118/Lines.csv
+    cmd:
+    - python src/data/parse/nrel118_lines.py data/raw/nrel118/additional-files-mti-118/Lines.csv
       data/parsed/nrel118_lines.csv
     deps:
     - path: data/raw/nrel118/additional-files-mti-118/Lines.csv
@@ -497,7 +512,8 @@ stages:
       md5: 590bdf886b8abab4b8a3872c3cc34ac8
       size: 8930
   parse_nrel118_gens:
-    cmd: python src/data/parse/nrel118_gens.py data/raw/nrel118/additional-files-mti-118/Generators.csv
+    cmd:
+    - python src/data/parse/nrel118_gens.py data/raw/nrel118/additional-files-mti-118/Generators.csv
       data/parsed/nrel118_gens.csv
     deps:
     - path: data/raw/nrel118/additional-files-mti-118/Generators.csv
@@ -529,15 +545,23 @@ stages:
       md5: 349f63c22188842aa202eca7f87940b9
       size: 9392
   prepare_loads_ts:
-    cmd: python src/data/prepare/loads_ts.py data/transformed/loads.csv data/parsed/nrel118_loads_ts.csv
+    cmd:
+    - python src/data/prepare/loads_ts.py data/transformed/loads.csv data/parsed/nrel118_loads_ts.csv
       data/prepared/loads_ts.csv
+    - python src/data/check/loads_ts.py data/prepared/loads_ts.csv data/prepared/loads.csv
     deps:
     - path: data/parsed/nrel118_loads_ts.csv
       md5: a5043d3975fd40512477c69bfb390663
       size: 1077481
+    - path: data/prepared/loads.csv
+      md5: cce41575ae2d8e679bc2b8a3ea083046
+      size: 1658
     - path: data/transformed/loads.csv
       md5: f8fe6e6c375fb087ce00113520a13005
       size: 4770
+    - path: src/data/check/loads_ts.py
+      md5: d74d860c0928cb8d5eab3d826779aef2
+      size: 2229
     - path: src/data/prepare/loads_ts.py
       md5: 6e1b0c681a87ed0b8bd7cca80905caea
       size: 3130
@@ -557,7 +581,8 @@ stages:
       md5: 61dd343c9931dc009373143a15091208
       size: 44062587
   parse_nrel118_winds_ts:
-    cmd: python src/data/parse/nrel118_winds_ts.py "data/raw/nrel118/Input files/RT/Wind"
+    cmd:
+    - python src/data/parse/nrel118_winds_ts.py "data/raw/nrel118/Input files/RT/Wind"
       data/parsed/nrel118_winds_ts.csv
     deps:
     - path: data/raw/nrel118/Input files/RT/Wind
@@ -591,7 +616,8 @@ stages:
       md5: 70cffc02cabee227db48d9b2bd67e1c3
       size: 6842986
   parse_nrel118_escalators_ts:
-    cmd: python src/data/parse/nrel118_escalators_ts.py data/raw/nrel118/additional-files-mti-118/Escalators.csv
+    cmd:
+    - python src/data/parse/nrel118_escalators_ts.py data/raw/nrel118/additional-files-mti-118/Escalators.csv
       data/parsed/nrel118_escalators_ts.csv
     deps:
     - path: data/raw/nrel118/additional-files-mti-118/Escalators.csv
@@ -624,8 +650,8 @@ stages:
       md5: a092317222c8e903881c4421e0af5256
       size: 94712
   parse_jeas118_lines:
-    cmd: python src/data/parse/jeas118_lines.py data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/jeas118_lines.csv
+    cmd:
+    - python src/data/parse/jeas118_lines.py data/raw/jeas118/JEAS_IEEE118.doc data/parsed/jeas118_lines.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.doc
       md5: 115121e48f534b9f720cecbdd6a9dbae
@@ -641,8 +667,10 @@ stages:
       md5: 7dcc0c37421c2dc9e083ea86dc34a020
       size: 6928
   prepare_buses:
-    cmd: python src/data/prepare/buses.py data/parsed/nrel118_buses.csv data/raw/manual/bus_coordinates.csv
+    cmd:
+    - python src/data/prepare/buses.py data/parsed/nrel118_buses.csv data/raw/manual/bus_coordinates.csv
       data/prepared/buses.csv
+    - python src/data/check/buses.py data/prepared/buses.csv
     deps:
     - path: data/parsed/nrel118_buses.csv
       md5: ad220a656112805888fca2c2508a9b42
@@ -650,6 +678,9 @@ stages:
     - path: data/raw/manual/bus_coordinates.csv
       md5: 434edcb03d694eecdadaa14069b75cbb
       size: 2265
+    - path: src/data/check/buses.py
+      md5: 3064e49d0265cb7c9978f53e03ec0bf9
+      size: 1092
     - path: src/data/prepare/buses.py
       md5: 1c66067a1e405ae462e258dc797da73a
       size: 2120
@@ -661,8 +692,8 @@ stages:
       md5: 5671ead3bd792ba22544a0dd8014eb32
       size: 4182
   parse_jeas118_trafos:
-    cmd: python src/data/parse/jeas118_trafos.py data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/jeas118_trafos.csv
+    cmd:
+    - python src/data/parse/jeas118_trafos.py data/raw/jeas118/JEAS_IEEE118.doc data/parsed/jeas118_trafos.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.doc
       md5: 115121e48f534b9f720cecbdd6a9dbae
@@ -678,7 +709,8 @@ stages:
       md5: bade5c716b4b34899a98be5003f1e927
       size: 366
   parse_nrel118_outages_ts:
-    cmd: python src/data/parse/nrel118_outages_ts.py "data/raw/nrel118/Input files/Others/GenOut.csv"
+    cmd:
+    - python src/data/parse/nrel118_outages_ts.py "data/raw/nrel118/Input files/Others/GenOut.csv"
       data/parsed/nrel118_outages_ts.csv
     deps:
     - path: data/raw/nrel118/Input files/Others/GenOut.csv
@@ -711,8 +743,10 @@ stages:
       md5: b21ea2867869374e80deaba4fad47941
       size: 134375
   prepare_branches:
-    cmd: python src/data/prepare/branches.py data/parsed/nrel118_lines.csv data/parsed/jeas118_lines.csv
+    cmd:
+    - python src/data/prepare/branches.py data/parsed/nrel118_lines.csv data/parsed/jeas118_lines.csv
       data/parsed/jeas118_trafos.csv data/prepared/buses.csv data/prepared/branches.csv
+    - python src/data/check/branches.py data/prepared/branches.csv data/prepared/buses.csv
     deps:
     - path: data/parsed/jeas118_lines.csv
       md5: 7dcc0c37421c2dc9e083ea86dc34a020
@@ -726,6 +760,9 @@ stages:
     - path: data/prepared/buses.csv
       md5: 5671ead3bd792ba22544a0dd8014eb32
       size: 4182
+    - path: src/data/check/branches.py
+      md5: 89298250f55615935c087f866ee6e8a5
+      size: 2391
     - path: src/data/prepare/branches.py
       md5: a79916309bb8331ee5ebf5a8c54d7b29
       size: 3953
@@ -740,7 +777,8 @@ stages:
       md5: 111c9af019d338d78ed0f539166ebe1a
       size: 13720
   transform_gens_escalated_ts:
-    cmd: python src/data/transform/gens_escalated_ts.py data/parsed/nrel118_gens.csv
+    cmd:
+    - python src/data/transform/gens_escalated_ts.py data/parsed/nrel118_gens.csv
       data/parsed/nrel118_escalators_ts.csv data/transformed/gens_escalated_ts.csv
     deps:
     - path: data/parsed/nrel118_escalators_ts.csv
@@ -760,9 +798,14 @@ stages:
       md5: 9ce0a7069f3c91ba2529e4dcf2d89446
       size: 103835
   prepare_gens_ts:
-    cmd: python src/data/prepare/gens_ts.py data/transformed/gens.csv data/transformed/gens_ts.csv
+    cmd:
+    - python src/data/prepare/gens_ts.py data/transformed/gens.csv data/transformed/gens_ts.csv
       data/transformed/outages_ts.csv data/prepared/gens_ts.csv
+    - python src/data/check/gens_ts.py data/prepared/gens_ts.csv data/prepared/gens.csv
     deps:
+    - path: data/prepared/gens.csv
+      md5: db287982ae5407154074879b0a445240
+      size: 1485
     - path: data/transformed/gens.csv
       md5: f08f7f201014f1392eb0d5528b3a6660
       size: 12673
@@ -772,6 +815,9 @@ stages:
     - path: data/transformed/outages_ts.csv
       md5: 708649d096d6d2322729213b24cbd51f
       size: 134756
+    - path: src/data/check/gens_ts.py
+      md5: 1b1eeefab500024bd42b1a2e5ff992f9
+      size: 3082
     - path: src/data/prepare/gens_ts.py
       md5: 19c737ab2ee75ab270ae7b02ca37cd5b
       size: 4456
@@ -792,11 +838,19 @@ stages:
       md5: a4a167ca0d13d866a4884cd3c21379e6
       size: 34132295
   prepare_gens:
-    cmd: python src/data/prepare/gens.py data/transformed/gens.csv data/prepared/gens.csv
+    cmd:
+    - python src/data/prepare/gens.py data/transformed/gens.csv data/prepared/gens.csv
+    - python src/data/check/gens.py data/prepared/gens.csv data/prepared/buses.csv
     deps:
+    - path: data/prepared/buses.csv
+      md5: 5671ead3bd792ba22544a0dd8014eb32
+      size: 4182
     - path: data/transformed/gens.csv
       md5: f08f7f201014f1392eb0d5528b3a6660
       size: 12673
+    - path: src/data/check/gens.py
+      md5: 130af2627f9512725a634364f1ebf9e6
+      size: 1588
     - path: src/data/prepare/gens.py
       md5: e28b1605caa7013c60a2d21db2289ad7
       size: 1701
@@ -930,8 +984,8 @@ stages:
       md5: 1af60af5d7612d0cfbc670ba3e9fc23e
       size: 485
   transform_outages_ts:
-    cmd: python src/data/transform/outages_ts.py data/parsed/nrel118_outages_ts.csv
-      data/transformed/outages_ts.csv
+    cmd:
+    - python src/data/transform/outages_ts.py data/parsed/nrel118_outages_ts.csv data/transformed/outages_ts.csv
     deps:
     - path: data/parsed/nrel118_outages_ts.csv
       md5: b21ea2867869374e80deaba4fad47941
@@ -951,7 +1005,6 @@ stages:
       size: 134756
   check_ts:
     cmd: python src/data/check/ts.py data/prepared/loads_ts.csv data/prepared/gens_ts.csv
-      data/checks/ts.json
     deps:
     - path: data/prepared/gens_ts.csv
       md5: a4a167ca0d13d866a4884cd3c21379e6
@@ -960,15 +1013,11 @@ stages:
       md5: 61dd343c9931dc009373143a15091208
       size: 44062587
     - path: src/data/check/ts.py
-      md5: 207c065d7300789bb610b5ad53002401
-      size: 2130
+      md5: 2b818b439749ea34391b053d8bb41827
+      size: 1565
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
-    outs:
-    - path: data/checks/ts.json
-      md5: 71b705972199cab529653432fb3f01b8
-      size: 221
   prepare_plants:
     cmd: python src/data/prepare_plants.py data/prepared/gens.csv data/prepared/plants.csv
     deps:
@@ -998,7 +1047,8 @@ stages:
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
   transform_gens_ts:
-    cmd: python src/data/transform/gens_ts.py data/parsed/nrel118_winds_ts.csv data/parsed/nrel118_solars_ts.csv
+    cmd:
+    - python src/data/transform/gens_ts.py data/parsed/nrel118_winds_ts.csv data/parsed/nrel118_solars_ts.csv
       data/parsed/nrel118_hydros_ts.csv data/parsed/nrel118_hydros_nondisp_ts.csv
       data/transformed/gens_escalated_ts.csv data/prepared/buses.csv data/transformed/gens.csv
       data/transformed/gens_ts.csv
@@ -1073,7 +1123,8 @@ stages:
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
   transform_gens:
-    cmd: python src/data/transform/gens.py data/parsed/nrel118_gens.csv data/transformed/gens.csv
+    cmd:
+    - python src/data/transform/gens.py data/parsed/nrel118_gens.csv data/transformed/gens.csv
     deps:
     - path: data/parsed/nrel118_gens.csv
       md5: 349f63c22188842aa202eca7f87940b9
@@ -1092,31 +1143,11 @@ stages:
       md5: f08f7f201014f1392eb0d5528b3a6660
       size: 12673
   sample_models:
-    cmd: python src/model/sampling.py data/prepared/buses.csv data/prepared/branches.csv
+    cmd:
+    - python src/model/sampling.py data/prepared/buses.csv data/prepared/branches.csv
       data/prepared/loads.csv data/prepared/loads_ts.csv data/prepared/gens.csv data/prepared/gens_ts.csv
       models
     deps:
-    - path: data/checks/branches.json
-      md5: 03bcb7ab65da056a601dd55548dffa93
-      size: 423
-    - path: data/checks/buses.json
-      md5: d508299a3b461d6c61df01824601b283
-      size: 70
-    - path: data/checks/gens.json
-      md5: 019e002b0bf3b8056c4d7e168232c604
-      size: 212
-    - path: data/checks/gens_ts.json
-      md5: 1af60af5d7612d0cfbc670ba3e9fc23e
-      size: 485
-    - path: data/checks/loads.json
-      md5: e46b84670741ae62f6cfcb7ac88df54c
-      size: 171
-    - path: data/checks/loads_ts.json
-      md5: fc4a87aba196bba5f5ceddc608566293
-      size: 291
-    - path: data/checks/ts.json
-      md5: 71b705972199cab529653432fb3f01b8
-      size: 221
     - path: data/prepared/branches.csv
       md5: 111c9af019d338d78ed0f539166ebe1a
       size: 13720
@@ -1136,8 +1167,8 @@ stages:
       md5: 61dd343c9931dc009373143a15091208
       size: 44062587
     - path: src/model/samplers/base.py
-      md5: 56ac6f0daa02fb0beb07bf2ca190cda4
-      size: 5059
+      md5: 1baa17332320c8cb9488f52c8a7c1ea5
+      size: 5288
     - path: src/model/samplers/pandapower.py
       md5: 520b8d2918afae2d688070be67024b1c
       size: 9366

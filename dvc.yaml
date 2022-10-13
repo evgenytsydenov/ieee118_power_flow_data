@@ -1,9 +1,10 @@
 stages:
   parse_nrel118_buses:
     desc: "Parse bus data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_buses.py
-      data/raw/nrel118/additional-files-mti-118/Buses.csv
-      data/parsed/nrel118_buses.csv
+    cmd:
+      - python src/data/parse/nrel118_buses.py
+        data/raw/nrel118/additional-files-mti-118/Buses.csv
+        data/parsed/nrel118_buses.csv
     deps:
       - data/raw/nrel118/additional-files-mti-118/Buses.csv
       - src/data/parse/nrel118_buses.py
@@ -13,9 +14,10 @@ stages:
 
   parse_nrel118_lines:
     desc: "Parse line data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_lines.py
-      data/raw/nrel118/additional-files-mti-118/Lines.csv
-      data/parsed/nrel118_lines.csv
+    cmd:
+      - python src/data/parse/nrel118_lines.py
+        data/raw/nrel118/additional-files-mti-118/Lines.csv
+        data/parsed/nrel118_lines.csv
     deps:
       - data/raw/nrel118/additional-files-mti-118/Lines.csv
       - src/data/parse/nrel118_lines.py
@@ -25,9 +27,10 @@ stages:
 
   parse_jeas118_lines:
     desc: "Parse line data from the JEAS-118 dataset"
-    cmd: python src/data/parse/jeas118_lines.py
-      data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/jeas118_lines.csv
+    cmd:
+      - python src/data/parse/jeas118_lines.py
+        data/raw/jeas118/JEAS_IEEE118.doc
+        data/parsed/jeas118_lines.csv
     deps:
       - data/raw/jeas118/JEAS_IEEE118.doc
       - src/data/parse/jeas118_lines.py
@@ -37,36 +40,39 @@ stages:
 
   parse_jeas118_trafos:
     desc: "Parse transformer data from the JEAS-118 dataset"
-    cmd: python src/data/parse/jeas118_trafos.py
-      data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/jeas118_trafos.csv
+    cmd:
+      - python src/data/parse/jeas118_trafos.py
+        data/raw/jeas118/JEAS_IEEE118.doc
+        data/parsed/jeas118_trafos.csv
     deps:
-      - src/data/parse/jeas118_trafos.py
       - data/raw/jeas118/JEAS_IEEE118.doc
+      - src/data/parse/jeas118_trafos.py
       - src/utils/converters.py
     outs:
       - data/parsed/jeas118_trafos.csv
 
   parse_jeas118_loads:
     desc: "Parse load data from the JEAS-118 dataset"
-    cmd: python src/data/parse/jeas118_loads.py
-      data/raw/jeas118/JEAS_IEEE118.doc
-      data/parsed/jeas118_loads.csv
+    cmd:
+      - python src/data/parse/jeas118_loads.py
+        data/raw/jeas118/JEAS_IEEE118.doc
+        data/parsed/jeas118_loads.csv
     deps:
-      - src/data/parse/jeas118_loads.py
       - data/raw/jeas118/JEAS_IEEE118.doc
+      - src/data/parse/jeas118_loads.py
       - src/utils/converters.py
     outs:
       - data/parsed/jeas118_loads.csv
 
   parse_nrel118_loads_ts:
     desc: "Parse time-series load data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_loads_ts.py
-      "data/raw/nrel118/Input files/RT/Load"
-      data/parsed/nrel118_loads_ts.csv
+    cmd:
+      - python src/data/parse/nrel118_loads_ts.py
+        "data/raw/nrel118/Input files/RT/Load"
+        data/parsed/nrel118_loads_ts.csv
     deps:
-      - src/data/parse/nrel118_loads_ts.py
       - data/raw/nrel118/Input files/RT/Load
+      - src/data/parse/nrel118_loads_ts.py
       - src/utils/data_loaders/load_ts_data.py
     params:
       - definitions.py:
@@ -76,12 +82,13 @@ stages:
 
   parse_nrel118_gens:
     desc: "Parse generation data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_gens.py
-      data/raw/nrel118/additional-files-mti-118/Generators.csv
-      data/parsed/nrel118_gens.csv
+    cmd:
+      - python src/data/parse/nrel118_gens.py
+        data/raw/nrel118/additional-files-mti-118/Generators.csv
+        data/parsed/nrel118_gens.csv
     deps:
-      - src/data/parse/nrel118_gens.py
       - data/raw/nrel118/additional-files-mti-118/Generators.csv
+      - src/data/parse/nrel118_gens.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -91,12 +98,13 @@ stages:
 
   parse_nrel118_escalators_ts:
     desc: "Parse escalator time-series data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_escalators_ts.py
-      data/raw/nrel118/additional-files-mti-118/Escalators.csv
-      data/parsed/nrel118_escalators_ts.csv
+    cmd:
+      - python src/data/parse/nrel118_escalators_ts.py
+        data/raw/nrel118/additional-files-mti-118/Escalators.csv
+        data/parsed/nrel118_escalators_ts.csv
     deps:
-      - src/data/parse/nrel118_escalators_ts.py
       - data/raw/nrel118/additional-files-mti-118/Escalators.csv
+      - src/data/parse/nrel118_escalators_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -107,12 +115,13 @@ stages:
 
   parse_nrel118_hydros_nondisp_ts:
     desc: "Parse hydro plants time-series data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_hydros_nondisp_ts.py
-      data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
-      data/parsed/nrel118_hydros_nondisp_ts.csv
+    cmd:
+      - python src/data/parse/nrel118_hydros_nondisp_ts.py
+        data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+        data/parsed/nrel118_hydros_nondisp_ts.csv
     deps:
-      - src/data/parse/nrel118_hydros_nondisp_ts.py
       - data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
+      - src/data/parse/nrel118_hydros_nondisp_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -123,12 +132,13 @@ stages:
 
   parse_nrel118_hydros_ts:
     desc: "Parse time-series hydro plants data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_hydros_ts.py
-      "data/raw/nrel118/Input files/Hydro"
-      data/parsed/nrel118_hydros_ts.csv
+    cmd:
+      - python src/data/parse/nrel118_hydros_ts.py
+        "data/raw/nrel118/Input files/Hydro"
+        data/parsed/nrel118_hydros_ts.csv
     deps:
-      - src/data/parse/nrel118_hydros_ts.py
       - data/raw/nrel118/Input files/Hydro
+      - src/data/parse/nrel118_hydros_ts.py
       - src/utils/data_loaders/load_ts_data.py
     params:
       - definitions.py:
@@ -139,12 +149,13 @@ stages:
 
   parse_nrel118_solars_ts:
     desc: "Parse time-series solar plants data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_solars_ts.py
-      "data/raw/nrel118/Input files/RT/Solar"
-      data/parsed/nrel118_solars_ts.csv
+    cmd:
+      - python src/data/parse/nrel118_solars_ts.py
+        "data/raw/nrel118/Input files/RT/Solar"
+        data/parsed/nrel118_solars_ts.csv
     deps:
-      - src/data/parse/nrel118_solars_ts.py
       - data/raw/nrel118/Input files/RT/Solar
+      - src/data/parse/nrel118_solars_ts.py
       - src/utils/data_loaders/load_ts_data.py
     params:
       - definitions.py:
@@ -155,12 +166,13 @@ stages:
 
   parse_nrel118_winds_ts:
     desc: "Parse time-series wind plants data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_winds_ts.py
-      "data/raw/nrel118/Input files/RT/Wind"
-      data/parsed/nrel118_winds_ts.csv
+    cmd:
+      - python src/data/parse/nrel118_winds_ts.py
+        "data/raw/nrel118/Input files/RT/Wind"
+        data/parsed/nrel118_winds_ts.csv
     deps:
-      - src/data/parse/nrel118_winds_ts.py
       - data/raw/nrel118/Input files/RT/Wind
+      - src/data/parse/nrel118_winds_ts.py
       - src/utils/data_loaders/load_ts_data.py
     params:
       - definitions.py:
@@ -171,12 +183,13 @@ stages:
 
   parse_nrel118_outages_ts:
     desc: "Parse time-series outage data from the NREL-118 dataset"
-    cmd: python src/data/parse/nrel118_outages_ts.py
-      "data/raw/nrel118/Input files/Others/GenOut.csv"
-      data/parsed/nrel118_outages_ts.csv
+    cmd:
+      - python src/data/parse/nrel118_outages_ts.py
+        "data/raw/nrel118/Input files/Others/GenOut.csv"
+        data/parsed/nrel118_outages_ts.csv
     deps:
-      - src/data/parse/nrel118_outages_ts.py
       - data/raw/nrel118/Input files/Others/GenOut.csv
+      - src/data/parse/nrel118_outages_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -187,10 +200,11 @@ stages:
 
   transform_loads:
     desc: "Combine necessary load variables for preparation stages"
-    cmd: python src/data/transform/loads.py
-      data/parsed/nrel118_buses.csv
-      data/parsed/jeas118_loads.csv
-      data/transformed/loads.csv
+    cmd:
+      - python src/data/transform/loads.py
+        data/parsed/nrel118_buses.csv
+        data/parsed/jeas118_loads.csv
+        data/transformed/loads.csv
     deps:
       - data/parsed/nrel118_buses.csv
       - data/parsed/jeas118_loads.csv
@@ -201,9 +215,10 @@ stages:
 
   transform_gens:
     desc: "Group generators into power plants if plant mode is enabled."
-    cmd: python src/data/transform/gens.py
-      data/parsed/nrel118_gens.csv
-      data/transformed/gens.csv
+    cmd:
+      - python src/data/transform/gens.py
+        data/parsed/nrel118_gens.csv
+        data/transformed/gens.csv
     deps:
       - data/parsed/nrel118_gens.csv
       - src/data/transform/gens.py
@@ -216,9 +231,10 @@ stages:
 
   transform_outages_ts:
     desc: "Modify dataset with outages"
-    cmd: python src/data/transform/outages_ts.py
-      data/parsed/nrel118_outages_ts.csv
-      data/transformed/outages_ts.csv
+    cmd:
+      - python src/data/transform/outages_ts.py
+        data/parsed/nrel118_outages_ts.csv
+        data/transformed/outages_ts.csv
     deps:
       - data/parsed/nrel118_outages_ts.csv
       - src/data/transform/outages_ts.py
@@ -231,10 +247,11 @@ stages:
 
   transform_gens_escalated_ts:
     desc: "Combine max output of generators and escalator values"
-    cmd: python src/data/transform/gens_escalated_ts.py
-      data/parsed/nrel118_gens.csv
-      data/parsed/nrel118_escalators_ts.csv
-      data/transformed/gens_escalated_ts.csv
+    cmd:
+      - python src/data/transform/gens_escalated_ts.py
+        data/parsed/nrel118_gens.csv
+        data/parsed/nrel118_escalators_ts.csv
+        data/transformed/gens_escalated_ts.csv
     deps:
       - data/parsed/nrel118_gens.csv
       - data/parsed/nrel118_escalators_ts.csv
@@ -245,17 +262,17 @@ stages:
 
   transform_gens_ts:
     desc: "Modify generation time-series data"
-    cmd: python src/data/transform/gens_ts.py
-      data/parsed/nrel118_winds_ts.csv
-      data/parsed/nrel118_solars_ts.csv
-      data/parsed/nrel118_hydros_ts.csv
-      data/parsed/nrel118_hydros_nondisp_ts.csv
-      data/transformed/gens_escalated_ts.csv
-      data/prepared/buses.csv
-      data/transformed/gens.csv
-      data/transformed/gens_ts.csv
+    cmd:
+      - python src/data/transform/gens_ts.py
+        data/parsed/nrel118_winds_ts.csv
+        data/parsed/nrel118_solars_ts.csv
+        data/parsed/nrel118_hydros_ts.csv
+        data/parsed/nrel118_hydros_nondisp_ts.csv
+        data/transformed/gens_escalated_ts.csv
+        data/prepared/buses.csv
+        data/transformed/gens.csv
+        data/transformed/gens_ts.csv
     deps:
-      - src/data/transform/gens_ts.py
       - data/parsed/nrel118_winds_ts.csv
       - data/parsed/nrel118_solars_ts.csv
       - data/parsed/nrel118_hydros_ts.csv
@@ -263,6 +280,7 @@ stages:
       - data/transformed/gens_escalated_ts.csv
       - data/prepared/buses.csv
       - data/transformed/gens.csv
+      - src/data/transform/gens_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -272,32 +290,41 @@ stages:
 
   prepare_buses:
     desc: "Build final bus dataset"
-    cmd: python src/data/prepare/buses.py
-      data/parsed/nrel118_buses.csv
-      data/raw/manual/bus_coordinates.csv
-      data/prepared/buses.csv
+    cmd:
+      - python src/data/prepare/buses.py
+        data/parsed/nrel118_buses.csv
+        data/raw/manual/bus_coordinates.csv
+        data/prepared/buses.csv
+      - python src/data/check/buses.py
+        data/prepared/buses.csv
     deps:
       - data/parsed/nrel118_buses.csv
       - data/raw/manual/bus_coordinates.csv
       - src/data/prepare/buses.py
+      - src/data/check/buses.py
       - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/buses.csv
 
   prepare_branches:
     desc: "Build final dataset with line and transformer info"
-    cmd: python src/data/prepare/branches.py
-      data/parsed/nrel118_lines.csv
-      data/parsed/jeas118_lines.csv
-      data/parsed/jeas118_trafos.csv
-      data/prepared/buses.csv
-      data/prepared/branches.csv
+    cmd:
+      - python src/data/prepare/branches.py
+        data/parsed/nrel118_lines.csv
+        data/parsed/jeas118_lines.csv
+        data/parsed/jeas118_trafos.csv
+        data/prepared/buses.csv
+        data/prepared/branches.csv
+      - python src/data/check/branches.py
+        data/prepared/branches.csv
+        data/prepared/buses.csv
     deps:
-      - src/data/prepare/branches.py
       - data/parsed/nrel118_lines.csv
       - data/parsed/jeas118_lines.csv
       - data/parsed/jeas118_trafos.csv
       - data/prepared/buses.csv
+      - src/data/prepare/branches.py
+      - src/data/check/branches.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -307,26 +334,38 @@ stages:
 
   prepare_loads:
     desc: "Build final dataset with load info"
-    cmd: python src/data/prepare/loads.py
-      data/transformed/loads.csv
-      data/prepared/loads.csv
+    cmd:
+      - python src/data/prepare/loads.py
+        data/transformed/loads.csv
+        data/prepared/loads.csv
+      - python src/data/check/loads.py
+        data/prepared/loads.csv
+        data/prepared/buses.csv
     deps:
-      - src/data/prepare/loads.py
       - data/transformed/loads.csv
+      - data/prepared/buses.csv
+      - src/data/prepare/loads.py
+      - src/data/check/loads.py
       - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/loads.csv
 
   prepare_loads_ts:
     desc: "Build final dataset with load time-series data"
-    cmd: python src/data/prepare/loads_ts.py
-      data/transformed/loads.csv
-      data/parsed/nrel118_loads_ts.csv
-      data/prepared/loads_ts.csv
+    cmd:
+      - python src/data/prepare/loads_ts.py
+        data/transformed/loads.csv
+        data/parsed/nrel118_loads_ts.csv
+        data/prepared/loads_ts.csv
+      - python src/data/check/loads_ts.py
+        data/prepared/loads_ts.csv
+        data/prepared/loads.csv
     deps:
-      - src/data/prepare/loads_ts.py
+      - data/prepared/loads.csv
       - data/transformed/loads.csv
       - data/parsed/nrel118_loads_ts.csv
+      - src/data/prepare/loads_ts.py
+      - src/data/check/loads_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -338,12 +377,18 @@ stages:
 
   prepare_gens:
     desc: "Build final dataset with generation info"
-    cmd: python src/data/prepare/gens.py
-      data/transformed/gens.csv
-      data/prepared/gens.csv
+    cmd:
+      - python src/data/prepare/gens.py
+        data/transformed/gens.csv
+        data/prepared/gens.csv
+      - python src/data/check/gens.py
+        data/prepared/gens.csv
+        data/prepared/buses.csv
     deps:
-      - src/data/prepare/gens.py
+      - data/prepared/buses.csv
       - data/transformed/gens.csv
+      - src/data/prepare/gens.py
+      - src/data/check/gens.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -353,16 +398,22 @@ stages:
 
   prepare_gens_ts:
     desc: "Build final dataset with generation time-series data"
-    cmd: python src/data/prepare/gens_ts.py
-      data/transformed/gens.csv
-      data/transformed/gens_ts.csv
-      data/transformed/outages_ts.csv
-      data/prepared/gens_ts.csv
+    cmd:
+      - python src/data/prepare/gens_ts.py
+        data/transformed/gens.csv
+        data/transformed/gens_ts.csv
+        data/transformed/outages_ts.csv
+        data/prepared/gens_ts.csv
+      - python src/data/check/gens_ts.py
+        data/prepared/gens_ts.csv
+        data/prepared/gens.csv
     deps:
-      - src/data/prepare/gens_ts.py
+      - data/prepared/gens.csv
       - data/transformed/gens.csv
       - data/transformed/gens_ts.csv
       - data/transformed/outages_ts.csv
+      - src/data/prepare/gens_ts.py
+      - src/data/check/gens_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
@@ -373,115 +424,17 @@ stages:
     outs:
       - data/prepared/gens_ts.csv
 
-  check_buses:
-    desc: "Check that bus parameters are correct"
-    cmd: python src/data/check/buses.py
-      data/prepared/buses.csv
-      data/checks/buses.json
-    deps:
-      - data/prepared/buses.csv
-      - src/data/check/buses.py
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/checks/buses.json
-
-  check_branches:
-    desc: "Check that branch parameters are correct"
-    cmd: python src/data/check/branches.py
-      data/prepared/branches.csv
-      data/prepared/buses.csv
-      data/checks/branches.json
-    deps:
-      - data/prepared/branches.csv
-      - data/prepared/buses.csv
-      - src/data/check/branches.py
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/checks/branches.json
-
-  check_gens:
-    desc: "Check that generator parameters are correct"
-    cmd: python src/data/check/gens.py
-      data/prepared/gens.csv
-      data/prepared/buses.csv
-      data/checks/gens.json
-    deps:
-      - data/prepared/gens.csv
-      - data/prepared/buses.csv
-      - src/data/check/gens.py
-      - src/utils/data_loaders/load_df_data.py
-    params:
-      - definitions.py:
-          - PLANT_MODE
-    outs:
-      - data/checks/gens.json
-
-  check_loads:
-    desc: "Check that load parameters are correct"
-    cmd: python src/data/check/loads.py
-      data/prepared/loads.csv
-      data/prepared/buses.csv
-      data/checks/loads.json
-    deps:
-      - data/prepared/loads.csv
-      - data/prepared/buses.csv
-      - src/data/check/loads.py
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/checks/loads.json
-
-  check_loads_ts:
-    desc: "Check that load time-series are correct"
-    cmd: python src/data/check/loads_ts.py
-      data/prepared/loads_ts.csv
-      data/prepared/loads.csv
-      data/checks/loads_ts.json
-    deps:
-      - data/prepared/loads_ts.csv
-      - data/prepared/loads.csv
-      - src/data/check/loads_ts.py
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/checks/loads_ts.json
-
-  check_gens_ts:
-    desc: "Check that gens time-series are correct"
-    cmd: python src/data/check/gens_ts.py
-      data/prepared/gens_ts.csv
-      data/prepared/gens.csv
-      data/checks/gens_ts.json
-    deps:
-      - data/prepared/gens_ts.csv
-      - data/prepared/gens.csv
-      - src/data/check/gens_ts.py
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/checks/gens_ts.json
-
-  check_ts:
-    desc: "Check that time-series have the same date range"
-    cmd: python src/data/check/ts.py
-      data/prepared/loads_ts.csv
-      data/prepared/gens_ts.csv
-      data/checks/ts.json
-    deps:
-      - data/prepared/loads_ts.csv
-      - data/prepared/gens_ts.csv
-      - src/data/check/ts.py
-      - src/utils/data_loaders/load_df_data.py
-    outs:
-      - data/checks/ts.json
-
   sample_models:
     desc: "Start sampling of power flow cases"
-    cmd: python src/model/sampling.py
-      data/prepared/buses.csv
-      data/prepared/branches.csv
-      data/prepared/loads.csv
-      data/prepared/loads_ts.csv
-      data/prepared/gens.csv
-      data/prepared/gens_ts.csv
-      models
+    cmd:
+      - python src/model/sampling.py
+        data/prepared/buses.csv
+        data/prepared/branches.csv
+        data/prepared/loads.csv
+        data/prepared/loads_ts.csv
+        data/prepared/gens.csv
+        data/prepared/gens_ts.csv
+        models
     deps:
       - data/prepared/buses.csv
       - data/prepared/branches.csv
@@ -489,13 +442,6 @@ stages:
       - data/prepared/loads_ts.csv
       - data/prepared/gens.csv
       - data/prepared/gens_ts.csv
-      - data/checks/buses.json
-      - data/checks/branches.json
-      - data/checks/gens.json
-      - data/checks/loads.json
-      - data/checks/loads_ts.json
-      - data/checks/gens_ts.json
-      - data/checks/ts.json
       - src/model/sampling.py
       - src/model/samplers/base.py
       - src/model/samplers/pandapower.py

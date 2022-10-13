@@ -102,7 +102,12 @@ class BaseRegimeSampler(ABC):
         )
 
         # Datetime ranges in load and gen time-series are equal
-        self._timestamps = sorted(self._gens_ts["datetime"].unique())
+        load_timestamps = sorted(self._loads_ts["datetime"].unique())
+        gen_timestamps = sorted(self._gens_ts["datetime"].unique())
+        assert (
+            load_timestamps == gen_timestamps
+        ), "Gen and load timestamps are different"
+        self._timestamps = gen_timestamps
 
     def start(self, path_models: str, display: bool = False) -> None:
         """Start sampling process.
