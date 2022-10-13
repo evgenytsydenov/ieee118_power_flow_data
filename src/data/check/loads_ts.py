@@ -59,7 +59,7 @@ if __name__ == "__main__":
     # Check params
     if len(sys.argv) != 3:
         raise ValueError(
-            "Incorrect arguments. Usage:\n\tpython check_loads_ts.py "
+            "Incorrect arguments. Usage:\n\tpython loads_ts.py "
             "path_prepared_loads_ts path_prepared_loads\n"
         )
 
