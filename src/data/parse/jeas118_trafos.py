@@ -21,7 +21,7 @@ def parse_jeas118_trafos(
         Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
     dtypes = {
-        "Transformer No.": int,
+        "Transformer No.": str,
         "From Bus": str,
         "To\nBus": str,
         "Circuit ID": int,
@@ -53,12 +53,12 @@ def parse_jeas118_trafos(
     )
 
     # Change trafo and bus names
-    trafos.sort_values(by="branch_name", inplace=True, ignore_index=True)
-    trafos["branch_name"] = "trafo_" + trafos["branch_name"].astype(str)
-    trafos["from_bus"] = "bus_" + trafos["from_bus"]
-    trafos["to_bus"] = "bus_" + trafos["to_bus"]
+    trafos["branch_name"] = "trafo_" + trafos["branch_name"].str.zfill(3)
+    trafos["from_bus"] = "bus_" + trafos["from_bus"].str.zfill(3)
+    trafos["to_bus"] = "bus_" + trafos["to_bus"].str.zfill(3)
 
     # Return results
+    trafos.sort_values(by="branch_name", inplace=True, ignore_index=True)
     if path_parsed_data:
         trafos.to_csv(path_parsed_data, header=True, index=False)
     else:

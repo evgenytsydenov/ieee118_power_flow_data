@@ -96,6 +96,7 @@ def prepare_branches(
         "trafo_ratio_rel",
         "max_i_ka",
     ]
+    branches.sort_values("branch_name", inplace=True, ignore_index=True)
     if path_prepared_data:
         branches[cols].to_csv(path_prepared_data, header=True, index=False)
     else:

@@ -30,15 +30,15 @@ def parse_nrel118_buses(
         },
         inplace=True,
     )
-    buses.sort_values(by="bus_name", inplace=True, ignore_index=True)
 
     # Unify bus names
-    buses["bus_name"] = "bus_" + buses["bus_name"].str.lstrip("bus0")
+    buses["bus_name"] = "bus_" + buses["bus_name"].str.lstrip("bus").str.zfill(3)
 
     # Convert regions to lowercase
     buses["region"] = buses["region"].str.lower()
 
     # Return results
+    buses.sort_values(by="bus_name", inplace=True, ignore_index=True)
     if path_parsed_data:
         buses.to_csv(path_parsed_data, header=True, index=False)
     else:

@@ -37,7 +37,7 @@ def transform_loads(
     # Create load dataset
     non_loads = nrel118_buses[nrel118_buses["load_participation_factor"] == 0]
     loads = nrel118_buses.drop(index=non_loads.index).reset_index(drop=True)
-    loads["load_name"] = "load_" + (loads.index + 1).astype(str)
+    loads["load_name"] = "load_" + (loads.index + 1).astype(str).str.zfill(3)
 
     # Calculate load power factor at each bus
     jeas118_loads["load_power_factor"] = np.cos(
@@ -55,6 +55,7 @@ def transform_loads(
         "load_participation_factor",
         "load_power_factor",
     ]
+    loads.sort_values("load_name", inplace=True, ignore_index=True)
     if path_transformed_data:
         loads[cols].to_csv(path_transformed_data, header=True, index=False)
     else:

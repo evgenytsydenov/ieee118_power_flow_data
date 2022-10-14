@@ -40,14 +40,16 @@ def parse_nrel118_lines(
         },
         inplace=True,
     )
-    lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
 
     # Unify line and bus names
-    lines["branch_name"] = "branch_" + lines["branch_name"].str.lstrip("line0")
-    lines["from_bus"] = "bus_" + lines["from_bus"].str.lstrip("bus0")
-    lines["to_bus"] = "bus_" + lines["to_bus"].str.lstrip("bus0")
+    lines["branch_name"] = "branch_" + lines["branch_name"].str.lstrip(
+        "line"
+    ).str.zfill(3)
+    lines["from_bus"] = "bus_" + lines["from_bus"].str.lstrip("bus").str.zfill(3)
+    lines["to_bus"] = "bus_" + lines["to_bus"].str.lstrip("bus").str.zfill(3)
 
     # Return results
+    lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
     if path_parsed_data:
         lines.to_csv(path_parsed_data, header=True, index=False)
     else:

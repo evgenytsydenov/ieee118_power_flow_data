@@ -96,12 +96,22 @@ def prepare_gens_ts(
         gens.index.names = ["gen_name", "datetime"]
 
     # Return results
+    cols = [
+        "datetime",
+        "gen_name",
+        "in_service",
+        "p_mw",
+        "v_set_kv",
+        "q_max_mvar",
+        "q_min_mvar",
+    ]
+    gens = gens.reset_index().sort_values(["datetime", "gen_name"], ignore_index=True)
     if path_prepared_data:
-        gens.to_csv(
-            path_prepared_data, header=True, index=True, date_format=DATE_FORMAT
+        gens[cols].to_csv(
+            path_prepared_data, header=True, index=False, date_format=DATE_FORMAT
         )
     else:
-        return gens
+        return gens[cols]
 
 
 if __name__ == "__main__":

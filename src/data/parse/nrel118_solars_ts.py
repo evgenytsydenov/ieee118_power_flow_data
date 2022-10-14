@@ -25,12 +25,13 @@ def parse_nrel118_solars_ts(
 
     # Change column names
     solar_ts.rename(columns={"name": "gen_name", "value": "p_mw"}, inplace=True)
-    solar_ts["gen_name"] = GEN_TYPES["Solar"] + "_" + solar_ts["gen_name"]
+    solar_ts["gen_name"] = GEN_TYPES["Solar"] + "_" + solar_ts["gen_name"].str.zfill(3)
 
     # Unify date format
     solar_ts["datetime"] = solar_ts["datetime"].dt.strftime(DATE_FORMAT)
 
     # Return results
+    solar_ts.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
     if path_parsed_data:
         solar_ts.to_csv(path_parsed_data, header=True, index=False)
     else:

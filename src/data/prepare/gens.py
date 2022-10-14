@@ -33,10 +33,12 @@ def prepare_gens(
         gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
 
     # Return results
+    cols = ["gen_name", "bus_name"]
+    gens.sort_values("gen_name", inplace=True, ignore_index=True)
     if path_prepared_data:
-        gens.to_csv(path_prepared_data, header=True, index=False)
+        gens[cols].to_csv(path_prepared_data, header=True, index=False)
     else:
-        return gens
+        return gens[cols]
 
 
 if __name__ == "__main__":

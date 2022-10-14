@@ -40,6 +40,7 @@ def transform_gens_escalated_ts(
     gens["p_mw"] = gens["escalator_ratio"] * gens["max_p_mw"]
 
     # Return results
+    gens.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
     cols = ["datetime", "gen_name", "p_mw"]
     if path_transformed_data:
         gens[cols].to_csv(path_transformed_data, header=True, index=False)

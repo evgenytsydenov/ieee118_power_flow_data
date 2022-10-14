@@ -26,10 +26,12 @@ def prepare_loads(
     )
 
     # Return results
+    cols = ["load_name", "bus_name"]
+    loads.sort_values("load_name", inplace=True, ignore_index=True)
     if path_prepared_data:
-        loads.to_csv(path_prepared_data, header=True, index=False)
+        loads[cols].to_csv(path_prepared_data, header=True, index=False)
     else:
-        return loads
+        return loads[cols]
 
 
 if __name__ == "__main__":

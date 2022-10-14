@@ -49,7 +49,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
         # Add slack buses
         pp.create_ext_grid(
             self._model,
-            bus=self._bus_name_to_id["bus_69"],
+            bus=self._bus_name_to_id["bus_069"],
             vm_pu=1,
             va_degree=0,
             in_service=True,

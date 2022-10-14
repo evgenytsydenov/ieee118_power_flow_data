@@ -21,7 +21,7 @@ def parse_jeas118_lines(
         Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
     dtypes = {
-        "Line No.": int,
+        "Line No.": str,
         "From Bus": str,
         "To Bus": str,
         "Circuit ID": int,
@@ -53,12 +53,12 @@ def parse_jeas118_lines(
     )
 
     # Change line and bus names
-    lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
-    lines["branch_name"] = "branch_" + lines["branch_name"].astype(str)
-    lines["from_bus"] = "bus_" + lines["from_bus"]
-    lines["to_bus"] = "bus_" + lines["to_bus"]
+    lines["branch_name"] = "branch_" + lines["branch_name"].str.zfill(3)
+    lines["from_bus"] = "bus_" + lines["from_bus"].str.zfill(3)
+    lines["to_bus"] = "bus_" + lines["to_bus"].str.zfill(3)
 
     # Return results
+    lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
     if path_parsed_data:
         lines.to_csv(path_parsed_data, header=True, index=False)
     else:

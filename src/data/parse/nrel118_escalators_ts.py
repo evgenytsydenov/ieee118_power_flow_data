@@ -36,9 +36,7 @@ def parse_nrel118_escalators_ts(
     name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
     names = escalators["gen_name"].str.extract(pat=name_pattern, expand=True)
     names["gen_type"].replace(GEN_TYPES, inplace=True)
-    escalators["gen_name"] = (
-        names["gen_type"] + "_" + names["gen_number"].str.lstrip("0")
-    )
+    escalators["gen_name"] = names["gen_type"] + "_" + names["gen_number"].str.zfill(3)
 
     # Convert datetime
     escalators["year"] = 2024
@@ -49,6 +47,7 @@ def parse_nrel118_escalators_ts(
     ).dt.strftime(DATE_FORMAT)
 
     # Return results
+    escalators.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
     cols = ["datetime", "gen_name", "escalator_ratio"]
     if path_parsed_data:
         escalators[cols].to_csv(path_parsed_data, header=True, index=False)

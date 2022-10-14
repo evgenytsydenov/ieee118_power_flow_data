@@ -25,12 +25,13 @@ def parse_nrel118_winds_ts(
 
     # Change column names
     wind_ts.rename(columns={"name": "gen_name", "value": "p_mw"}, inplace=True)
-    wind_ts["gen_name"] = GEN_TYPES["Wind"] + "_" + wind_ts["gen_name"]
+    wind_ts["gen_name"] = GEN_TYPES["Wind"] + "_" + wind_ts["gen_name"].str.zfill(3)
 
     # Unify date format
     wind_ts["datetime"] = wind_ts["datetime"].dt.strftime(DATE_FORMAT)
 
     # Return results
+    wind_ts.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
     if path_parsed_data:
         wind_ts.to_csv(path_parsed_data, header=True, index=False)
     else:

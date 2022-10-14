@@ -39,7 +39,7 @@ def parse_nrel118_hydros_nondisp_ts(
     name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
     names = hydros["gen_name"].str.extract(pat=name_pattern, expand=True)
     names["gen_type"].replace(GEN_TYPES, inplace=True)
-    hydros["gen_name"] = names["gen_type"] + "_" + names["gen_number"]
+    hydros["gen_name"] = names["gen_type"] + "_" + names["gen_number"].str.zfill(3)
 
     # Convert datetime
     hydros["year"] = 2024
@@ -50,6 +50,7 @@ def parse_nrel118_hydros_nondisp_ts(
     )
 
     # Return results
+    hydros.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
     cols = ["datetime", "gen_name", "p_mw"]
     if path_parsed_data:
         hydros[cols].to_csv(path_parsed_data, header=True, index=False)

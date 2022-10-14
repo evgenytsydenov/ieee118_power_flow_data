@@ -20,7 +20,7 @@ def parse_jeas118_loads(
     Returns:
         Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
-    dtypes = {"Bus No": int, "Pd\n   (MW)": float, "  Qd\n   (MVAR)": float}
+    dtypes = {"Bus No": str, "Pd\n   (MW)": float, "  Qd\n   (MVAR)": float}
     cols = dtypes.keys()
     if isinstance(raw_data, str):
         # To parse "doc", it is necessary to convert it into "docx"
@@ -45,10 +45,10 @@ def parse_jeas118_loads(
     )
 
     # Change bus names
-    loads.sort_values(by="bus_name", inplace=True, ignore_index=True)
-    loads["bus_name"] = "bus_" + loads["bus_name"].astype(str)
+    loads["bus_name"] = "bus_" + loads["bus_name"].str.zfill(3)
 
     # Return results
+    loads.sort_values(by="bus_name", inplace=True, ignore_index=True)
     if path_parsed_data:
         loads.to_csv(path_parsed_data, header=True, index=False)
     else:

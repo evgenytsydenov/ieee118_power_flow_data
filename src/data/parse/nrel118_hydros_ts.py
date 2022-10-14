@@ -25,12 +25,13 @@ def parse_nrel118_hydros_ts(
 
     # Change column names
     hydro_ts.rename(columns={"name": "gen_name", "value": "p_mw"}, inplace=True)
-    hydro_ts["gen_name"] = GEN_TYPES["Hydro"] + "_" + hydro_ts["gen_name"]
+    hydro_ts["gen_name"] = GEN_TYPES["Hydro"] + "_" + hydro_ts["gen_name"].str.zfill(3)
 
     # Unify date format
     hydro_ts["datetime"] = hydro_ts["datetime"].dt.strftime(DATE_FORMAT)
 
     # Return results
+    hydro_ts.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
     if path_parsed_data:
         hydro_ts.to_csv(path_parsed_data, header=True, index=False)
     else:

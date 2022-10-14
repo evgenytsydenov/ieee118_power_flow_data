@@ -54,37 +54,37 @@ def transform_gens_ts(
         )
         gen_ts.append(gen_data)
     gens_optimized_names = [
-        "biomass_59",
-        "biomass_60",
-        "combined_cycle_gas_40",
-        "combustion_gas_8",
-        "combustion_gas_21",
-        "combustion_gas_22",
-        "combustion_gas_23",
-        "combustion_gas_24",
-        "combustion_gas_25",
-        "combustion_gas_26",
-        "combustion_gas_46",
-        "combustion_gas_47",
-        "combustion_gas_48",
-        "combustion_gas_49",
-        "combustion_gas_72",
-        "combustion_gas_73",
-        "hydro_1",
-        "hydro_2",
-        "hydro_3",
-        "hydro_4",
-        "hydro_5",
-        "hydro_6",
-        "hydro_7",
-        "hydro_8",
-        "hydro_9",
-        "hydro_10",
-        "hydro_11",
-        "hydro_12",
-        "hydro_13",
-        "hydro_14",
-        "hydro_15",
+        "biomass_059",
+        "biomass_060",
+        "combined_cycle_gas_040",
+        "combustion_gas_008",
+        "combustion_gas_021",
+        "combustion_gas_022",
+        "combustion_gas_023",
+        "combustion_gas_024",
+        "combustion_gas_025",
+        "combustion_gas_026",
+        "combustion_gas_046",
+        "combustion_gas_047",
+        "combustion_gas_048",
+        "combustion_gas_049",
+        "combustion_gas_072",
+        "combustion_gas_073",
+        "hydro_001",
+        "hydro_002",
+        "hydro_003",
+        "hydro_004",
+        "hydro_005",
+        "hydro_006",
+        "hydro_007",
+        "hydro_008",
+        "hydro_009",
+        "hydro_010",
+        "hydro_011",
+        "hydro_012",
+        "hydro_013",
+        "hydro_014",
+        "hydro_015",
     ]
     gens_optimized = pd.DataFrame(
         data={
@@ -118,6 +118,7 @@ def transform_gens_ts(
     gen_ts["v_set_kv"] = gen_ts["v_rated_kv"]
 
     # Return results
+    gen_ts.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
     cols = ["datetime", "gen_name", "p_mw", "v_set_kv", "q_min_mvar", "q_max_mvar"]
     if path_transformed_data:
         gen_ts[cols].to_csv(path_transformed_data, header=True, index=False)

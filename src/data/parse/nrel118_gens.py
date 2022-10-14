@@ -38,16 +38,16 @@ def parse_nrel118_gens(
         },
         inplace=True,
     )
-    gens.sort_values(by="gen_name", inplace=True, ignore_index=True)
 
     # Unify generator names
     name_pattern = r"^(?P<gen_type>[\w\s]+)\s(?P<gen_number>\d+)$"
     names = gens["gen_name"].str.extract(pat=name_pattern, expand=True)
     names["gen_type"].replace(GEN_TYPES, inplace=True)
-    gens["gen_name"] = names["gen_type"] + "_" + names["gen_number"].str.lstrip("0")
-    gens["bus_name"] = "bus_" + gens["bus_name"].str.lstrip("node0")
+    gens["gen_name"] = names["gen_type"] + "_" + names["gen_number"].str.zfill(3)
+    gens["bus_name"] = "bus_" + gens["bus_name"].str.lstrip("node").str.zfill(3)
 
     # Return results
+    gens.sort_values(by="gen_name", inplace=True, ignore_index=True)
     if path_parsed_data:
         gens.to_csv(path_parsed_data, header=True, index=False)
     else:

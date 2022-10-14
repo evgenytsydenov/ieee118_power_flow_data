@@ -66,10 +66,13 @@ def prepare_loads_ts(
     )
 
     # Return results
-    cols = ["in_service", "p_mw", "q_mvar"]
+    cols = ["datetime", "load_name", "in_service", "p_mw", "q_mvar"]
+    loads = loads.reset_index().sort_values(
+        ["datetime", "load_name"], ignore_index=True
+    )
     if path_prepared_data:
         loads[cols].to_csv(
-            path_prepared_data, header=True, index=True, date_format=DATE_FORMAT
+            path_prepared_data, header=True, index=False, date_format=DATE_FORMAT
         )
     else:
         return loads[cols]

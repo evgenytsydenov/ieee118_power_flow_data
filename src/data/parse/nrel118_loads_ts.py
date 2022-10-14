@@ -33,6 +33,7 @@ def parse_nrel118_loads_ts(
     load_ts["datetime"] = load_ts["datetime"].dt.strftime(DATE_FORMAT)
 
     # Return results
+    load_ts.sort_values(["datetime", "region_name"], inplace=True, ignore_index=True)
     if path_parsed_data:
         load_ts.to_csv(path_parsed_data, header=True, index=False)
     else:
