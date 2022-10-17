@@ -19,6 +19,7 @@ class BaseRegimeSampler(ABC):
         self._loads_ts = None
         self._gens = None
         self._gens_ts = None
+        self._timestamps = None
         self._model = None
 
     def load_data(
@@ -37,10 +38,10 @@ class BaseRegimeSampler(ABC):
             path_branches: Path to branch info.
             path_loads: Path to load info.
             path_loads_ts: Path to load time-series info.
-            path_gens: Path to data of generators or plants (if `plants_mode` is True).
-            path_gens_ts: Path to time-series data of generators
-                or plants (if `plants_mode` is True).
+            path_gens: Path to data of generators or plants.
+            path_gens_ts: Path to time-series data of generators.
         """
+        # Load raw data
         self._buses = load_df_data(
             path_buses,
             dtypes={
@@ -56,7 +57,7 @@ class BaseRegimeSampler(ABC):
                 "branch_name": str,
                 "from_bus": str,
                 "to_bus": str,
-                "parallel": str,
+                "parallel": int,
                 "in_service": bool,
                 "r_ohm": float,
                 "x_ohm": float,
@@ -68,8 +69,8 @@ class BaseRegimeSampler(ABC):
         self._loads = load_df_data(
             data=path_loads,
             dtypes={
-                "bus_name": str,
                 "load_name": str,
+                "bus_name": str,
             },
         )
         self._loads_ts = load_df_data(
@@ -82,11 +83,8 @@ class BaseRegimeSampler(ABC):
                 "p_mw": float,
             },
         )
-        self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
-        self._loads_ts.set_index("datetime", inplace=True)
-
         self._gens = load_df_data(
-            data=path_gens, dtypes={"bus_name": str, "gen_name": str}
+            data=path_gens, dtypes={"gen_name": str, "bus_name": str}
         )
         self._gens_ts = load_df_data(
             data=path_gens_ts,
@@ -100,8 +98,9 @@ class BaseRegimeSampler(ABC):
                 "v_set_kv": float,
             },
         )
-        self._gens_ts.sort_values(["datetime", "gen_name"], inplace=True)
-        self._gens_ts.set_index("datetime", inplace=True)
+
+        # Datetime ranges in load and gen time-series are equal
+        self._timestamps = sorted(self._gens_ts["datetime"].unique())
 
     def start(self, path_models: str, display: bool = False) -> None:
         """Start sampling process.
@@ -110,12 +109,12 @@ class BaseRegimeSampler(ABC):
             path_models: Path to save models.
             display: If to show progress bar.
         """
+
         # Create base model
         self._build_model()
 
         # Timestamps are equal for all time-series data
-        timestamps = self._gens_ts.index.unique()
-        for timestamp in tqdm(timestamps, disable=not display):
+        for timestamp in tqdm(self._timestamps, disable=not display):
 
             # Refresh regime data in accordance to datetime
             self._apply_next_timestamp(timestamp)
