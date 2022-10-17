@@ -23,8 +23,8 @@ class PandaRegimeSampler(BaseRegimeSampler):
         self.f_hz = f_hz
         self._bus_name_to_id = None
         self._bus_name_to_v_rate = None
-        self._load_ts_cols = ["in_service", "p_mw", "q_mvar"]
-        self._gen_ts_cols = ["in_service", "p_mw", "min_q_mvar", "max_q_mvar", "vm_pu"]
+        self._load_cols = ["in_service", "p_mw", "q_mvar"]
+        self._gen_cols = ["in_service", "p_mw", "min_q_mvar", "max_q_mvar", "vm_pu"]
 
     def _build_model(self) -> None:
         """Create power flow model."""
@@ -84,7 +84,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
         lines["to_bus_id"] = lines["to_bus"].map(self._bus_name_to_id)
 
         # Convert to farads
-        lines["c_nf"] = lines["b_µs"] * 1e3 / (2 * self._model.f_hz * math.pi)
+        lines["c_nf"] = lines["b_µs"] * 1e3 / (2 * self.f_hz * math.pi)
 
         # Add lines to the model
         pp.create_lines_from_parameters(
@@ -170,6 +170,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
         )
 
         # Prepare time-series
+        self._loads_ts[self._load_cols] = self._loads_ts[self._load_cols].astype(float)
         self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
         self._loads_ts.set_index("datetime", inplace=True)
 
@@ -215,6 +216,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
             columns={"q_min_mvar": "min_q_mvar", "q_max_mvar": "max_q_mvar"},
             inplace=True,
         )
+        self._gens_ts[self._gen_cols] = self._gens_ts[self._gen_cols].astype(float)
         self._gens_ts.sort_values(["datetime", "gen_name"], inplace=True)
         self._gens_ts.set_index("datetime", inplace=True)
 
@@ -226,15 +228,15 @@ class PandaRegimeSampler(BaseRegimeSampler):
         """
         # Set load
         load = self._loads_ts.loc[timestamp].set_index("load_name")
-        self._model.load[self._load_ts_cols] = (
-            load.loc[self._model.load["name"], self._load_ts_cols].astype(float).values
-        )
+        self._model.load[self._load_cols] = load.loc[
+            self._model.load["name"], self._load_cols
+        ].values
 
         # Set gens
         gen = self._gens_ts.loc[timestamp].set_index("gen_name")
-        self._model.gen[self._gen_ts_cols] = (
-            gen.loc[self._model.gen["name"], self._gen_ts_cols].astype(float).values
-        )
+        self._model.gen[self._gen_cols] = gen.loc[
+            self._model.gen["name"], self._gen_cols
+        ].values
 
     def _save_model(self, path: str, model_name: str) -> None:
         """Save model.
