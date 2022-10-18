@@ -1146,12 +1146,12 @@ stages:
     params:
       definitions.py:
         DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
-        F_HZ: 50
+        F_HZ: 60
         MODEL_NAME_FORMAT: '%Y_%m_%d_%H_%M_%S'
         REGIME_SAMPLER: pandapower
         S_BASE_MVA: 100
     outs:
     - path: models
-      md5: 58051eead29efef178cef820fc0543db.dir
-      size: 119736
+      md5: b44dfafa9519f13574fa7be4a7ea8080.dir
+      size: 119731
       nfiles: 1

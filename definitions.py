@@ -2,7 +2,7 @@
 S_BASE_MVA = 100
 
 # Frequency
-F_HZ = 50
+F_HZ = 60
 
 # Unify generation types
 GEN_TYPES = {
