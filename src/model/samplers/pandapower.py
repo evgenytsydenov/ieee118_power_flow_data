@@ -190,6 +190,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
             self._model,
             name=self._gens["gen_name"],
             buses=self._gens["bus_id"],
+            max_p_mw=self._gens["max_p_mw"],
             p_mw=0,
             max_q_mvar=0,
             min_q_mvar=0,

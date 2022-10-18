@@ -23,7 +23,9 @@ def check_gens(
     report = {}
 
     # Load data
-    gens = load_df_data(data=prepared_gens, dtypes={"bus_name": str, "gen_name": str})
+    gens = load_df_data(
+        data=prepared_gens, dtypes={"bus_name": str, "gen_name": str, "max_p_mw": float}
+    )
     buses = load_df_data(data=prepared_buses, dtypes={"bus_name": str})
 
     # Checks
@@ -32,6 +34,7 @@ def check_gens(
     report["All bus names are in the bus description"] = (
         gens["bus_name"].isin(buses["bus_name"]).all()
     )
+    report["Max output is not negative"] = (gens["max_p_mw"] >= 0).all()
 
     # Ensure there is only one plant per bus
     if PLANT_MODE:

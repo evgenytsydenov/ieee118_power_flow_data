@@ -41,6 +41,7 @@
 - "in_service" --- if the generator is in service (not in maintenance)
 - "p_mw" --- active output of the generator in megawatts
 - "datetime" --- date and time of variable measurement
+- "max_p_mw" --- max active output in megawatts
 
 ## Assumptions
 

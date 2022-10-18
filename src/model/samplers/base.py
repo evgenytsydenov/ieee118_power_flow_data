@@ -84,7 +84,7 @@ class BaseRegimeSampler(ABC):
             },
         )
         self._gens = load_df_data(
-            data=path_gens, dtypes={"gen_name": str, "bus_name": str}
+            data=path_gens, dtypes={"gen_name": str, "bus_name": str, "max_p_mw": float}
         )
         self._gens_ts = load_df_data(
             data=path_gens_ts,

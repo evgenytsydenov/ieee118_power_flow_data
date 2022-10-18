@@ -21,7 +21,7 @@ def prepare_gens(
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
     # Load data
-    dtypes = {"gen_name": str, "bus_name": str}
+    dtypes = {"gen_name": str, "bus_name": str, "max_p_mw": float}
     if PLANT_MODE:
         dtypes["plant_name"] = str
     gens = load_df_data(data=transformed_gens, dtypes=dtypes)
@@ -29,11 +29,11 @@ def prepare_gens(
     # Change names for consistency in further scripts
     if PLANT_MODE:
         gens.drop(columns=["gen_name"], inplace=True)
-        gens.drop_duplicates(["bus_name", "plant_name"], inplace=True)
+        gens = gens.groupby(["bus_name", "plant_name"], as_index=False).sum()
         gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
 
     # Return results
-    cols = ["gen_name", "bus_name"]
+    cols = ["gen_name", "bus_name", "max_p_mw"]
     gens.sort_values("gen_name", inplace=True, ignore_index=True)
     if path_prepared_data:
         gens[cols].to_csv(path_prepared_data, header=True, index=False)

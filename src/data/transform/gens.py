@@ -27,6 +27,7 @@ def transform_gens(
         dtypes={
             "gen_name": str,
             "bus_name": str,
+            "max_p_mw": float,
         },
     )
 
@@ -36,7 +37,7 @@ def transform_gens(
         buses = gens["bus_name"].unique()
         plant_names = {bus: f"plant_{index + 1:03}" for index, bus in enumerate(buses)}
         gens["plant_name"] = gens["bus_name"].map(plant_names)
-        gens = gens[["plant_name", "bus_name", "gen_name"]]
+        gens = gens[["plant_name", "bus_name", "gen_name", "max_p_mw"]]
 
     # Return results
     if path_transformed_data:
