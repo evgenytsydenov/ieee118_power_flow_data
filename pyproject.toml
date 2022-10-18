@@ -34,6 +34,7 @@ dvc = "^2.15.0"
 python-docx = "^0.8.11"
 pandapower = "^2.10.1"
 numba = "^0.56.2"
+plotly = "^5.10.0"
 
 [tool.poetry.dev-dependencies]
 
