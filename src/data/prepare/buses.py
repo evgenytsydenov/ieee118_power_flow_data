@@ -7,12 +7,15 @@ from src.utils.data_loaders import load_df_data
 
 
 def prepare_buses(
-    parsed_nrel118_buses: str | pd.DataFrame, path_prepared_data: Optional[str] = None
+    parsed_nrel118_buses: str | pd.DataFrame,
+    bus_coordinates: str | pd.DataFrame,
+    path_prepared_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
     """Prepare final bus data.
 
     Args:
         parsed_nrel118_buses: Path or dataframe to parsed data.
+        bus_coordinates: Path or dataframe to bus coordinates data.
         path_prepared_data: Path to save prepared data.
 
     Returns:
@@ -21,6 +24,13 @@ def prepare_buses(
     buses = load_df_data(
         data=parsed_nrel118_buses, dtypes={"bus_name": str, "region": str}
     )
+    coordinates = load_df_data(
+        data=bus_coordinates,
+        dtypes={"bus_name": str, "x_coordinate": float, "y_coordinate": float},
+    )
+
+    # Add coordinates
+    buses = pd.merge(buses, coordinates, on="bus_name", how="left")
 
     # All buses are in service
     buses["in_service"] = True
@@ -32,7 +42,14 @@ def prepare_buses(
 
     # Return results
     buses.sort_values("bus_name", inplace=True, ignore_index=True)
-    cols = ["bus_name", "region", "in_service", "v_rated_kv"]
+    cols = [
+        "bus_name",
+        "region",
+        "in_service",
+        "v_rated_kv",
+        "x_coordinate",
+        "y_coordinate",
+    ]
     if path_prepared_data:
         buses[cols].to_csv(path_prepared_data, header=True, index=False)
     else:
@@ -41,11 +58,16 @@ def prepare_buses(
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "prepare_buses.py path_parsed_nrel118_buses path_prepared_data\n"
+            "prepare_buses.py path_parsed_nrel118_buses "
+            "path_bus_coordinates path_prepared_data\n"
         )
 
     # Run
-    prepare_buses(parsed_nrel118_buses=sys.argv[1], path_prepared_data=sys.argv[2])
+    prepare_buses(
+        parsed_nrel118_buses=sys.argv[1],
+        bus_coordinates=sys.argv[2],
+        path_prepared_data=sys.argv[3],
+    )

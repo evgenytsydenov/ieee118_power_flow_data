@@ -274,9 +274,11 @@ stages:
     desc: "Build final bus dataset"
     cmd: python src/data/prepare/buses.py
       data/parsed/nrel118_buses.csv
+      data/raw/manual/bus_coordinates.csv
       data/prepared/buses.csv
     deps:
       - data/parsed/nrel118_buses.csv
+      - data/raw/manual/bus_coordinates.csv
       - src/data/prepare/buses.py
       - src/utils/data_loaders/load_df_data.py
     outs:

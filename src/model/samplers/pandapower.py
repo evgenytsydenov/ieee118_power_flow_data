@@ -70,6 +70,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
             name=self._buses["bus_name"],
             zone=self._buses["region"],
             in_service=self._buses["in_service"],
+            geodata=list(zip(self._buses["x_coordinate"], self._buses["y_coordinate"])),
         )
 
     def _add_lines(self) -> None:

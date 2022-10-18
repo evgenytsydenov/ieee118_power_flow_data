@@ -1,0 +1,4 @@
+outs:
+- md5: 1dcc2b429d95e152d56165a39b43594f
+  size: 1570
+  path: bus_coordinates.csv

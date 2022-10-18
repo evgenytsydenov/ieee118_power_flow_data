@@ -23,6 +23,8 @@ def check_buses(prepared_buses: str | pd.DataFrame) -> dict[str, bool]:
             "region": str,
             "in_service": bool,
             "v_rated_kv": float,
+            "x_coordinate": float,
+            "y_coordinate": float,
         },
     )
 
