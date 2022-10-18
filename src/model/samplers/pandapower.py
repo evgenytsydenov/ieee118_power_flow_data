@@ -93,12 +93,14 @@ class PandaRegimeSampler(BaseRegimeSampler):
             from_buses=lines["from_bus_id"],
             to_buses=lines["to_bus_id"],
             parallel=lines["parallel"],
-            length_km=1,
             r_ohm_per_km=lines["r_ohm"],
             x_ohm_per_km=lines["x_ohm"],
             c_nf_per_km=lines["c_nf"],
             max_i_ka=lines["max_i_ka"],
             in_service=lines["in_service"],
+            length_km=1,
+            max_loading_percent=100,
+            type="ol",
         )
 
     def _add_transformers(self) -> None:
@@ -125,10 +127,9 @@ class PandaRegimeSampler(BaseRegimeSampler):
         vkr_percent = (
             100 * (trafos["r_ohm"] / z_base_net) * (s_base_trafo_mva / self.s_base_mva)
         )
-        tap_diff = trafos["trafo_ratio_rel"] - 1
+        tap_diff = (trafos["trafo_ratio_rel"] - 1).values
         tap_step_percent = np.abs(tap_diff) * 100
         tap_pos = np.sign(tap_diff)
-        tap_side = "hv"
 
         # Add trafos to the model
         pp.create_transformers_from_parameters(
@@ -141,14 +142,15 @@ class PandaRegimeSampler(BaseRegimeSampler):
             vn_lv_kv=vn_lv_kv,
             vk_percent=vk_percent,
             vkr_percent=vkr_percent,
-            pfe_kw=0,
-            i0_percent=0,
             parallel=trafos["parallel"],
             in_service=trafos["in_service"],
-            tap_side=tap_side,
-            tap_neutral=0,
-            tap_step_percent=tap_step_percent,
             tap_pos=tap_pos,
+            tap_step_percent=tap_step_percent,
+            tap_side="hv",
+            tap_neutral=0,
+            pfe_kw=0,
+            i0_percent=0,
+            max_loading_percent=100,
         )
 
     def _add_loads(self) -> None:
@@ -167,6 +169,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
             p_mw=0,
             q_mvar=0,
             in_service=True,
+            controllable=False,
         )
 
         # Prepare time-series
@@ -192,6 +195,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
             min_q_mvar=0,
             vm_pu=0,
             in_service=True,
+            controllable=True,
         )
 
         # Prepare time-series
