@@ -53,7 +53,9 @@ def transform_gens_ts(
             dtypes={"datetime": str, "gen_name": str, "p_mw": float},
         )
         gen_ts.append(gen_data)
-    gens_optimized_names = [
+
+    # Generators whose outputs were missed
+    gens_missed_names = [
         "biomass_059",
         "biomass_060",
         "combined_cycle_gas_040",
@@ -86,14 +88,14 @@ def transform_gens_ts(
         "hydro_014",
         "hydro_015",
     ]
-    gens_optimized = pd.DataFrame(
+    gens_missed = pd.DataFrame(
         data={
-            "gen_name": gens_optimized_names,
+            "gen_name": gens_missed_names,
             "datetime": datetime(2024, 1, 1, 0, 0, 0).strftime(DATE_FORMAT),
             "p_mw": 0,
         }
     )
-    gen_ts.append(gens_optimized)
+    gen_ts.append(gens_missed)
     gen_ts = pd.concat(gen_ts, ignore_index=True)
 
     # Load bus data

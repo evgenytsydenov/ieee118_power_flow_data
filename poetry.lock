@@ -2334,7 +2334,7 @@ test = ["zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "af1e10863e1b884ffd7770da1f79b0d40fa46faff4275a00902ff8e3e5a4f7ef"
+content-hash = "2bd9e0197bdd048bf94dbf2bb459b3644149051a08595745e683b60dd36096c2"
 
 [metadata.files]
 aiohttp = [

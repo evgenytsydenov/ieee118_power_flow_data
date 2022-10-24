@@ -1075,8 +1075,8 @@ stages:
       md5: 9ce0a7069f3c91ba2529e4dcf2d89446
       size: 103835
     - path: src/data/transform/gens_ts.py
-      md5: 2c043e1cefb24f7840d1210ff0dea0e8
-      size: 5193
+      md5: c733dc3de71eb48b64e7b4e2563bc823
+      size: 5227
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -1143,6 +1143,54 @@ stages:
       md5: f08f7f201014f1392eb0d5528b3a6660
       size: 12673
   sample_models:
+    cmd:
+    - python src/model/sampling.py data/prepared/buses.csv data/prepared/branches.csv
+      data/prepared/loads.csv data/prepared/loads_ts.csv data/prepared/gens.csv data/prepared/gens_ts.csv
+      models
+    deps:
+    - path: data/prepared/branches.csv
+      md5: 111c9af019d338d78ed0f539166ebe1a
+      size: 13720
+    - path: data/prepared/buses.csv
+      md5: 5671ead3bd792ba22544a0dd8014eb32
+      size: 4182
+    - path: data/prepared/gens.csv
+      md5: db287982ae5407154074879b0a445240
+      size: 1485
+    - path: data/prepared/gens_ts.csv
+      md5: a4a167ca0d13d866a4884cd3c21379e6
+      size: 34132295
+    - path: data/prepared/loads.csv
+      md5: cce41575ae2d8e679bc2b8a3ea083046
+      size: 1658
+    - path: data/prepared/loads_ts.csv
+      md5: 61dd343c9931dc009373143a15091208
+      size: 44062587
+    - path: src/model/samplers/base.py
+      md5: 1baa17332320c8cb9488f52c8a7c1ea5
+      size: 5288
+    - path: src/model/samplers/pandapower.py
+      md5: 520b8d2918afae2d688070be67024b1c
+      size: 9366
+    - path: src/model/sampling.py
+      md5: e7b42515c8b387f520cec822d1d4038d
+      size: 2009
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
+        F_HZ: 60
+        MODEL_NAME_FORMAT: '%Y_%m_%d_%H_%M_%S'
+        REGIME_SAMPLER: pandapower
+        S_BASE_MVA: 100
+    outs:
+    - path: models
+      md5: 6f572ab3bbccaaa4c3b1d5ee76004082.dir
+      size: 122556
+      nfiles: 1
+  model:
     cmd:
     - python src/model/sampling.py data/prepared/buses.csv data/prepared/branches.csv
       data/prepared/loads.csv data/prepared/loads_ts.csv data/prepared/gens.csv data/prepared/gens_ts.csv

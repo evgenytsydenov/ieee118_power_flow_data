@@ -424,7 +424,7 @@ stages:
     outs:
       - data/prepared/gens_ts.csv
 
-  sample_models:
+  model:
     desc: "Start sampling of power flow cases"
     cmd:
       - python src/model/sampling.py
