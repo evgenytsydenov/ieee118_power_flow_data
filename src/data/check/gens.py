@@ -19,7 +19,9 @@ def check_gens(
     gens = load_df_data(
         data=prepared_gens, dtypes={"bus_name": str, "gen_name": str, "max_p_mw": float}
     )
-    buses = load_df_data(data=prepared_buses, dtypes={"bus_name": str})
+    buses = load_df_data(
+        data=prepared_buses, dtypes={"bus_name": str, "is_slack": bool}
+    )
 
     # Ensure there are no NaNs
     assert not gens.isna().values.any(), "There are NaNs in the dataset"
@@ -36,6 +38,12 @@ def check_gens(
     # Ensure there is only one plant per bus
     if PLANT_MODE:
         assert gens["bus_name"].is_unique, "Some bus contains several plants"
+
+    # Ensure slack bus gens are not included
+    slack_bus = buses.loc[buses["is_slack"], "bus_name"]
+    assert (
+        ~gens["bus_name"].isin(slack_bus).all()
+    ), "Gens of the slack bus are not excluded."
 
 
 if __name__ == "__main__":

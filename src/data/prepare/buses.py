@@ -32,6 +32,10 @@ def prepare_buses(
     # Add coordinates
     buses = pd.merge(buses, coordinates, on="bus_name", how="left")
 
+    # Add slack bus
+    buses["is_slack"] = False
+    buses.loc[buses["bus_name"] == "bus_069", "is_slack"] = True
+
     # All buses are in service
     buses["in_service"] = True
 
@@ -47,6 +51,7 @@ def prepare_buses(
         "region",
         "in_service",
         "v_rated_kv",
+        "is_slack",
         "x_coordinate",
         "y_coordinate",
     ]

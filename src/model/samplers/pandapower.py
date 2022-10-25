@@ -48,9 +48,11 @@ class PandaRegimeSampler(BaseRegimeSampler):
 
     def _add_slack(self) -> None:
         """Add slack bus info to the power flow model."""
+        slack_bus = self._buses.loc[self._buses["is_slack"], "bus_name"].values[0]
         pp.create_ext_grid(
             self._model,
-            bus=self._bus_name_to_id["bus_069"],
+            bus=self._bus_name_to_id[slack_bus],
+            name=slack_bus,
             vm_pu=1,
             va_degree=0,
             in_service=True,

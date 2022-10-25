@@ -41,6 +41,10 @@ def prepare_gens_ts(
         data=transformed_outages_ts,
         dtypes={"datetime": str, "gen_name": str, "in_service": bool},
     )
+    gens = load_df_data(
+        data=transformed_gens,
+        dtypes={"gen_name": str, "is_slack": bool},
+    )
 
     # Select by date range
     # Each generator has at least one measurement at "2024-01-01 00:00:00"
@@ -59,11 +63,16 @@ def prepare_gens_ts(
             .drop(columns=["gen_name"])
             .round(decimals=6)
         )
-    gens = pd.concat(parts, axis=1, join="inner").round(decimals=6)
+    gens_ts = pd.concat(parts, axis=1, join="inner").round(decimals=6)
+    gens_ts.reset_index(inplace=True)
 
     # If gen is not in service, its parameters are undefined
     value_cols = ["p_mw", "v_set_kv", "q_max_mvar", "q_min_mvar"]
-    gens.loc[~gens["in_service"], value_cols] = np.nan
+    gens_ts.loc[~gens_ts["in_service"], value_cols] = np.nan
+
+    # Drop gens in the slack bus
+    slack_gens = gens.loc[gens["is_slack"], "gen_name"]
+    gens_ts = gens_ts.loc[~gens_ts["gen_name"].isin(slack_gens)]
 
     if PLANT_MODE:
         # Load mapping of plants and gens
@@ -73,8 +82,7 @@ def prepare_gens_ts(
         )
 
         # Add plant names to time-series data of gens
-        gens.reset_index(inplace=True)
-        gens = pd.merge(gens, plants, how="left", on="gen_name")
+        gens_ts = pd.merge(gens_ts, plants, how="left", on="gen_name")
 
         # Group gen parameters
         agg_funcs = {
@@ -84,16 +92,18 @@ def prepare_gens_ts(
             "v_set_kv": "mean",
             "in_service": "sum",
         }
-        gens = gens.groupby(["plant_name", "datetime"]).agg(agg_funcs)
+        gens_ts = gens_ts.groupby(["plant_name", "datetime"], as_index=False).agg(
+            agg_funcs
+        )
 
         # If the number of gens, which are in service, equals to zero,
         # the plant is out of service and its parameters should be undefined
-        gens["in_service"] = gens["in_service"].astype(bool)
+        gens_ts["in_service"] = gens_ts["in_service"].astype(bool)
         value_cols = ["p_mw", "v_set_kv", "q_max_mvar", "q_min_mvar"]
-        gens.loc[~gens["in_service"], value_cols] = np.nan
+        gens_ts.loc[~gens_ts["in_service"], value_cols] = np.nan
 
         # Rename columns for consistency in future scripts
-        gens.index.names = ["gen_name", "datetime"]
+        gens_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
 
     # Return results
     cols = [
@@ -105,13 +115,13 @@ def prepare_gens_ts(
         "q_max_mvar",
         "q_min_mvar",
     ]
-    gens = gens.reset_index().sort_values(["datetime", "gen_name"], ignore_index=True)
+    gens_ts = gens_ts.sort_values(["datetime", "gen_name"], ignore_index=True)
     if path_prepared_data:
-        gens[cols].to_csv(
+        gens_ts[cols].to_csv(
             path_prepared_data, header=True, index=False, date_format=DATE_FORMAT
         )
     else:
-        return gens[cols]
+        return gens_ts[cols]
 
 
 if __name__ == "__main__":

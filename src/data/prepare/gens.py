@@ -21,10 +21,13 @@ def prepare_gens(
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
     # Load data
-    dtypes = {"gen_name": str, "bus_name": str, "max_p_mw": float}
+    dtypes = {"gen_name": str, "bus_name": str, "max_p_mw": float, "is_slack": bool}
     if PLANT_MODE:
         dtypes["plant_name"] = str
     gens = load_df_data(data=transformed_gens, dtypes=dtypes)
+
+    # Drop slack bus gens
+    gens = gens.loc[~gens["is_slack"], [c for c in gens.columns if c != "is_slack"]]
 
     # Change names for consistency in further scripts
     if PLANT_MODE:

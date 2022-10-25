@@ -19,6 +19,7 @@ def check_buses(prepared_buses: str | pd.DataFrame) -> None:
             "region": str,
             "in_service": bool,
             "v_rated_kv": float,
+            "is_slack": bool,
             "x_coordinate": float,
             "y_coordinate": float,
         },
@@ -29,6 +30,9 @@ def check_buses(prepared_buses: str | pd.DataFrame) -> None:
 
     # Ensure bus names are unique
     assert buses["bus_name"].is_unique, "There are duplicated bus names"
+
+    # There is only one slack bus
+    assert buses["is_slack"].sum() == 1, "Number of slack buses is not equal to one"
 
 
 if __name__ == "__main__":

@@ -218,9 +218,11 @@ stages:
     cmd:
       - python src/data/transform/gens.py
         data/parsed/nrel118_gens.csv
+        data/prepared/buses.csv
         data/transformed/gens.csv
     deps:
       - data/parsed/nrel118_gens.csv
+      - data/prepared/buses.csv
       - src/data/transform/gens.py
       - src/utils/data_loaders/load_df_data.py
     params:
@@ -269,7 +271,6 @@ stages:
         data/parsed/nrel118_hydros_ts.csv
         data/parsed/nrel118_hydros_nondisp_ts.csv
         data/transformed/gens_escalated_ts.csv
-        data/prepared/buses.csv
         data/transformed/gens.csv
         data/transformed/gens_ts.csv
     deps:
@@ -278,7 +279,6 @@ stages:
       - data/parsed/nrel118_hydros_ts.csv
       - data/parsed/nrel118_hydros_nondisp_ts.csv
       - data/transformed/gens_escalated_ts.csv
-      - data/prepared/buses.csv
       - data/transformed/gens.csv
       - src/data/transform/gens_ts.py
       - src/utils/data_loaders/load_df_data.py

@@ -9,6 +9,7 @@
 - "in_service" --- if the bus is in service (not in maintenance)
 - "v_rated_kv" --- rated voltage of the bus in kilovolts
 - "x_coordinate" and "y_coordinate" --- coordinates of the bus
+- "is_slack" --- whether the bus is a slack bus
 
 ### Branches
 

@@ -14,7 +14,6 @@ def transform_gens_ts(
     parsed_nrel118_hydros_ts: str | pd.DataFrame,
     parsed_nrel118_hydros_nondisp_ts: str | pd.DataFrame,
     transformed_gens_escalated_ts: str | pd.DataFrame,
-    prepared_buses: str | pd.DataFrame,
     transformed_gens: str | pd.DataFrame,
     path_transformed_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
@@ -22,7 +21,6 @@ def transform_gens_ts(
 
     Args:
         transformed_gens: Path or dataframe with generation data.
-        prepared_buses: Path or dataframe with bus data.
         parsed_nrel118_winds_ts: Path or dataframe with time-series wind data
           from the NREL-118 dataset.
         parsed_nrel118_solars_ts: Path or dataframe with time-series solar data
@@ -98,21 +96,14 @@ def transform_gens_ts(
     gen_ts.append(gens_missed)
     gen_ts = pd.concat(gen_ts, ignore_index=True)
 
-    # Load bus data
-    buses = load_df_data(
-        data=prepared_buses,
-        dtypes={"bus_name": str, "v_rated_kv": float},
-    )
-
     # Load gens data
     gens = load_df_data(
         data=transformed_gens,
-        dtypes={"gen_name": str, "bus_name": str},
+        dtypes={"gen_name": str, "v_rated_kv": float},
     )
 
     # Join info about buses and gens
-    gens = gens.merge(buses, on="bus_name", how="left")
-    gen_ts = gen_ts.merge(gens[["gen_name", "v_rated_kv"]], on="gen_name", how="left")
+    gen_ts = gen_ts.merge(gens, on="gen_name", how="left")
 
     # Assumptions
     gen_ts["q_max_mvar"] = 0.75 * gen_ts["p_mw"]
@@ -130,14 +121,13 @@ def transform_gens_ts(
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 9:
+    if len(sys.argv) != 8:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
             "transform_gens_ts.py path_parsed_nrel118_winds_ts "
             "path_parsed_nrel118_solars_ts path_parsed_nrel118_hydros_ts "
             "path_parsed_nrel118_hydros_nondisp_ts path_transformed_gens_escalated_ts "
-            "path_prepared_buses path_transformed_gens "
-            "path_transformed_data\n"
+            "path_transformed_gens path_transformed_data\n"
         )
 
     # Run
@@ -147,7 +137,6 @@ if __name__ == "__main__":
         parsed_nrel118_hydros_ts=sys.argv[3],
         parsed_nrel118_hydros_nondisp_ts=sys.argv[4],
         transformed_gens_escalated_ts=sys.argv[5],
-        prepared_buses=sys.argv[6],
-        transformed_gens=sys.argv[7],
-        path_transformed_data=sys.argv[8],
+        transformed_gens=sys.argv[6],
+        path_transformed_data=sys.argv[7],
     )

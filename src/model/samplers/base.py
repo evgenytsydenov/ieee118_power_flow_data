@@ -49,6 +49,7 @@ class BaseRegimeSampler(ABC):
                 "region": str,
                 "in_service": bool,
                 "v_rated_kv": float,
+                "is_slack": bool,
                 "x_coordinate": float,
                 "y_coordinate": float,
             },
