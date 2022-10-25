@@ -121,7 +121,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
 
         # Calculate trafo parameters
         z_base_net = vn_hv_kv**2 / self.s_base_mva
-        s_base_trafo_mva = self.s_base_mva
+        s_base_trafo_mva = trafos["max_i_ka"] * vn_hv_kv * 3**0.5
         vk_percent = (
             100 * (trafos["x_ohm"] / z_base_net) * (s_base_trafo_mva / self.s_base_mva)
         )
