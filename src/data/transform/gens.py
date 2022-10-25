@@ -34,9 +34,7 @@ def transform_gens(
     # Group generators by bus
     if PLANT_MODE:
         gens.sort_values("bus_name", inplace=True, ignore_index=True)
-        buses = gens["bus_name"].unique()
-        plant_names = {bus: f"plant_{index + 1:03}" for index, bus in enumerate(buses)}
-        gens["plant_name"] = gens["bus_name"].map(plant_names)
+        gens["plant_name"] = "plant_" + gens["bus_name"].str.lstrip("bus_")
         gens = gens[["plant_name", "bus_name", "gen_name", "max_p_mw"]]
 
     # Return results

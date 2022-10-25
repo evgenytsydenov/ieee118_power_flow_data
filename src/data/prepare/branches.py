@@ -30,7 +30,7 @@ def prepare_branches(
     nrel118_lines = load_df_data(
         data=parsed_nrel118_lines,
         dtypes={
-            "branch_name": str,
+            "branch_number": int,
             "from_bus": str,
             "to_bus": str,
             "max_p_mw": float,
@@ -40,7 +40,7 @@ def prepare_branches(
     )
     jeas118_lines = load_df_data(
         data=parsed_jeas118_lines,
-        dtypes={"branch_name": str, "parallel": str, "b_pu": float},
+        dtypes={"from_bus": str, "to_bus": str, "parallel": str, "b_pu": float},
     )
     jeas118_trafos = load_df_data(
         data=parsed_jeas118_trafos,
@@ -55,8 +55,18 @@ def prepare_branches(
         data=prepared_buses, dtypes={"bus_name": str, "v_rated_kv": float}
     )
 
+    # Add parallel number to NREL-118 line data
+    nrel118_lines["parallel"] = "1"
+    parallel_mask = nrel118_lines["branch_number"].isin([67, 76, 86, 99, 124, 139, 142])
+    nrel118_lines.loc[parallel_mask, "parallel"] = "2"
+
     # Combine data
-    branches = pd.merge(nrel118_lines, jeas118_lines, on="branch_name", how="left")
+    branches = pd.merge(
+        nrel118_lines,
+        jeas118_lines,
+        on=["from_bus", "to_bus", "parallel"],
+        how="left",
+    )
     branches = branches.merge(
         jeas118_trafos, on=["from_bus", "to_bus", "parallel"], how="left"
     )
@@ -82,6 +92,17 @@ def prepare_branches(
     # Round values
     cols = ["r_ohm", "x_ohm", "b_µs", "max_i_ka", "trafo_ratio_rel"]
     branches.loc[:, cols] = branches.loc[:, cols].round(decimals=6)
+
+    # Compose branch name
+    branches["branch_name"] = (
+        "branch"
+        + "_"
+        + branches["from_bus"].str.lstrip("bus_")
+        + "_"
+        + branches["to_bus"].str.lstrip("bus_")
+        + "_"
+        + branches["parallel"].astype(str)
+    )
 
     # Return results
     cols = [

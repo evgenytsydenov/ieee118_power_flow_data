@@ -31,7 +31,7 @@ def parse_nrel118_lines(
     # Rename variables
     lines.rename(
         columns={
-            "Line Name": "branch_name",
+            "Line Name": "branch_number",
             "Bus from ": "from_bus",
             "Bus to": "to_bus",
             "Max Flow (MW)": "max_p_mw",
@@ -41,15 +41,13 @@ def parse_nrel118_lines(
         inplace=True,
     )
 
-    # Unify line and bus names
-    lines["branch_name"] = "branch_" + lines["branch_name"].str.lstrip(
-        "line"
-    ).str.zfill(3)
+    # Unify branch and bus names
+    lines["branch_number"] = lines["branch_number"].str.lstrip("line0").astype(int)
     lines["from_bus"] = "bus_" + lines["from_bus"].str.lstrip("bus").str.zfill(3)
     lines["to_bus"] = "bus_" + lines["to_bus"].str.lstrip("bus").str.zfill(3)
 
     # Return results
-    lines.sort_values(by="branch_name", inplace=True, ignore_index=True)
+    lines.sort_values(by="branch_number", inplace=True, ignore_index=True)
     if path_parsed_data:
         lines.to_csv(path_parsed_data, header=True, index=False)
     else:

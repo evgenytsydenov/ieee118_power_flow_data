@@ -36,8 +36,7 @@ def transform_loads(
 
     # Create load dataset
     non_loads = nrel118_buses[nrel118_buses["load_participation_factor"] == 0]
-    loads = nrel118_buses.drop(index=non_loads.index).reset_index(drop=True)
-    loads["load_name"] = "load_" + (loads.index + 1).astype(str).str.zfill(3)
+    loads = nrel118_buses.drop(index=non_loads.index)
 
     # Calculate load power factor at each bus
     jeas118_loads["load_power_factor"] = np.cos(
@@ -46,6 +45,9 @@ def transform_loads(
     loads = loads.merge(
         jeas118_loads[["bus_name", "load_power_factor"]], how="left", on="bus_name"
     )
+
+    # Compose load name
+    loads["load_name"] = "load_" + loads["bus_name"].str.lstrip("bus_")
 
     # Return results
     cols = [
