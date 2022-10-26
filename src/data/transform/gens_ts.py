@@ -99,11 +99,14 @@ def transform_gens_ts(
     # Load gens data
     gens = load_df_data(
         data=transformed_gens,
-        dtypes={"gen_name": str, "v_rated_kv": float},
+        dtypes={"gen_name": str, "v_rated_kv": float, "max_p_mw": float},
     )
 
     # Join info about buses and gens
     gen_ts = gen_ts.merge(gens, on="gen_name", how="left")
+
+    # Clip outputs which exceed the max limit
+    gen_ts["p_mw"].clip(upper=gen_ts["max_p_mw"], inplace=True)
 
     # Assumptions
     gen_ts["q_max_mvar"] = 0.75 * gen_ts["p_mw"]

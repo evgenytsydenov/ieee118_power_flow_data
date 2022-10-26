@@ -17,7 +17,7 @@ def check_gens_ts(
         prepared_gens: Path or dataframe to prepared data.
     """
     # Load data
-    gens = load_df_data(data=prepared_gens, dtypes={"gen_name": str})
+    gens = load_df_data(data=prepared_gens, dtypes={"gen_name": str, "max_p_mw": float})
     gens_ts = load_df_data(
         data=prepared_gens_ts,
         dtypes={
@@ -74,6 +74,12 @@ def check_gens_ts(
     assert (
         not pivot.isna().values.any()
     ), "Values of gen time-series dateset has different date ranges."
+
+    # Ensure actual gen output less than its max value
+    gens_in_service = pd.merge(gens_in_service, gens, how="left", on="gen_name")
+    assert (
+        gens_in_service["p_mw"] <= gens_in_service["max_p_mw"]
+    ).all(), "Some gen outputs are greater than the max possible value"
 
 
 if __name__ == "__main__":
