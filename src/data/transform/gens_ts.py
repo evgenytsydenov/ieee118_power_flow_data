@@ -109,8 +109,8 @@ def transform_gens_ts(
     gen_ts["p_mw"].clip(upper=gen_ts["max_p_mw"], inplace=True)
 
     # Assumptions
-    gen_ts["q_max_mvar"] = 0.75 * gen_ts["p_mw"]
-    gen_ts["q_min_mvar"] = -0.3 * gen_ts["p_mw"]
+    gen_ts["q_max_mvar"] = 0.7 * gen_ts["max_p_mw"]
+    gen_ts["q_min_mvar"] = -0.3 * gen_ts["max_p_mw"]
     gen_ts["v_set_kv"] = gen_ts["v_rated_kv"]
 
     # Return results
