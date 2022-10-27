@@ -72,6 +72,8 @@ class PandaRegimeSampler(BaseRegimeSampler):
             name=self._buses["bus_name"],
             zone=self._buses["region"],
             in_service=self._buses["in_service"],
+            max_vm_pu=self._buses["max_vm_pu"],
+            min_vm_pu=self._buses["min_vm_pu"],
             geodata=list(zip(self._buses["x_coordinate"], self._buses["y_coordinate"])),
         )
 

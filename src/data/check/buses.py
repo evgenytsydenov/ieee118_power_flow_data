@@ -20,6 +20,8 @@ def check_buses(prepared_buses: str | pd.DataFrame) -> None:
             "in_service": bool,
             "v_rated_kv": float,
             "is_slack": bool,
+            "min_vm_pu": float,
+            "max_vm_pu": float,
             "x_coordinate": float,
             "y_coordinate": float,
         },
@@ -33,6 +35,11 @@ def check_buses(prepared_buses: str | pd.DataFrame) -> None:
 
     # There is only one slack bus
     assert buses["is_slack"].sum() == 1, "Number of slack buses is not equal to one"
+
+    # Min limit should be less than the max one
+    assert (
+        buses["min_vm_pu"] <= buses["max_vm_pu"]
+    ).all(), "Min limit of some buses is greater than the max one."
 
 
 if __name__ == "__main__":

@@ -50,6 +50,8 @@ class BaseRegimeSampler(ABC):
                 "in_service": bool,
                 "v_rated_kv": float,
                 "is_slack": bool,
+                "min_vm_pu": float,
+                "max_vm_pu": float,
                 "x_coordinate": float,
                 "y_coordinate": float,
             },

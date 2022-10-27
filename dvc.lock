@@ -371,8 +371,8 @@ stages:
     - python src/data/check/loads.py data/prepared/loads.csv data/prepared/buses.csv
     deps:
     - path: data/prepared/buses.csv
-      md5: c036a7b63028c0d96cb5ed4433852905
-      size: 4898
+      md5: 21ac7fc0efdd5756bfcfe0a71301c3e4
+      size: 6098
     - path: data/transformed/loads.csv
       md5: 5b288dc3b5402cf00a237d689e4e31d2
       size: 4770
@@ -668,10 +668,13 @@ stages:
       size: 4870
   prepare_buses:
     cmd:
-    - python src/data/prepare/buses.py data/parsed/nrel118_buses.csv data/raw/manual/bus_coordinates.csv
-      data/prepared/buses.csv
+    - python src/data/prepare/buses.py data/parsed/nrel118_buses.csv data/parsed/jeas118_buses.csv
+      data/raw/manual/bus_coordinates.csv data/prepared/buses.csv
     - python src/data/check/buses.py data/prepared/buses.csv
     deps:
+    - path: data/parsed/jeas118_buses.csv
+      md5: f3eaa4605b458465df248d2fb5789961
+      size: 2272
     - path: data/parsed/nrel118_buses.csv
       md5: ad220a656112805888fca2c2508a9b42
       size: 2652
@@ -679,18 +682,18 @@ stages:
       md5: 434edcb03d694eecdadaa14069b75cbb
       size: 2265
     - path: src/data/check/buses.py
-      md5: 5f0ebb743be5b46206a0f94bb1bcc809
-      size: 1246
+      md5: 24c7cf37a562baa011ae94bedc144607
+      size: 1496
     - path: src/data/prepare/buses.py
-      md5: 8896f6bc6a69d1dc981b49605098f1d4
-      size: 2261
+      md5: 41d77272adb1b64b2ddc46e8ca9074c1
+      size: 2737
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     outs:
     - path: data/prepared/buses.csv
-      md5: c036a7b63028c0d96cb5ed4433852905
-      size: 4898
+      md5: 21ac7fc0efdd5756bfcfe0a71301c3e4
+      size: 6098
   parse_jeas118_trafos:
     cmd:
     - python src/data/parse/jeas118_trafos.py data/raw/jeas118/JEAS_IEEE118.doc data/parsed/jeas118_trafos.csv
@@ -758,8 +761,8 @@ stages:
       md5: e788aa728eb05670cf2370238072dcbc
       size: 7522
     - path: data/prepared/buses.csv
-      md5: c036a7b63028c0d96cb5ed4433852905
-      size: 4898
+      md5: 21ac7fc0efdd5756bfcfe0a71301c3e4
+      size: 6098
     - path: src/data/check/branches.py
       md5: 89298250f55615935c087f866ee6e8a5
       size: 2391
@@ -843,8 +846,8 @@ stages:
     - python src/data/check/gens.py data/prepared/gens.csv data/prepared/buses.csv
     deps:
     - path: data/prepared/buses.csv
-      md5: c036a7b63028c0d96cb5ed4433852905
-      size: 4898
+      md5: 21ac7fc0efdd5756bfcfe0a71301c3e4
+      size: 6098
     - path: data/transformed/gens.csv
       md5: ee57ae4bb97e6367396c5211d3abe8e1
       size: 16611
@@ -1127,8 +1130,8 @@ stages:
       md5: 349f63c22188842aa202eca7f87940b9
       size: 9392
     - path: data/prepared/buses.csv
-      md5: c036a7b63028c0d96cb5ed4433852905
-      size: 4898
+      md5: 21ac7fc0efdd5756bfcfe0a71301c3e4
+      size: 6098
     - path: src/data/transform/gens.py
       md5: 02a2c7d6991ed6a6d11e67e856f020fe
       size: 2110
@@ -1200,8 +1203,8 @@ stages:
       md5: ee925cff5fad2fe0ca4c384bc809345f
       size: 14836
     - path: data/prepared/buses.csv
-      md5: c036a7b63028c0d96cb5ed4433852905
-      size: 4898
+      md5: 21ac7fc0efdd5756bfcfe0a71301c3e4
+      size: 6098
     - path: data/prepared/gens.csv
       md5: fe2e6887295e97d55d2441e81e34050b
       size: 1447
@@ -1215,11 +1218,11 @@ stages:
       md5: 74c1c7666ba90046c52f40ab1811d322
       size: 44062587
     - path: src/model/samplers/base.py
-      md5: c5b7e9dd1c39ac48c414d8001ca5c8ff
-      size: 5323
+      md5: 8a9cd9b0c2e3731825cb4360976fa184
+      size: 5397
     - path: src/model/samplers/pandapower.py
-      md5: b90e519711c3a8295e490727c0cce2b0
-      size: 9502
+      md5: 239169ccaaa846191d2106d5cecfc66d
+      size: 9600
     - path: src/model/sampling.py
       md5: e7b42515c8b387f520cec822d1d4038d
       size: 2009
@@ -1235,6 +1238,23 @@ stages:
         S_BASE_MVA: 100
     outs:
     - path: models
-      md5: 164b2a5c3b58dbd09040ce3b035cef46.dir
-      size: 124104
+      md5: 17d913ac202ac7d14b1d4e9f062b4d8a.dir
+      size: 125378
       nfiles: 1
+  parse_jeas118_buses:
+    cmd:
+    - python src/data/parse/jeas118_buses.py data/raw/jeas118/JEAS_IEEE118.doc data/parsed/jeas118_buses.csv
+    deps:
+    - path: data/raw/jeas118/JEAS_IEEE118.doc
+      md5: 115121e48f534b9f720cecbdd6a9dbae
+      size: 663040
+    - path: src/data/parse/jeas118_buses.py
+      md5: 9652e7eaa0c361df2c3809d993786702
+      size: 2092
+    - path: src/utils/converters.py
+      md5: 509c7a4de2d3baafa99fa38c0e6d8600
+      size: 2046
+    outs:
+    - path: data/parsed/jeas118_buses.csv
+      md5: f3eaa4605b458465df248d2fb5789961
+      size: 2272

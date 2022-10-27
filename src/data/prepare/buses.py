@@ -8,12 +8,14 @@ from src.utils.data_loaders import load_df_data
 
 def prepare_buses(
     parsed_nrel118_buses: str | pd.DataFrame,
+    parsed_jeas118_buses: str | pd.DataFrame,
     bus_coordinates: str | pd.DataFrame,
     path_prepared_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
     """Prepare final bus data.
 
     Args:
+        parsed_jeas118_buses: Path or dataframe to parsed data.
         parsed_nrel118_buses: Path or dataframe to parsed data.
         bus_coordinates: Path or dataframe to bus coordinates data.
         path_prepared_data: Path to save prepared data.
@@ -24,10 +26,17 @@ def prepare_buses(
     buses = load_df_data(
         data=parsed_nrel118_buses, dtypes={"bus_name": str, "region": str}
     )
+    buses_jeas118 = load_df_data(
+        data=parsed_jeas118_buses,
+        dtypes={"bus_name": str, "max_vm_pu": float, "min_vm_pu": float},
+    )
     coordinates = load_df_data(
         data=bus_coordinates,
         dtypes={"bus_name": str, "x_coordinate": float, "y_coordinate": float},
     )
+
+    # Add voltage limits
+    buses = pd.merge(buses, buses_jeas118, on="bus_name", how="left")
 
     # Add coordinates
     buses = pd.merge(buses, coordinates, on="bus_name", how="left")
@@ -52,6 +61,8 @@ def prepare_buses(
         "in_service",
         "v_rated_kv",
         "is_slack",
+        "min_vm_pu",
+        "max_vm_pu",
         "x_coordinate",
         "y_coordinate",
     ]
@@ -63,16 +74,17 @@ def prepare_buses(
 
 if __name__ == "__main__":
     # Check params
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "prepare_buses.py path_parsed_nrel118_buses "
+            "prepare_buses.py path_parsed_nrel118_buses path_parsed_jeas118_buses"
             "path_bus_coordinates path_prepared_data\n"
         )
 
     # Run
     prepare_buses(
         parsed_nrel118_buses=sys.argv[1],
-        bus_coordinates=sys.argv[2],
-        path_prepared_data=sys.argv[3],
+        parsed_jeas118_buses=sys.argv[2],
+        bus_coordinates=sys.argv[3],
+        path_prepared_data=sys.argv[4],
     )

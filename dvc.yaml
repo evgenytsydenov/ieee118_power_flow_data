@@ -25,6 +25,19 @@ stages:
     outs:
       - data/parsed/nrel118_lines.csv
 
+  parse_jeas118_buses:
+    desc: "Parse bus data from the JEAS-118 dataset"
+    cmd:
+      - python src/data/parse/jeas118_buses.py
+        data/raw/jeas118/JEAS_IEEE118.doc
+        data/parsed/jeas118_buses.csv
+    deps:
+      - data/raw/jeas118/JEAS_IEEE118.doc
+      - src/data/parse/jeas118_buses.py
+      - src/utils/converters.py
+    outs:
+      - data/parsed/jeas118_buses.csv
+
   parse_jeas118_lines:
     desc: "Parse line data from the JEAS-118 dataset"
     cmd:
@@ -293,12 +306,14 @@ stages:
     cmd:
       - python src/data/prepare/buses.py
         data/parsed/nrel118_buses.csv
+        data/parsed/jeas118_buses.csv
         data/raw/manual/bus_coordinates.csv
         data/prepared/buses.csv
       - python src/data/check/buses.py
         data/prepared/buses.csv
     deps:
       - data/parsed/nrel118_buses.csv
+      - data/parsed/jeas118_buses.csv
       - data/raw/manual/bus_coordinates.csv
       - src/data/prepare/buses.py
       - src/data/check/buses.py
