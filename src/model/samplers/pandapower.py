@@ -3,8 +3,7 @@ import os
 
 import numpy as np
 import pandapower as pp
-import pandas as pd
-from pandapower import LoadflowNotConverged
+from pandapower import LoadflowNotConverged, OPFNotConverged
 
 from src.model.samplers.base import BaseRegimeSampler
 
@@ -23,8 +22,16 @@ class PandaRegimeSampler(BaseRegimeSampler):
         self.f_hz = f_hz
         self._bus_name_to_id = None
         self._bus_name_to_v_rate = None
+        self._slack_bus_id = None
         self._load_cols = ["in_service", "p_mw", "q_mvar"]
-        self._gen_cols = ["in_service", "p_mw", "min_q_mvar", "max_q_mvar", "vm_pu"]
+        self._gen_cols = [
+            "in_service",
+            "p_mw",
+            "min_q_mvar",
+            "max_q_mvar",
+            "max_p_mw",
+            "min_p_mw",
+        ]
 
     def _build_model(self) -> None:
         """Create power flow model."""
@@ -49,13 +56,15 @@ class PandaRegimeSampler(BaseRegimeSampler):
     def _add_slack(self) -> None:
         """Add slack bus info to the power flow model."""
         slack_bus = self._buses.loc[self._buses["is_slack"], "bus_name"].values[0]
+        self._slack_bus_id = self._bus_name_to_id[slack_bus]
         pp.create_ext_grid(
             self._model,
-            bus=self._bus_name_to_id[slack_bus],
+            bus=self._slack_bus_id,
             name=slack_bus,
             vm_pu=1,
             va_degree=0,
             in_service=True,
+            controllable=True,
         )
 
     def _add_buses(self) -> None:
@@ -195,35 +204,24 @@ class PandaRegimeSampler(BaseRegimeSampler):
             self._model,
             name=self._gens["gen_name"],
             buses=self._gens["bus_id"],
-            max_p_mw=self._gens["max_p_mw"],
             p_mw=0,
             max_q_mvar=0,
             min_q_mvar=0,
-            vm_pu=0,
+            min_p_mw=0,
+            max_p_mw=0,
+            vm_pu=1,
             in_service=True,
             controllable=True,
         )
 
-        # Prepare time-series
-        # Calculate gen voltage in p. u.
-        v_gen_bus_kv = pd.merge(
-            self._gens[["gen_name", "bus_name"]],
-            self._bus_name_to_v_rate,
-            right_index=True,
-            left_on="bus_name",
-            how="left",
-        )
-        self._gens_ts = pd.merge(
-            self._gens_ts,
-            v_gen_bus_kv[["gen_name", "vn_kv"]],
-            how="left",
-            on="gen_name",
-        )
-        self._gens_ts["vm_pu"] = self._gens_ts["v_set_kv"] / self._gens_ts["vn_kv"]
-
         # Some modifications for faster access
         self._gens_ts.rename(
-            columns={"q_min_mvar": "min_q_mvar", "q_max_mvar": "max_q_mvar"},
+            columns={
+                "q_min_mvar": "min_q_mvar",
+                "q_max_mvar": "max_q_mvar",
+                "max_p_opf_mw": "max_p_mw",
+                "min_p_opf_mw": "min_p_mw",
+            },
             inplace=True,
         )
         self._gens_ts[self._gen_cols] = self._gens_ts[self._gen_cols].astype(float)
@@ -257,6 +255,23 @@ class PandaRegimeSampler(BaseRegimeSampler):
         """
         model_path = os.path.join(path, f"{model_name}.json")
         pp.to_json(self._model, model_path)
+
+    def _calculate_opf(self) -> bool:
+        """Perform optimal power flow.
+
+        Returns:
+            True if the calculation was successful, False otherwise.
+        """
+        try:
+            pp.runopp(self._model)
+            self._model.gen[["p_mw", "vm_pu"]] = self._model.res_gen[
+                ["p_mw", "vm_pu"]
+            ].values
+            self._model.ext_grid["vm_pu"] = self._model.res_bus.loc[
+                self._slack_bus_id, "vm_pu"
+            ]
+        except OPFNotConverged:
+            return False
 
     def _calculate_regime(self) -> bool:
         """Calculate power flows.

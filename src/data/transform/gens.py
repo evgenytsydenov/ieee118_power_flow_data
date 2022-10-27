@@ -34,14 +34,86 @@ def transform_gens(
     )
     buses = load_df_data(
         data=prepared_buses,
-        dtypes={"bus_name": str, "v_rated_kv": float, "is_slack": bool},
+        dtypes={"bus_name": str, "is_slack": bool},
     )
+
+    # Set minimum power output of gens
+    gens["min_p_mw"] = 0
+
+    # Optimized gens
+    gens_optimized = [
+        "combined_cycle_gas_017",
+        "combined_cycle_gas_020",
+        "combined_cycle_gas_023",
+        "combined_cycle_gas_024",
+        "combined_cycle_gas_025",
+        "combined_cycle_gas_026",
+        "combined_cycle_gas_031",
+        "combined_cycle_gas_034",
+        "combined_cycle_gas_035",
+        "combined_cycle_gas_036",
+        "combustion_gas_011",
+        "combustion_gas_012",
+        "combustion_gas_015",
+        "combustion_gas_016",
+        "combustion_gas_020",
+        "steam_gas_003",
+        "steam_gas_006",
+        "steam_gas_007",
+        "steam_gas_008",
+        "steam_gas_009",
+    ]
+    gens_missed = [
+        "biomass_059",
+        "biomass_060",
+        "combined_cycle_gas_040",
+        "combustion_gas_008",
+        "combustion_gas_021",
+        "combustion_gas_022",
+        "combustion_gas_023",
+        "combustion_gas_024",
+        "combustion_gas_025",
+        "combustion_gas_026",
+        "combustion_gas_046",
+        "combustion_gas_047",
+        "combustion_gas_048",
+        "combustion_gas_049",
+        "combustion_gas_072",
+        "combustion_gas_073",
+        "hydro_001",
+        "hydro_002",
+        "hydro_003",
+        "hydro_004",
+        "hydro_005",
+        "hydro_006",
+        "hydro_007",
+        "hydro_008",
+        "hydro_009",
+        "hydro_010",
+        "hydro_011",
+        "hydro_012",
+        "hydro_013",
+        "hydro_014",
+        "hydro_015",
+    ]
+    gens_optimized += gens_missed
+    gens[["is_optimized", "is_ts_missed"]] = False
+    gens.loc[gens["gen_name"].isin(gens_optimized), "is_optimized"] = True
+    gens.loc[gens["gen_name"].isin(gens_missed), "is_ts_missed"] = True
 
     # Add bus info
     gens = gens.merge(buses, on="bus_name", how="left")
 
     # Group generators by bus
-    cols = ["bus_name", "gen_name", "max_p_mw", "v_rated_kv", "is_slack"]
+    cols = [
+        "bus_name",
+        "gen_name",
+        "max_p_mw",
+        "min_p_mw",
+        "is_slack",
+        "is_optimized",
+        "is_ts_missed",
+    ]
     if PLANT_MODE:
         gens.sort_values("bus_name", inplace=True, ignore_index=True)
         gens["plant_name"] = "plant_" + gens["bus_name"].str.lstrip("bus_")

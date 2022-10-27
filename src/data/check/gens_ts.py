@@ -24,10 +24,11 @@ def check_gens_ts(
             "datetime": str,
             "gen_name": str,
             "in_service": bool,
+            "p_mw": float,
             "q_max_mvar": float,
             "q_min_mvar": float,
-            "p_mw": float,
-            "v_set_kv": float,
+            "max_p_opf_mw": float,
+            "min_p_opf_mw": float,
         },
     )
 
@@ -37,7 +38,7 @@ def check_gens_ts(
     ), "There are missing obligatory parameters"
 
     # Ensure parameters are undefined when gen is out of service
-    value_cols = ["v_set_kv", "p_mw", "q_min_mvar", "q_max_mvar"]
+    value_cols = ["p_mw", "q_min_mvar", "q_max_mvar", "max_p_opf_mw", "min_p_opf_mw"]
     assert (
         gens_ts.loc[~gens_ts["in_service"], value_cols].isna().values.all()
     ), "There are value of parameters when generator is out of service"
@@ -50,12 +51,22 @@ def check_gens_ts(
 
     # Some values should not be negative
     assert (gens_in_service["p_mw"] >= 0).all(), "Some gens have negative output"
-    assert (gens_in_service["v_set_kv"] >= 0).all(), "Some gens have negative voltage"
+    assert (
+        gens_in_service["max_p_opf_mw"] >= 0
+    ).all(), "Some gens have negative max output"
+    assert (
+        gens_in_service["min_p_opf_mw"] >= 0
+    ).all(), "Some gens have negative min output"
 
     # Check reactive output
     assert (
         gens_in_service["q_min_mvar"] <= gens_in_service["q_max_mvar"]
-    ).all(), "Min level of reactive output of some gens are greater than Max level"
+    ).all(), "Min level of reactive output of some gens are greater than max level"
+
+    # Check active output
+    assert (
+        gens_in_service["min_p_opf_mw"] <= gens_in_service["max_p_opf_mw"]
+    ).all(), "Min level of active output of some gens are greater than max level"
 
     # Ensure there are time-series values for all gens
     gens_ts_names = gens_ts["gen_name"].unique()
@@ -80,6 +91,15 @@ def check_gens_ts(
     assert (
         gens_in_service["p_mw"] <= gens_in_service["max_p_mw"]
     ).all(), "Some gen outputs are greater than the max possible value"
+    assert (
+        gens_in_service["p_mw"] <= gens_in_service["max_p_opf_mw"]
+    ).all(), "Some gen outputs are greater than the max possible value"
+    assert (
+        gens_in_service["p_mw"] >= gens_in_service["min_p_opf_mw"]
+    ).all(), "Some gen outputs are lower than the min possible value"
+    assert (
+        gens_in_service["max_p_opf_mw"] <= gens_in_service["max_p_mw"]
+    ).all(), "Some gen max limits are greater than the max possible value"
 
 
 if __name__ == "__main__":

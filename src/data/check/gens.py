@@ -17,7 +17,8 @@ def check_gens(
     """
     # Load data
     gens = load_df_data(
-        data=prepared_gens, dtypes={"bus_name": str, "gen_name": str, "max_p_mw": float}
+        data=prepared_gens,
+        dtypes={"bus_name": str, "gen_name": str, "max_p_mw": float, "min_p_mw": float},
     )
     buses = load_df_data(
         data=prepared_buses, dtypes={"bus_name": str, "is_slack": bool}
@@ -34,6 +35,12 @@ def check_gens(
 
     # Ensure max output is not negative
     assert (gens["max_p_mw"] >= 0).all(), "There are negative max outputs"
+    assert (gens["min_p_mw"] >= 0).all(), "There are negative min outputs"
+
+    # Ensure max output is greater than the min one
+    assert (
+        gens["max_p_mw"] >= gens["min_p_mw"]
+    ).all(), "Max output of some gens is not greater than the min one"
 
     # Ensure there is only one plant per bus
     if PLANT_MODE:

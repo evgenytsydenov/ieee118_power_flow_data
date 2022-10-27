@@ -89,7 +89,13 @@ class BaseRegimeSampler(ABC):
             },
         )
         self._gens = load_df_data(
-            data=path_gens, dtypes={"gen_name": str, "bus_name": str, "max_p_mw": float}
+            data=path_gens,
+            dtypes={
+                "gen_name": str,
+                "bus_name": str,
+                "max_p_mw": float,
+                "min_p_mw": float,
+            },
         )
         self._gens_ts = load_df_data(
             data=path_gens_ts,
@@ -97,10 +103,11 @@ class BaseRegimeSampler(ABC):
                 "datetime": str,
                 "gen_name": str,
                 "in_service": bool,
+                "p_mw": float,
                 "q_max_mvar": float,
                 "q_min_mvar": float,
-                "p_mw": float,
-                "v_set_kv": float,
+                "max_p_opf_mw": float,
+                "min_p_opf_mw": float,
             },
         )
 

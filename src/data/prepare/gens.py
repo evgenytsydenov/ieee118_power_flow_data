@@ -21,7 +21,13 @@ def prepare_gens(
         Prepared data or None if `path_prepared_data` is passed and the data were saved.
     """
     # Load data
-    dtypes = {"gen_name": str, "bus_name": str, "max_p_mw": float, "is_slack": bool}
+    dtypes = {
+        "gen_name": str,
+        "bus_name": str,
+        "max_p_mw": float,
+        "min_p_mw": float,
+        "is_slack": bool,
+    }
     if PLANT_MODE:
         dtypes["plant_name"] = str
     gens = load_df_data(data=transformed_gens, dtypes=dtypes)
@@ -36,7 +42,7 @@ def prepare_gens(
         gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
 
     # Return results
-    cols = ["gen_name", "bus_name", "max_p_mw"]
+    cols = ["gen_name", "bus_name", "max_p_mw", "min_p_mw"]
     gens.sort_values("gen_name", inplace=True, ignore_index=True)
     if path_prepared_data:
         gens[cols].to_csv(path_prepared_data, header=True, index=False)
