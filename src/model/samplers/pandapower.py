@@ -256,8 +256,8 @@ class PandaRegimeSampler(BaseRegimeSampler):
         model_path = os.path.join(path, f"{model_name}.json")
         pp.to_json(self._model, model_path)
 
-    def _calculate_opf(self) -> bool:
-        """Perform optimal power flow.
+    def _calculate_regime(self) -> bool:
+        """Calculate power flows.
 
         Returns:
             True if the calculation was successful, False otherwise.
@@ -270,16 +270,6 @@ class PandaRegimeSampler(BaseRegimeSampler):
             self._model.ext_grid["vm_pu"] = self._model.res_bus.loc[
                 self._slack_bus_id, "vm_pu"
             ]
-        except OPFNotConverged:
-            return False
-
-    def _calculate_regime(self) -> bool:
-        """Calculate power flows.
-
-        Returns:
-            True if the calculation was successful, False otherwise.
-        """
-        try:
             pp.runpp(
                 self._model,
                 algorithm="nr",
@@ -288,5 +278,5 @@ class PandaRegimeSampler(BaseRegimeSampler):
                 enforce_q_lims=True,
             )
             return True
-        except LoadflowNotConverged:
+        except (LoadflowNotConverged, OPFNotConverged):
             return False
