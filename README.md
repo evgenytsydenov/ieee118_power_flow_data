@@ -1,10 +1,53 @@
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+[python]: https://www.python.org/downloads/release/python-3100/
+[python-shield]: https://img.shields.io/badge/python-3.10-blue.svg
+[license]: http://creativecommons.org/licenses/by-nc-sa/4.0/
+[license-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
 
-# Power flow data for IEEE-118 system
+
+[![CC-BY-NC-SA-4.0][license-shield]][license]
+[![Python 3.10][python-shield]][python]
+
+
+# Power Flow Data of IEEE-118 Bus System
+
+
+The repository contains a data pipeline to build power flow cases of an IEEE-118 like power system with an hourly frequency for one year.
+
+The system consists of 118 buses, 186 branches (177 lines, 9 transformers), 91 loads, 321 generators, and looks as follows (other image formats can be found [here](resources/plot)).
+
+![Power system plot](resources/plot/plot.png "Power system plot")
+
+The prepared power flow cases can be used in research purposes for power flow analysis, static security analysis, etc.
+
+
+## Data Preparation Steps
+
+The pipeline for data preparation and building power flow cases is separated into stages:
+- parse (extract necessary parameters from the raw data)
+- transform (combine and convert data to use in further steps)
+- prepare (build final dataset to create power flow cases)
+- model (sampling of power flow cases using [the PandaPower solver](http://www.pandapower.org/))
+
+The presented pipeline processes mainly a dataset described [in the paper "An Extended IEEE 118-Bus Test System With
+High Renewable Penetration"](https://ieeexplore.ieee.org/document/7904729) (aka "NREL-118"). The NREL-118 dataset contains information about a power system based on the transmission representation of the IEEE-118 test system with a lot of modifications which are analyzed [in this notebook](notebooks/explore_nrel118_data.ipynb). To append the data with some additional info, the information about the IEEE-118 test system prepared by Illinois Institute of Technology (version of 2004) is also used (see [the JEAS-118 dataset](http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)) in the stages.
+
+Actions performed at each stage and all the assumptions made during the preparation process are described [in this notebook](notebooks/prepare_power_flow_data.ipynb). The naming of variables in the prepared data corresponds [to the project convention](convention.md).
+
+To ensure the execution order and reproducibility of the stages, [Data Version Control](https://dvc.org/) is used. The configuration of the stages can be found [in the DVC config](dvc.yaml).
+
+
+## How to Use
+
+1. Download the source code (see [how to clone a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)).
+2. Go to the project directory, create and activate a virtual environment, install project dependencies [with poetry](https://python-poetry.org/docs/basic-usage/#installing-dependencies) or [pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
+3. Download and unpack the NREL-118 data using [this script](scripts/download_nrel118.py).
+4. Download the JEAS-118 data using [this script](scripts/download_jeas118.py).
+5. Run `main.py` script in the activated environment.
+6. After completing all the stages, the data and power flow models will be saved in the folders "data" and "models" in the project directory.
+
+Some parameters used in the computation are listed [in definitions](definitions.py) and can be tuned.
+
 
 ## License and Copyright
 
-This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
-
-[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
-[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
+This work is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][license].
