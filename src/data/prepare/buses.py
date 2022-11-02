@@ -28,7 +28,7 @@ def prepare_buses(
     )
     buses_jeas118 = load_df_data(
         data=parsed_jeas118_buses,
-        dtypes={"bus_name": str, "max_vm_pu": float, "min_vm_pu": float},
+        dtypes={"bus_name": str, "max_v_pu": float, "min_v_pu": float},
     )
     coordinates = load_df_data(
         data=bus_coordinates,
@@ -61,8 +61,8 @@ def prepare_buses(
         "in_service",
         "v_rated_kv",
         "is_slack",
-        "min_vm_pu",
-        "max_vm_pu",
+        "min_v_pu",
+        "max_v_pu",
         "x_coordinate",
         "y_coordinate",
     ]

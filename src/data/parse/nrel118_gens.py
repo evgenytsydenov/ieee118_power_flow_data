@@ -23,6 +23,7 @@ def parse_nrel118_gens(
         "Generator Name": str,
         "Node of connection": str,
         "Max Capacity (MW)": float,
+        "Min Stable Level (MW)": float,
     }
     gens = load_df_data(data=raw_data, dtypes=dtypes, sep=";", decimal=",")
 
@@ -35,6 +36,7 @@ def parse_nrel118_gens(
             "Generator Name": "gen_name",
             "Node of connection": "bus_name",
             "Max Capacity (MW)": "max_p_mw",
+            "Min Stable Level (MW)": "min_p_mw",
         },
         inplace=True,
     )

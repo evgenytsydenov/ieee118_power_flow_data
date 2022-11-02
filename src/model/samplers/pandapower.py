@@ -1,11 +1,14 @@
 import math
 import os
+import warnings
 
 import numpy as np
 import pandapower as pp
 from pandapower import LoadflowNotConverged, OPFNotConverged
 
 from src.model.samplers.base import BaseRegimeSampler
+
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 
 class PandaRegimeSampler(BaseRegimeSampler):
@@ -81,8 +84,8 @@ class PandaRegimeSampler(BaseRegimeSampler):
             name=self._buses["bus_name"],
             zone=self._buses["region"],
             in_service=self._buses["in_service"],
-            max_vm_pu=self._buses["max_vm_pu"],
-            min_vm_pu=self._buses["min_vm_pu"],
+            max_vm_pu=self._buses["max_v_pu"],
+            min_vm_pu=self._buses["min_v_pu"],
             geodata=list(zip(self._buses["x_coordinate"], self._buses["y_coordinate"])),
         )
 
@@ -217,8 +220,6 @@ class PandaRegimeSampler(BaseRegimeSampler):
         # Some modifications for faster access
         self._gens_ts.rename(
             columns={
-                "q_min_mvar": "min_q_mvar",
-                "q_max_mvar": "max_q_mvar",
                 "max_p_opf_mw": "max_p_mw",
                 "min_p_opf_mw": "min_p_mw",
             },

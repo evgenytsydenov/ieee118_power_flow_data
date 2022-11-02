@@ -38,8 +38,8 @@ def parse_jeas118_buses(
     buses.rename(
         columns={
             "Bus No.": "bus_name",
-            "Voltage-Max (pu)": "max_vm_pu",
-            "Voltage-Min (pu)": "min_vm_pu",
+            "Voltage-Max (pu)": "max_v_pu",
+            "Voltage-Min (pu)": "min_v_pu",
         },
         inplace=True,
     )

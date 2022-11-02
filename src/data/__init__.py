@@ -4,6 +4,7 @@ from .check.gens import check_gens
 from .check.gens_ts import check_gens_ts
 from .check.loads import check_loads
 from .check.loads_ts import check_loads_ts
+from .parse.jeas118_buses import parse_jeas118_buses
 from .parse.jeas118_lines import parse_jeas118_lines
 from .parse.jeas118_loads import parse_jeas118_loads
 from .parse.jeas118_trafos import parse_jeas118_trafos

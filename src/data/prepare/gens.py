@@ -38,7 +38,11 @@ def prepare_gens(
     # Change names for consistency in further scripts
     if PLANT_MODE:
         gens.drop(columns=["gen_name"], inplace=True)
-        gens = gens.groupby(["bus_name", "plant_name"], as_index=False).sum()
+        agg_funcs = {
+            "max_p_mw": "sum",
+            "min_p_mw": "min",
+        }
+        gens = gens.groupby(["bus_name", "plant_name"], as_index=False).agg(agg_funcs)
         gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
 
     # Return results

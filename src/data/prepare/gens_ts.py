@@ -53,11 +53,13 @@ def prepare_gens_ts(
     gens_ts.drop(columns="is_slack", inplace=True)
 
     # Clip outputs which exceed the max limit
-    gens_ts["p_mw"].clip(upper=gens_ts["max_p_mw"], inplace=True)
+    gens_ts["p_mw"].clip(
+        upper=gens_ts["max_p_mw"], lower=gens_ts["min_p_mw"], inplace=True
+    )
 
     # Reactive power limits
-    gens_ts["q_max_mvar"] = 0.7 * gens_ts["max_p_mw"]
-    gens_ts["q_min_mvar"] = -0.3 * gens_ts["max_p_mw"]
+    gens_ts["max_q_mvar"] = 0.7 * gens_ts["max_p_mw"]
+    gens_ts["min_q_mvar"] = -0.3 * gens_ts["max_p_mw"]
 
     # Limits for OPF
     gens_ts["max_p_opf_mw"] = gens_ts["p_mw"]
@@ -67,7 +69,7 @@ def prepare_gens_ts(
     gens_ts.loc[mask, "min_p_opf_mw"] = gens_ts.loc[mask, "min_p_mw"]
 
     # If gen is not in service, its parameters are undefined
-    value_cols = ["p_mw", "q_max_mvar", "q_min_mvar", "max_p_opf_mw", "min_p_opf_mw"]
+    value_cols = ["p_mw", "max_q_mvar", "min_q_mvar", "max_p_opf_mw", "min_p_opf_mw"]
     gens_ts.loc[~gens_ts["in_service"], value_cols] = np.nan
 
     if PLANT_MODE:
@@ -83,8 +85,8 @@ def prepare_gens_ts(
         # Group gen parameters
         agg_funcs = {
             "p_mw": "sum",
-            "q_max_mvar": "sum",
-            "q_min_mvar": "sum",
+            "max_q_mvar": "sum",
+            "min_q_mvar": "sum",
             "max_p_opf_mw": "sum",
             "min_p_opf_mw": "sum",
             "in_service": "sum",
@@ -107,8 +109,8 @@ def prepare_gens_ts(
         "gen_name",
         "in_service",
         "p_mw",
-        "q_max_mvar",
-        "q_min_mvar",
+        "max_q_mvar",
+        "min_q_mvar",
         "max_p_opf_mw",
         "min_p_opf_mw",
     ]

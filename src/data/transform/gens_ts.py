@@ -46,7 +46,7 @@ def transform_gens_ts(
     )
     gens = load_df_data(
         data=transformed_gens,
-        dtypes={"gen_name": str, "is_ts_missed": bool},
+        dtypes={"gen_name": str, "is_ts_missed": bool, "min_p_mw": float},
     )
 
     # Load gens time-series data
@@ -69,7 +69,7 @@ def transform_gens_ts(
         data={
             "gen_name": gens.loc[gens["is_ts_missed"], "gen_name"].values,
             "datetime": datetime(2024, 1, 1, 0, 0, 0).strftime(DATE_FORMAT),
-            "p_mw": 0,
+            "p_mw": gens.loc[gens["is_ts_missed"], "min_p_mw"].values,
         }
     )
     gens_ts.append(gens_missed)

@@ -30,15 +30,13 @@ def transform_gens(
             "gen_name": str,
             "bus_name": str,
             "max_p_mw": float,
+            "min_p_mw": float,
         },
     )
     buses = load_df_data(
         data=prepared_buses,
         dtypes={"bus_name": str, "is_slack": bool},
     )
-
-    # Set minimum power output of gens
-    gens["min_p_mw"] = 0
 
     # Optimized gens
     gens_optimized = [

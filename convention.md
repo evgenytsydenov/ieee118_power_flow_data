@@ -8,9 +8,11 @@
 - "region" --- name of region where the bus is located
 - "in_service" --- if the bus is in service (not in maintenance)
 - "v_rated_kv" --- rated voltage of the bus in kilovolts
-- "x_coordinate" and "y_coordinate" --- coordinates of the bus
+- "x_coordinate" --- x-coordinate of the bus
+- "y_coordinate" --- y-coordinate of the bus
 - "is_slack" --- whether the bus is a slack bus
-- "max_vm_pu" and "min_vm_pu" --- limits of bus voltage in per units
+- "max_v_pu" --- rated max limit of bus voltage in per units
+- "min_v_pu" --- rated min limit of bus voltage in per units
 
 ### Branches
 
@@ -30,18 +32,20 @@
 - "load_name" --- load name in form "load_<bus number>"
 - "bus_name" --- name of the bus where the load is placed
 - "in_service" --- if the load is in service
-- "p_mw" --- active demand of the load in megawatts
-- "q_mvar" --- reactive demand of the load in megavolt-amperes
+- "p_mw" --- actual active demand of the load in megawatts
+- "q_mvar" --- actual reactive demand of the load in megavolt-amperes
 - "datetime" --- date and time of variable measurement
 
 ### Generators
 
 - "gen_name" --- generator name in form "<gen_type>_<number>" or "plant_<bus number>"
 - "bus_name" --- name of the bus where the generator is placed
-- "q_max_mvar" --- max limit of reactive output in megavolt-amperes
-- "q_min_mvar" --- min limit of reactive output in megavolt-amperes
-- "v_set_kv" --- set voltage of the generator in kilovolts
 - "in_service" --- if the generator is in service (not in maintenance)
-- "p_mw" --- active output of the generator in megawatts
-- "max_p_mw" --- max active output in megawatts
+- "p_mw" --- actual active output of the generator in megawatts
+- "max_q_mvar" --- actual max limit of reactive output in megavolt-amperes according to PQ-diagram
+- "min_q_mvar" --- actual min limit of reactive output in megavolt-amperes according to PQ-diagram
+- "max_p_mw" --- rated max active output in megawatts
+- "min_p_mw" --- rated min active output in megawatts
 - "datetime" --- date and time of variable measurement
+- "max_p_opf_mw" --- actual max limit of active output in megawatts used for optimisation
+- "min_p_opf_mw" --- actual min limit of active output in megawatts used for optimisation
