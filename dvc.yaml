@@ -1,4 +1,41 @@
 stages:
+  download_bus_coordinates:
+    desc: "Prepare manually created bus coordinates"
+    cmd:
+      - python src/data/download/bus_coordinates.py
+        data/raw/manual/bus_coordinates.csv
+    deps:
+      - src/data/download/bus_coordinates.py
+    outs:
+      - data/raw/manual/bus_coordinates.csv
+
+  download_nrel_118:
+    desc: "Download the NREL-118 dataset"
+    cmd:
+      - python src/data/download/nrel118.py
+        data/raw/nrel118
+    deps:
+      - https://www.nrel.gov/esif/assets/docs/input-files.zip
+      - https://www.nrel.gov/esif/assets/docs/additional-files-mti-118.zip
+      - https://www.nrel.gov/esif/assets/docs/plexos-export.xls
+      - https://www.nrel.gov/esif/assets/docs/mti-118-mt-da-rt-reserves-all-generators.xml
+      - src/data/download/nrel118.py
+      - src/data/download/utils/downloader.py
+    outs:
+      - data/raw/nrel118
+
+  download_jeas_118:
+    desc: "Download the JEAS-118 dataset"
+    cmd:
+      - python src/data/download/jeas118.py
+        data/raw/jeas118
+    deps:
+      - http://motor.ece.iit.edu/data/JEAS_IEEE118.doc
+      - src/data/download/jeas118.py
+      - src/data/download/utils/downloader.py
+    outs:
+      - data/raw/jeas118
+
   parse_nrel118_buses:
     desc: "Parse bus data from the NREL-118 dataset"
     cmd:

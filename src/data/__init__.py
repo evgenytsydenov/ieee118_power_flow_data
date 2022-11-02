@@ -4,6 +4,9 @@ from .check.gens import check_gens
 from .check.gens_ts import check_gens_ts
 from .check.loads import check_loads
 from .check.loads_ts import check_loads_ts
+from .download.bus_coordinates import download_bus_coordinates
+from .download.jeas118 import download_jeas118
+from .download.nrel118 import download_nrel118
 from .parse.jeas118_buses import parse_jeas118_buses
 from .parse.jeas118_lines import parse_jeas118_lines
 from .parse.jeas118_loads import parse_jeas118_loads

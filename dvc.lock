@@ -1252,3 +1252,71 @@ stages:
     - path: data/parsed/jeas118_buses.csv
       md5: 4777d14a3355b508d6d97485b5d76e54
       size: 2270
+  download_jeas_118:
+    cmd:
+    - python src/data/download/jeas118.py data/raw/jeas118
+    deps:
+    - path: http://motor.ece.iit.edu/data/JEAS_IEEE118.doc
+      checksum: '"a1e00-3e6f730131700"'
+      size: 663040
+    - path: src/data/download/jeas118.py
+      md5: 62e556785f2c91ce7dd0e6047010056a
+      size: 794
+    - path: src/data/download/utils/downloader.py
+      md5: f71b6f49fa9bd84c40aabe978c839427
+      size: 720
+    outs:
+    - path: data/raw/jeas118
+      md5: ac3f6021c25be4fb7457eddb575fe037.dir
+      size: 663040
+      nfiles: 1
+  download_nrel_118:
+    cmd:
+    - python src/data/download/nrel118.py data/raw/nrel118
+    deps:
+    - path: https://www.nrel.gov/esif/assets/docs/additional-files-mti-118.zip
+      checksum: '"418be-5b21c8c9524cf"'
+      size: 268478
+    - path: https://www.nrel.gov/esif/assets/docs/input-files.zip
+      checksum: '"df7c73-5b21c8c9a8007"'
+      size: 14646387
+    - path: https://www.nrel.gov/esif/assets/docs/mti-118-mt-da-rt-reserves-all-generators.xml
+      checksum: '"67d585-5d6f9e02c725e"'
+      size: 6804869
+    - path: https://www.nrel.gov/esif/assets/docs/plexos-export.xls
+      checksum: '"227c00-5b21c8c9403b8"'
+      size: 2259968
+    - path: src/data/download/nrel118.py
+      md5: e55f909d523f999b208b80b29480d38b
+      size: 952
+    - path: src/data/download/utils/downloader.py
+      md5: f71b6f49fa9bd84c40aabe978c839427
+      size: 720
+    outs:
+    - path: data/raw/nrel118
+      md5: aa9e98dd4703158bcf1596ce20d8c0e8.dir
+      size: 51730007
+      nfiles: 234
+  download_manual:
+    cmd:
+    - python src/data/download/bus_coordinates.py data/raw/manual/bus_coordinates.csv
+    deps:
+    - path: src/data/download/bus_coordinates.py
+      md5: 92b939b88b090d44c2903948a6e4374a
+      size: 5018
+    outs:
+    - path: data/raw/manual
+      md5: 8fdcb63b6bf3f70761fba431ff2e0a06.dir
+      size: 2265
+      nfiles: 1
+  download_bus_coordinates:
+    cmd:
+    - python src/data/download/bus_coordinates.py data/raw/manual/bus_coordinates.csv
+    deps:
+    - path: src/data/download/bus_coordinates.py
+      md5: a286fef1ed356b85592e53f357405bb9
+      size: 5253
+    outs:
+    - path: data/raw/manual/bus_coordinates.csv
+      md5: 434edcb03d694eecdadaa14069b75cbb
+      size: 2265
