@@ -3,7 +3,6 @@ from typing import Optional
 
 import pandas as pd
 
-from definitions import PLANT_MODE
 from src.utils.data_loaders import load_df_data
 
 
@@ -102,7 +101,7 @@ def transform_gens(
     # Add bus info
     gens = gens.merge(buses, on="bus_name", how="left")
 
-    # Group generators by bus
+    # Return results
     cols = [
         "bus_name",
         "gen_name",
@@ -112,12 +111,6 @@ def transform_gens(
         "is_optimized",
         "is_ts_missed",
     ]
-    if PLANT_MODE:
-        gens.sort_values("bus_name", inplace=True, ignore_index=True)
-        gens["plant_name"] = "plant_" + gens["bus_name"].str.lstrip("bus_")
-        cols.insert(0, "plant_name")
-
-    # Return results
     if path_transformed_data:
         gens[cols].to_csv(path_transformed_data, header=True, index=False)
     else:

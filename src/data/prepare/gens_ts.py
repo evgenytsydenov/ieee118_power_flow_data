@@ -4,7 +4,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from definitions import DATE_FORMAT, PLANT_MODE
+from definitions import DATE_FORMAT
 from src.utils.data_loaders import load_df_data
 
 
@@ -38,7 +38,6 @@ def prepare_gens_ts(
         dtypes={
             "gen_name": str,
             "is_slack": bool,
-            "is_optimized": bool,
             "max_p_mw": float,
             "min_p_mw": float,
         },
@@ -61,47 +60,12 @@ def prepare_gens_ts(
     gens_ts["max_q_mvar"] = 0.7 * gens_ts["max_p_mw"]
     gens_ts["min_q_mvar"] = -0.3 * gens_ts["max_p_mw"]
 
-    # Limits for OPF
-    gens_ts["max_p_opf_mw"] = gens_ts["p_mw"]
-    gens_ts["min_p_opf_mw"] = gens_ts["p_mw"]
-    mask = gens_ts["is_optimized"]
-    gens_ts.loc[mask, "max_p_opf_mw"] = gens_ts.loc[mask, "max_p_mw"]
-    gens_ts.loc[mask, "min_p_opf_mw"] = gens_ts.loc[mask, "min_p_mw"]
-
     # If gen is not in service, its parameters are undefined
-    value_cols = ["p_mw", "max_q_mvar", "min_q_mvar", "max_p_opf_mw", "min_p_opf_mw"]
+    value_cols = ["p_mw", "max_q_mvar", "min_q_mvar"]
     gens_ts.loc[~gens_ts["in_service"], value_cols] = np.nan
 
-    if PLANT_MODE:
-        # Load mapping of plants and gens
-        plants = load_df_data(
-            data=transformed_gens,
-            dtypes={"gen_name": str, "plant_name": str},
-        )
-
-        # Add plant names to time-series data of gens
-        gens_ts = pd.merge(gens_ts, plants, how="left", on="gen_name")
-
-        # Group gen parameters
-        agg_funcs = {
-            "p_mw": "sum",
-            "max_q_mvar": "sum",
-            "min_q_mvar": "sum",
-            "max_p_opf_mw": "sum",
-            "min_p_opf_mw": "sum",
-            "in_service": "sum",
-        }
-        gens_ts = gens_ts.groupby(["plant_name", "datetime"], as_index=False).agg(
-            agg_funcs
-        )
-
-        # If the number of gens, which are in service, equals to zero,
-        # the plant is out of service and its parameters should be undefined
-        gens_ts["in_service"] = gens_ts["in_service"].astype(bool)
-        gens_ts.loc[~gens_ts["in_service"], value_cols] = np.nan
-
-        # Rename columns for consistency in further scripts
-        gens_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
+    # Round values
+    gens_ts.loc[:, value_cols] = gens_ts.loc[:, value_cols].round(decimals=6)
 
     # Return results
     cols = [
@@ -111,8 +75,6 @@ def prepare_gens_ts(
         "p_mw",
         "max_q_mvar",
         "min_q_mvar",
-        "max_p_opf_mw",
-        "min_p_opf_mw",
     ]
     gens_ts = gens_ts.sort_values(["datetime", "gen_name"], ignore_index=True)
     if path_prepared_data:

@@ -38,14 +38,13 @@
 
 ### Generators
 
-- "gen_name" --- generator name in form "<gen_type>_<number>" or "plant_<bus number>"
+- "gen_name" --- generator name in form "<gen_type>_<number>"
 - "bus_name" --- name of the bus where the generator is placed
 - "in_service" --- if the generator is in service (not in maintenance)
+- "is_optimized" --- whether the output of this generator is optimized at the OPF stage
+- "max_p_mw" --- rated max active output in megawatts
+- "min_p_mw" --- rated min active output in megawatts
 - "p_mw" --- actual active output of the generator in megawatts
 - "max_q_mvar" --- actual max limit of reactive output in megavolt-amperes according to PQ-diagram
 - "min_q_mvar" --- actual min limit of reactive output in megavolt-amperes according to PQ-diagram
-- "max_p_mw" --- rated max active output in megawatts
-- "min_p_mw" --- rated min active output in megawatts
 - "datetime" --- date and time of variable measurement
-- "max_p_opf_mw" --- actual max limit of active output in megawatts used for optimisation
-- "min_p_opf_mw" --- actual min limit of active output in megawatts used for optimisation

@@ -3,7 +3,6 @@ from typing import Optional
 
 import pandas as pd
 
-from definitions import PLANT_MODE
 from src.utils.data_loaders import load_df_data
 
 
@@ -27,26 +26,19 @@ def prepare_gens(
         "max_p_mw": float,
         "min_p_mw": float,
         "is_slack": bool,
+        "is_optimized": bool,
     }
-    if PLANT_MODE:
-        dtypes["plant_name"] = str
     gens = load_df_data(data=transformed_gens, dtypes=dtypes)
 
     # Drop slack bus gens
     gens = gens.loc[~gens["is_slack"], [c for c in gens.columns if c != "is_slack"]]
 
-    # Change names for consistency in further scripts
-    if PLANT_MODE:
-        gens.drop(columns=["gen_name"], inplace=True)
-        agg_funcs = {
-            "max_p_mw": "sum",
-            "min_p_mw": "min",
-        }
-        gens = gens.groupby(["bus_name", "plant_name"], as_index=False).agg(agg_funcs)
-        gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
+    # Round values
+    cols = ["max_p_mw", "min_p_mw"]
+    gens.loc[:, cols] = gens.loc[:, cols].round(decimals=6)
 
     # Return results
-    cols = ["gen_name", "bus_name", "max_p_mw", "min_p_mw"]
+    cols = ["gen_name", "bus_name", "max_p_mw", "min_p_mw", "is_optimized"]
     gens.sort_values("gen_name", inplace=True, ignore_index=True)
     if path_prepared_data:
         gens[cols].to_csv(path_prepared_data, header=True, index=False)

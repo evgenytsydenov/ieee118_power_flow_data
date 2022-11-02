@@ -238,9 +238,6 @@ stages:
       - data/prepared/buses.csv
       - src/data/transform/gens.py
       - src/utils/data_loaders/load_df_data.py
-    params:
-      - definitions.py:
-          - PLANT_MODE
     outs:
       - data/transformed/gens.csv
 
@@ -409,9 +406,6 @@ stages:
       - src/data/prepare/gens.py
       - src/data/check/gens.py
       - src/utils/data_loaders/load_df_data.py
-    params:
-      - definitions.py:
-          - PLANT_MODE
     outs:
       - data/prepared/gens.csv
 
@@ -435,7 +429,6 @@ stages:
     params:
       - definitions.py:
           - DATE_FORMAT
-          - PLANT_MODE
     outs:
       - data/prepared/gens_ts.csv
 
@@ -468,5 +461,6 @@ stages:
           - REGIME_SAMPLER
           - DATE_FORMAT
           - MODEL_NAME_FORMAT
+          - PLANT_MODE
     outs:
       - models

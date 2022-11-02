@@ -90,9 +90,8 @@ def transform_gens_ts(
             .groupby("gen_name")
             .apply(lambda x: x.reindex(date_range, method=FILL_METHOD))
             .drop(columns=["gen_name"])
-            .round(decimals=6)
         )
-    gens_ts = pd.concat(parts, axis=1, join="inner").round(decimals=6)
+    gens_ts = pd.concat(parts, axis=1, join="inner")
     gens_ts.reset_index(inplace=True)
 
     # Return results

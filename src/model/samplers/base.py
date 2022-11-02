@@ -4,7 +4,7 @@ from datetime import datetime
 
 from tqdm import tqdm
 
-from definitions import DATE_FORMAT, MODEL_NAME_FORMAT
+from definitions import DATE_FORMAT, MODEL_NAME_FORMAT, PLANT_MODE
 from src.utils.data_loaders import load_df_data
 
 
@@ -13,6 +13,7 @@ class BaseRegimeSampler(ABC):
 
     def __init__(self) -> None:
         """Base class for creating power regimes."""
+        self._is_plant_mode = PLANT_MODE
         self._buses = None
         self._branches = None
         self._loads = None
@@ -95,6 +96,7 @@ class BaseRegimeSampler(ABC):
                 "bus_name": str,
                 "max_p_mw": float,
                 "min_p_mw": float,
+                "is_optimized": bool,
             },
         )
         self._gens_ts = load_df_data(
@@ -106,8 +108,6 @@ class BaseRegimeSampler(ABC):
                 "p_mw": float,
                 "max_q_mvar": float,
                 "min_q_mvar": float,
-                "max_p_opf_mw": float,
-                "min_p_opf_mw": float,
             },
         )
 

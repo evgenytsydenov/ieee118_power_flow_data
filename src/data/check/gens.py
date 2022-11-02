@@ -2,7 +2,6 @@ import sys
 
 import pandas as pd
 
-from definitions import PLANT_MODE
 from src.utils.data_loaders import load_df_data
 
 
@@ -41,10 +40,6 @@ def check_gens(
     assert (
         gens["max_p_mw"] >= gens["min_p_mw"]
     ).all(), "Max output of some gens is not greater than the min one"
-
-    # Ensure there is only one plant per bus
-    if PLANT_MODE:
-        assert gens["bus_name"].is_unique, "Some bus contains several plants"
 
     # Ensure slack bus gens are not included
     slack_bus = buses.loc[buses["is_slack"], "bus_name"]

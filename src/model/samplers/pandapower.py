@@ -4,6 +4,7 @@ import warnings
 
 import numpy as np
 import pandapower as pp
+import pandas as pd
 from pandapower import LoadflowNotConverged, OPFNotConverged
 
 from src.model.samplers.base import BaseRegimeSampler
@@ -36,8 +37,79 @@ class PandaRegimeSampler(BaseRegimeSampler):
             "min_p_mw",
         ]
 
+    def _prepare_data(self) -> None:
+        """Prepare data for OPF and group in plants if needed."""
+        cols = [
+            "p_mw",
+            "max_q_mvar",
+            "min_q_mvar",
+            "max_p_opf_mw",
+            "min_p_opf_mw",
+        ]
+
+        # Add plant names
+        if self._is_plant_mode:
+            self._gens.sort_values("bus_name", inplace=True, ignore_index=True)
+            self._gens["plant_name"] = "plant_" + self._gens["bus_name"].str.lstrip(
+                "bus_"
+            )
+
+        # Limits for OPF
+        self._gens_ts = pd.merge(self._gens_ts, self._gens, on="gen_name", how="left")
+        self._gens_ts["max_p_opf_mw"] = self._gens_ts["p_mw"]
+        self._gens_ts["min_p_opf_mw"] = self._gens_ts["p_mw"]
+        mask = self._gens_ts["is_optimized"]
+        self._gens_ts.loc[mask, "max_p_opf_mw"] = self._gens_ts.loc[mask, "max_p_mw"]
+        self._gens_ts.loc[mask, "min_p_opf_mw"] = self._gens_ts.loc[mask, "min_p_mw"]
+        self._gens_ts.loc[~self._gens_ts["in_service"], cols] = np.nan
+
+        # Group gen parameters
+        if self._is_plant_mode:
+            agg_funcs = {
+                "p_mw": "sum",
+                "max_q_mvar": "sum",
+                "min_q_mvar": "sum",
+                "max_p_opf_mw": "sum",
+                "min_p_opf_mw": "sum",
+                "in_service": "sum",
+            }
+            self._gens_ts = self._gens_ts.groupby(
+                ["plant_name", "datetime"], as_index=False
+            ).agg(agg_funcs)
+
+            # If the number of gens, which are in service, equals to zero,
+            # the plant is out of service and its parameters should be undefined
+            self._gens_ts["in_service"] = self._gens_ts["in_service"].astype(bool)
+            self._gens_ts.loc[~self._gens_ts["in_service"], cols] = np.nan
+
+            # Modify gen info
+            self._gens.drop(columns=["gen_name"], inplace=True)
+            agg_funcs = {"max_p_mw": "sum", "min_p_mw": "min"}
+            self._gens = self._gens.groupby(
+                ["bus_name", "plant_name"], as_index=False
+            ).agg(agg_funcs)
+
+            # Rename columns for consistency in further scripts
+            self._gens_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
+            self._gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
+
+        # Some modifications for faster access
+        self._gens_ts = self._gens_ts[["datetime", "gen_name", "in_service", *cols]]
+        self._gens_ts.rename(
+            columns={
+                "max_p_opf_mw": "max_p_mw",
+                "min_p_opf_mw": "min_p_mw",
+            },
+            inplace=True,
+        )
+        self._gens_ts[self._gen_cols] = self._gens_ts[self._gen_cols].astype(float)
+        self._gens_ts.sort_values(["datetime", "gen_name"], inplace=True)
+        self._gens_ts.set_index("datetime", inplace=True)
+
     def _build_model(self) -> None:
         """Create power flow model."""
+        # Some initial preparations
+        self._prepare_data()
 
         # Create empty network
         self._model = pp.create_empty_network(sn_mva=self.s_base_mva, f_hz=self.f_hz)
@@ -217,18 +289,6 @@ class PandaRegimeSampler(BaseRegimeSampler):
             controllable=True,
         )
 
-        # Some modifications for faster access
-        self._gens_ts.rename(
-            columns={
-                "max_p_opf_mw": "max_p_mw",
-                "min_p_opf_mw": "min_p_mw",
-            },
-            inplace=True,
-        )
-        self._gens_ts[self._gen_cols] = self._gens_ts[self._gen_cols].astype(float)
-        self._gens_ts.sort_values(["datetime", "gen_name"], inplace=True)
-        self._gens_ts.set_index("datetime", inplace=True)
-
     def _apply_next_timestamp(self, timestamp: str) -> None:
         """Refresh regime data in accordance to datetime.
 
@@ -264,13 +324,19 @@ class PandaRegimeSampler(BaseRegimeSampler):
             True if the calculation was successful, False otherwise.
         """
         try:
-            pp.runopp(self._model)
+
+            # Perform OPF
+            pp.runopp(self._model, calculate_voltage_angles=True, init="flat")
+
+            # Prepare to run PF
             self._model.gen[["p_mw", "vm_pu"]] = self._model.res_gen[
                 ["p_mw", "vm_pu"]
             ].values
             self._model.ext_grid["vm_pu"] = self._model.res_bus.loc[
                 self._slack_bus_id, "vm_pu"
             ]
+
+            # Perform PF
             pp.runpp(
                 self._model,
                 algorithm="nr",
