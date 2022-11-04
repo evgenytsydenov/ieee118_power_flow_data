@@ -433,9 +433,9 @@ stages:
       - data/prepared/gens_ts.csv
 
   model:
-    desc: "Start sampling of power flow cases"
+    desc: "Start building power flow cases"
     cmd:
-      - python src/model/sampling.py
+      - python src/model/building.py
         data/prepared/buses.csv
         data/prepared/branches.csv
         data/prepared/loads.csv
@@ -450,15 +450,15 @@ stages:
       - data/prepared/loads_ts.csv
       - data/prepared/gens.csv
       - data/prepared/gens_ts.csv
-      - src/model/sampling.py
-      - src/model/samplers/base.py
-      - src/model/samplers/pandapower.py
+      - src/model/building.py
+      - src/model/builders/base.py
+      - src/model/builders/pandapower.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
           - S_BASE_MVA
           - F_HZ
-          - REGIME_SAMPLER
+          - REGIME_BUILDER
           - DATE_FORMAT
           - MODEL_NAME_FORMAT
           - PLANT_MODE

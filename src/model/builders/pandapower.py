@@ -1,18 +1,22 @@
+import logging
 import math
 import os
 import warnings
+from typing import Any
 
 import numpy as np
 import pandapower as pp
 import pandas as pd
 from pandapower import LoadflowNotConverged, OPFNotConverged
 
-from src.model.samplers.base import BaseRegimeSampler
+from src.model.builders.base import BaseRegimeBuilder
 
+# Supress warnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
+logging.getLogger("pandapower.opf.make_objective").setLevel(logging.ERROR)
 
 
-class PandaRegimeSampler(BaseRegimeSampler):
+class PandaRegimeBuilder(BaseRegimeBuilder):
     """Class for creating power regimes using PandaPower.
 
     Args:
@@ -27,6 +31,8 @@ class PandaRegimeSampler(BaseRegimeSampler):
         self._bus_name_to_id = None
         self._bus_name_to_v_rate = None
         self._slack_bus_id = None
+        self._gens_prep = None
+        self._gens_ts_prep = None
         self._load_cols = ["in_service", "p_mw", "q_mvar"]
         self._gen_cols = [
             "in_service",
@@ -37,31 +43,30 @@ class PandaRegimeSampler(BaseRegimeSampler):
             "min_p_mw",
         ]
 
+    @property
+    def model(self) -> Any:
+        return self._model.deepcopy()
+
     def _prepare_data(self) -> None:
-        """Prepare data for OPF and group in plants if needed."""
-        cols = [
-            "p_mw",
-            "max_q_mvar",
-            "min_q_mvar",
-            "max_p_opf_mw",
-            "min_p_opf_mw",
-        ]
+        """Prepare data for OPF and group gens in plants if needed."""
 
         # Add plant names
+        gens = self._gens.copy()
         if self._is_plant_mode:
-            self._gens.sort_values("bus_name", inplace=True, ignore_index=True)
-            self._gens["plant_name"] = "plant_" + self._gens["bus_name"].str.lstrip(
-                "bus_"
-            )
+            gens.sort_values("bus_name", inplace=True, ignore_index=True)
+            bus_index = gens["bus_name"].str.lstrip("bus_")
+            gens["plant_name"] = "plant_" + bus_index
 
         # Limits for OPF
-        self._gens_ts = pd.merge(self._gens_ts, self._gens, on="gen_name", how="left")
-        self._gens_ts["max_p_opf_mw"] = self._gens_ts["p_mw"]
-        self._gens_ts["min_p_opf_mw"] = self._gens_ts["p_mw"]
-        mask = self._gens_ts["is_optimized"]
-        self._gens_ts.loc[mask, "max_p_opf_mw"] = self._gens_ts.loc[mask, "max_p_mw"]
-        self._gens_ts.loc[mask, "min_p_opf_mw"] = self._gens_ts.loc[mask, "min_p_mw"]
-        self._gens_ts.loc[~self._gens_ts["in_service"], cols] = np.nan
+        gen_ts = pd.merge(self._gens_ts, gens, on="gen_name", how="left", copy=True)
+        gen_ts["max_p_opf_mw"] = np.where(
+            gen_ts["is_optimized"], gen_ts["max_p_mw"], gen_ts["p_mw"]
+        )
+        gen_ts["min_p_opf_mw"] = np.where(
+            gen_ts["is_optimized"], gen_ts["min_p_mw"], gen_ts["p_mw"]
+        )
+        cols = ["p_mw", "max_q_mvar", "min_q_mvar", "max_p_opf_mw", "min_p_opf_mw"]
+        gen_ts.loc[~gen_ts["in_service"], cols] = np.nan
 
         # Group gen parameters
         if self._is_plant_mode:
@@ -73,40 +78,41 @@ class PandaRegimeSampler(BaseRegimeSampler):
                 "min_p_opf_mw": "sum",
                 "in_service": "sum",
             }
-            self._gens_ts = self._gens_ts.groupby(
-                ["plant_name", "datetime"], as_index=False
-            ).agg(agg_funcs)
+            gen_ts = gen_ts.groupby(["plant_name", "datetime"], as_index=False).agg(
+                agg_funcs
+            )
 
             # If the number of gens, which are in service, equals to zero,
             # the plant is out of service and its parameters should be undefined
-            self._gens_ts["in_service"] = self._gens_ts["in_service"].astype(bool)
-            self._gens_ts.loc[~self._gens_ts["in_service"], cols] = np.nan
+            gen_ts["in_service"] = gen_ts["in_service"].astype(bool)
+            gen_ts.loc[~gen_ts["in_service"], cols] = np.nan
 
             # Modify gen info
-            self._gens.drop(columns=["gen_name"], inplace=True)
-            agg_funcs = {"max_p_mw": "sum", "min_p_mw": "min"}
-            self._gens = self._gens.groupby(
-                ["bus_name", "plant_name"], as_index=False
-            ).agg(agg_funcs)
+            gens.drop(columns=["gen_name"], inplace=True)
+            funcs = {"max_p_mw": "sum", "min_p_mw": "min"}
+            gens = gens.groupby(["bus_name", "plant_name"], as_index=False).agg(funcs)
 
             # Rename columns for consistency in further scripts
-            self._gens_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
-            self._gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
+            gen_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
+            gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
 
-        # Some modifications for faster access
-        self._gens_ts = self._gens_ts[["datetime", "gen_name", "in_service", *cols]]
-        self._gens_ts.rename(
-            columns={
-                "max_p_opf_mw": "max_p_mw",
-                "min_p_opf_mw": "min_p_mw",
-            },
-            inplace=True,
+        # Prepare data for faster access
+        self._gens_ts_prep = (
+            gen_ts[["datetime", "gen_name", "in_service", *cols]]
+            .rename(columns={"max_p_opf_mw": "max_p_mw", "min_p_opf_mw": "min_p_mw"})
+            .astype({col: float for col in self._gen_cols})
+            .sort_values(["datetime", "gen_name"])
+            .set_index("datetime")
         )
-        self._gens_ts[self._gen_cols] = self._gens_ts[self._gen_cols].astype(float)
-        self._gens_ts.sort_values(["datetime", "gen_name"], inplace=True)
-        self._gens_ts.set_index("datetime", inplace=True)
+        self._gens_prep = gens
 
-    def _build_model(self) -> None:
+        # Prepare time-series load data for faster access
+        self._loads_ts[self._load_cols] = self._loads_ts[self._load_cols].astype(float)
+        self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
+        if "datetime" not in self._loads_ts.index.names:
+            self._loads_ts.set_index("datetime", inplace=True)
+
+    def _build_base_model(self) -> None:
         """Create power flow model."""
         # Some initial preparations
         self._prepare_data()
@@ -118,8 +124,12 @@ class PandaRegimeSampler(BaseRegimeSampler):
         self._add_buses()
 
         # For faster access
-        self._bus_name_to_id = self._model.bus.reset_index().set_index("name")["index"]
-        self._bus_name_to_v_rate = self._model.bus.set_index("name")["vn_kv"]
+        self._bus_name_to_id = pd.Series(
+            data=self._model.bus.index.values, index=self._model.bus["name"].values
+        )
+        self._bus_name_to_v_rate = pd.Series(
+            data=self._model.bus["vn_kv"].values, index=self._model.bus["name"].values
+        )
 
         # Prepare and add the rest
         self._add_lines()
@@ -261,24 +271,21 @@ class PandaRegimeSampler(BaseRegimeSampler):
             controllable=False,
         )
 
-        # Prepare time-series
-        self._loads_ts[self._load_cols] = self._loads_ts[self._load_cols].astype(float)
-        self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
-        self._loads_ts.set_index("datetime", inplace=True)
-
     def _add_generators(self) -> None:
         """Add gen info to the power flow model."""
 
         # Prepare gen info
-        self._gens["bus_id"] = self._gens["bus_name"].map(self._bus_name_to_id)
-        self._gens.sort_values("gen_name", inplace=True)
+        self._gens_prep["bus_id"] = self._gens_prep["bus_name"].map(
+            self._bus_name_to_id
+        )
+        self._gens_prep.sort_values("gen_name", inplace=True)
 
         # Add basic info
         # Actual parameters will be populated later for each timestamp
         pp.create_gens(
             self._model,
-            name=self._gens["gen_name"],
-            buses=self._gens["bus_id"],
+            name=self._gens_prep["gen_name"],
+            buses=self._gens_prep["bus_id"],
             p_mw=0,
             max_q_mvar=0,
             min_q_mvar=0,
@@ -302,7 +309,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
         ].values
 
         # Set gens
-        gen = self._gens_ts.loc[timestamp].set_index("gen_name")
+        gen = self._gens_ts_prep.loc[timestamp].set_index("gen_name")
         self._model.gen[self._gen_cols] = gen.loc[
             self._model.gen["name"], self._gen_cols
         ].values
@@ -315,7 +322,7 @@ class PandaRegimeSampler(BaseRegimeSampler):
             model_name: Model name.
         """
         model_path = os.path.join(path, f"{model_name}.json")
-        pp.to_json(self._model, model_path)
+        pp.to_json(self.model, model_path)
 
     def _calculate_regime(self) -> bool:
         """Calculate power flows.

@@ -25,8 +25,8 @@ The prepared power flow cases can be used in research purposes for power flow an
 The pipeline for data preparation and building power flow cases is separated into stages:
 - parse (extract necessary parameters from the raw data)
 - transform (combine and convert data to use in further steps)
-- prepare (build final dataset to create power flow cases)
-- model (sampling of power flow cases using [the PandaPower solver](http://www.pandapower.org/))
+- prepare (compose final dataset to create power flow cases)
+- model (build power flow cases using [the PandaPower engine](http://www.pandapower.org/))
 
 The presented pipeline processes mainly a dataset described [in the paper "An Extended IEEE 118-Bus Test System With
 High Renewable Penetration"](https://ieeexplore.ieee.org/document/7904729) (aka "NREL-118"). The NREL-118 dataset contains information about a power system based on the transmission representation of the IEEE-118 test system with a lot of modifications which are analyzed [in this notebook](notebooks/explore_nrel118_data.ipynb). To append the data with some additional info, the information about the IEEE-118 test system prepared by Illinois Institute of Technology (version of 2004) is also used (see [the JEAS-118 dataset](http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)) in the stages.

@@ -35,10 +35,10 @@ DATE_RANGE = ("2024-01-01 00:00:00", "2025-01-01 00:00:00", "1h")
 FILL_METHOD = "pad"
 
 # If to group generators by bus to represent as a power plant
-PLANT_MODE = True
+PLANT_MODE = False
 
-# Which engin to use for power regime sampling
-REGIME_SAMPLER = "pandapower"
+# Which engine to use for power regime building
+REGIME_BUILDER = "pandapower"
 
 # Format of model names
 # Power flow cases built for each timestamp should have unique names

@@ -1188,7 +1188,7 @@ stages:
       nfiles: 1
   model:
     cmd:
-    - python src/model/sampling.py data/prepared/buses.csv data/prepared/branches.csv
+    - python src/model/building.py data/prepared/buses.csv data/prepared/branches.csv
       data/prepared/loads.csv data/prepared/loads_ts.csv data/prepared/gens.csv data/prepared/gens_ts.csv
       models
     deps:
@@ -1210,15 +1210,15 @@ stages:
     - path: data/prepared/loads_ts.csv
       md5: 74c1c7666ba90046c52f40ab1811d322
       size: 44062587
-    - path: src/model/samplers/base.py
-      md5: 1f2709089d74b049aee288e46275cc51
-      size: 5569
-    - path: src/model/samplers/pandapower.py
-      md5: 4e9902366e8f60cbc3141868e7a8ff14
-      size: 12412
-    - path: src/model/sampling.py
-      md5: e7b42515c8b387f520cec822d1d4038d
-      size: 2009
+    - path: src/model/builders/base.py
+      md5: 4fbd898684d35d2f9b28f4977a3ff1cd
+      size: 6583
+    - path: src/model/builders/pandapower.py
+      md5: b2f9040fc02710f1f9516b7a1fa651a4
+      size: 12560
+    - path: src/model/building.py
+      md5: fc43a70e41eb83e3712f702a67f4146a
+      size: 1972
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -1227,13 +1227,13 @@ stages:
         DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
         F_HZ: 60
         MODEL_NAME_FORMAT: '%Y_%m_%d_%H_%M_%S'
-        PLANT_MODE: true
-        REGIME_SAMPLER: pandapower
+        PLANT_MODE: false
+        REGIME_BUILDER: pandapower
         S_BASE_MVA: 100
     outs:
     - path: models
-      md5: 6f99f9fe8dff2659531ac1eb27d72ded.dir
-      size: 126272
+      md5: 68ff6d42828a8974b35197bd6a353857.dir
+      size: 161289
       nfiles: 1
   parse_jeas118_buses:
     cmd:

@@ -1,14 +1,15 @@
-import warnings
 from abc import ABC, abstractmethod
 from datetime import datetime
+from typing import Any
 
+import pandas as pd
 from tqdm import tqdm
 
 from definitions import DATE_FORMAT, MODEL_NAME_FORMAT, PLANT_MODE
 from src.utils.data_loaders import load_df_data
 
 
-class BaseRegimeSampler(ABC):
+class BaseRegimeBuilder(ABC):
     """Base class for creating power regimes."""
 
     def __init__(self) -> None:
@@ -25,26 +26,26 @@ class BaseRegimeSampler(ABC):
 
     def load_data(
         self,
-        path_buses: str,
-        path_branches: str,
-        path_loads: str,
-        path_loads_ts: str,
-        path_gens: str,
-        path_gens_ts: str,
+        buses: str | pd.DataFrame,
+        branches: str | pd.DataFrame,
+        loads: str | pd.DataFrame,
+        loads_ts: str | pd.DataFrame,
+        gens: str | pd.DataFrame,
+        gens_ts: str | pd.DataFrame,
     ) -> None:
         """Load data for creating regimes.
 
         Args:
-            path_buses: Path to bus info.
-            path_branches: Path to branch info.
-            path_loads: Path to load info.
-            path_loads_ts: Path to load time-series info.
-            path_gens: Path to data of generators or plants.
-            path_gens_ts: Path to time-series data of generators.
+            buses: Path or DataFrame with bus data.
+            branches: Path or DataFrame with branch data.
+            loads: Path or DataFrame with load data.
+            loads_ts: Path or DataFrame with load time-series data.
+            gens: Path or DataFrame with generation data.
+            gens_ts: Path or DataFrame with generation time-series data.
         """
         # Load raw data
         self._buses = load_df_data(
-            path_buses,
+            buses,
             dtypes={
                 "bus_name": str,
                 "region": str,
@@ -58,7 +59,7 @@ class BaseRegimeSampler(ABC):
             },
         )
         self._branches = load_df_data(
-            data=path_branches,
+            data=branches,
             dtypes={
                 "branch_name": str,
                 "from_bus": str,
@@ -73,14 +74,14 @@ class BaseRegimeSampler(ABC):
             },
         )
         self._loads = load_df_data(
-            data=path_loads,
+            data=loads,
             dtypes={
                 "load_name": str,
                 "bus_name": str,
             },
         )
         self._loads_ts = load_df_data(
-            data=path_loads_ts,
+            data=loads_ts,
             dtypes={
                 "datetime": str,
                 "load_name": str,
@@ -90,7 +91,7 @@ class BaseRegimeSampler(ABC):
             },
         )
         self._gens = load_df_data(
-            data=path_gens,
+            data=gens,
             dtypes={
                 "gen_name": str,
                 "bus_name": str,
@@ -100,7 +101,7 @@ class BaseRegimeSampler(ABC):
             },
         )
         self._gens_ts = load_df_data(
-            data=path_gens_ts,
+            data=gens_ts,
             dtypes={
                 "datetime": str,
                 "gen_name": str,
@@ -119,16 +120,44 @@ class BaseRegimeSampler(ABC):
         ), "Gen and load timestamps are different"
         self._timestamps = gen_timestamps
 
-    def start(self, path_models: str, display: bool = False) -> None:
-        """Start sampling process.
+    @property
+    def model(self) -> Any:
+        """Power flow model"""
+        raise NotImplementedError
+
+    def run_first(self, verbose: bool = True) -> Any:
+        """Run the building process.
 
         Args:
-            path_models: Path to save models.
-            display: If to show progress bar.
+            verbose: If to print info messages.
+        Returns:
+            Power flow regime corresponding to the first timestamp of the provided data.
+        """
+        # Create base model
+        self._build_base_model()
+
+        # Refresh regime data in accordance to the first timestamp
+        timestamp = self._timestamps[0]
+        if verbose:
+            print(f"Use data for {timestamp}")
+        self._apply_next_timestamp(timestamp)
+
+        # Calculate power flows
+        is_converged = self._calculate_regime()
+        if not is_converged:
+            print(f"Regime at {timestamp} did not converge.")
+        return self.model
+
+    def run(self, path_models: str, display: bool = False) -> None:
+        """Run the building process.
+
+        Args:
+            path_models: Path if it is necessary to save models.
+            display: If to show a progress bar.
         """
 
         # Create base model
-        self._build_model()
+        self._build_base_model()
 
         # Timestamps are equal for all time-series data
         for timestamp in tqdm(self._timestamps, disable=not display):
@@ -139,7 +168,7 @@ class BaseRegimeSampler(ABC):
             # Calculate power flows
             is_converged = self._calculate_regime()
             if not is_converged:
-                warnings.warn(f"Regime at {timestamp} did not converge.")
+                print(f"Regime at {timestamp} did not converge.")
 
             # Save model
             model_name = datetime.strptime(timestamp, DATE_FORMAT).strftime(
@@ -149,7 +178,7 @@ class BaseRegimeSampler(ABC):
             break
 
     @abstractmethod
-    def _build_model(self) -> None:
+    def _build_base_model(self) -> None:
         """Create power flow model."""
         raise NotImplementedError
 
