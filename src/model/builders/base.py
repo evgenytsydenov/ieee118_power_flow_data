@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Any
@@ -7,6 +8,8 @@ from tqdm import tqdm
 
 from definitions import DATE_FORMAT, MODEL_NAME_FORMAT, PLANT_MODE
 from src.utils.data_loaders import load_df_data
+
+logger = logging.getLogger(__name__)
 
 
 class BaseRegimeBuilder(ABC):
@@ -139,13 +142,19 @@ class BaseRegimeBuilder(ABC):
         # Refresh regime data in accordance to the first timestamp
         timestamp = self._timestamps[0]
         if verbose:
-            print(f"Use data for {timestamp}")
+            logger.info(f"Use data for {timestamp}")
         self._apply_next_timestamp(timestamp)
 
         # Calculate power flows
-        is_converged = self._calculate_regime()
-        if not is_converged:
-            print(f"Regime at {timestamp} did not converge.")
+        is_opf_converged = self._calculate_opf()
+        if is_opf_converged:
+            is_pf_converged = self._calculate_power_flow()
+            if not is_pf_converged:
+                logger.warning(
+                    f"Power flow estimation at {timestamp}" f" did not converge."
+                )
+        else:
+            logger.warning(f"OPF estimation at {timestamp} did not converge.")
         return self.model
 
     def run(self, path_models: str, display: bool = False) -> None:
@@ -166,9 +175,15 @@ class BaseRegimeBuilder(ABC):
             self._apply_next_timestamp(timestamp)
 
             # Calculate power flows
-            is_converged = self._calculate_regime()
-            if not is_converged:
-                print(f"Regime at {timestamp} did not converge.")
+            is_opf_converged = self._calculate_opf()
+            if is_opf_converged:
+                is_pf_converged = self._calculate_power_flow()
+                if not is_pf_converged:
+                    logger.warning(
+                        f"Power flow estimation at {timestamp}" f" did not converge."
+                    )
+            else:
+                logger.warning(f"OPF estimation at {timestamp} did not converge.")
 
             # Save model
             model_name = datetime.strptime(timestamp, DATE_FORMAT).strftime(
@@ -202,8 +217,17 @@ class BaseRegimeBuilder(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def _calculate_regime(self) -> bool:
+    def _calculate_power_flow(self) -> bool:
         """Calculate power flows.
+
+        Returns:
+            True if the calculation was successful, False otherwise.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _calculate_opf(self) -> bool:
+        """Solve optimal power flow task.
 
         Returns:
             True if the calculation was successful, False otherwise.

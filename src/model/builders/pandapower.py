@@ -324,26 +324,34 @@ class PandaRegimeBuilder(BaseRegimeBuilder):
         model_path = os.path.join(path, f"{model_name}.json")
         pp.to_json(self.model, model_path)
 
-    def _calculate_regime(self) -> bool:
-        """Calculate power flows.
+    def _calculate_opf(self) -> bool:
+        """Solve optimal power flow task.
 
         Returns:
             True if the calculation was successful, False otherwise.
         """
         try:
-
-            # Perform OPF
+            # Run OPF
             pp.runopp(self._model, calculate_voltage_angles=True, init="flat")
 
-            # Prepare to run PF
+            # Add optimized values to the model
             self._model.gen[["p_mw", "vm_pu"]] = self._model.res_gen[
                 ["p_mw", "vm_pu"]
             ].values
             self._model.ext_grid["vm_pu"] = self._model.res_bus.loc[
                 self._slack_bus_id, "vm_pu"
             ]
+        except OPFNotConverged:
+            return False
+        return True
 
-            # Perform PF
+    def _calculate_power_flow(self) -> bool:
+        """Calculate power flows.
+
+        Returns:
+            True if the calculation was successful, False otherwise.
+        """
+        try:
             pp.runpp(
                 self._model,
                 algorithm="nr",
@@ -351,6 +359,6 @@ class PandaRegimeBuilder(BaseRegimeBuilder):
                 init="flat",
                 enforce_q_lims=True,
             )
-            return True
-        except (LoadflowNotConverged, OPFNotConverged):
+        except LoadflowNotConverged:
             return False
+        return True
