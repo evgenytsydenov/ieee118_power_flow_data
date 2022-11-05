@@ -3,14 +3,24 @@ import os
 
 from src.utils.download_file import download_file_by_url
 
-text = """The data were downloaded {timestamp} from the following URLs:
+text = """# JEAS-118 Dataset
 
-- http://motor.ece.iit.edu/data/JEAS_IEEE118.doc
+The dataset contains the information about the IEEE-118 test system
+ prepared by Illinois Institute of Technology (version of 2004).
 
-Reference:
-    IIT, “Index of data Illinois Institute of Technology,”
-    Illinois Inst. Technol., Chicago, IL, USA, [Online].
-    Available: http://motor.ece.iit.edu/data/"""
+## Source
+
+The data were downloaded {timestamp} from the following URLs:
+
+- [http://motor.ece.iit.edu/data/JEAS_IEEE118.doc]
+(http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)
+
+## Reference
+
+IIT, “Index of data Illinois Institute of Technology,”
+ Illinois Inst. Technol., Chicago, IL, USA, [Online].
+ Available: http://motor.ece.iit.edu/data/
+"""
 
 
 if __name__ == "__main__":
@@ -26,5 +36,5 @@ if __name__ == "__main__":
     # Add reference
     timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
     timestamp = timestamp.strftime("%m/%d/%Y %H:%M:%S %Z")
-    with open(os.path.join(path_folder, "readme.txt"), "w", encoding="utf-8") as file:
+    with open(os.path.join(path_folder, "README.md"), "w", encoding="utf-8") as file:
         file.write(text.format(timestamp=timestamp) + "\n")
