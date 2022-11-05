@@ -40,10 +40,8 @@ To ensure the execution order and reproducibility of the stages, [Data Version C
 
 1. Download the source code (see [how to clone a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)).
 2. Go to the project directory, create and activate a virtual environment, install project dependencies [with poetry](https://python-poetry.org/docs/basic-usage/#installing-dependencies) or [pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
-3. Download and unpack the NREL-118 data using [this script](scripts/download_nrel118.py).
-4. Download the JEAS-118 data using [this script](scripts/download_jeas118.py).
-5. Run `main.py` script in the activated environment.
-6. After completing all the stages, the data and power flow models will be saved in the folders "data" and "models" in the project directory.
+3. Run `main.py` script in the activated environment.
+4. After completing all the stages, the data and power flow models will be saved in the folders "data" and "models" in the project directory.
 
 Some parameters used in the computation are listed [in definitions](definitions.py) and can be tuned.
 
