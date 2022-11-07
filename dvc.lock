@@ -1280,8 +1280,8 @@ stages:
       md5: 90add39fcb939d9e30bfa8376143d4de
       size: 7511
     - path: src/power_flow/builders/pandapower.py
-      md5: c4cbb4c97615b0ac26ee218abfc3a487
-      size: 12869
+      md5: fd9695edac5c7ce208ecebe329872abc
+      size: 13332
     - path: src/power_flow/building.py
       md5: a30f798d40d2cb6a7fc4486d5d150ca3
       size: 2035
@@ -1298,6 +1298,6 @@ stages:
         S_BASE_MVA: 100
     outs:
     - path: samples
-      md5: 68ff6d42828a8974b35197bd6a353857.dir
-      size: 161289
+      md5: b658597add7757c8a3b9fac0e039115d.dir
+      size: 112893
       nfiles: 1

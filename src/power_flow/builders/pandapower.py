@@ -45,7 +45,9 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
 
     @property
     def sample(self) -> Any:
-        """Current power flow case"""
+        """Current power flow sample."""
+        if self._model is None:
+            raise ValueError("The model should be built first.")
         return self._model.deepcopy()
 
     def _prepare_data(self) -> None:
@@ -97,7 +99,8 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             gen_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
             gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
 
-        # Prepare data for faster access
+        # Prepare gen data for faster access
+        self._gens_prep = gens.sort_values("gen_name")
         self._gens_ts_prep = (
             gen_ts[["datetime", "gen_name", "in_service", *cols]]
             .rename(columns={"max_p_opf_mw": "max_p_mw", "min_p_opf_mw": "min_p_mw"})
@@ -105,9 +108,9 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             .sort_values(["datetime", "gen_name"])
             .set_index("datetime")
         )
-        self._gens_prep = gens
 
-        # Prepare time-series load data for faster access
+        # Prepare load data for faster access
+        self._loads.sort_values("load_name", inplace=True)
         self._loads_ts[self._load_cols] = self._loads_ts[self._load_cols].astype(float)
         self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
         if "datetime" not in self._loads_ts.index.names:
@@ -119,7 +122,9 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self._prepare_data()
 
         # Create empty network
-        self._model = pp.create_empty_network(sn_mva=self.s_base_mva, f_hz=self.f_hz)
+        self._model = pp.create_empty_network(
+            sn_mva=self.s_base_mva, f_hz=self.f_hz, add_stdtypes=False
+        )
 
         # Prepare and add buses first
         self._add_buses()
@@ -258,7 +263,6 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
 
         # Prepare load info
         self._loads["bus_id"] = self._loads["bus_name"].map(self._bus_name_to_id)
-        self._loads.sort_values("load_name", inplace=True)
 
         # Add basic info
         # Actual parameters will be populated later for each timestamp
@@ -279,7 +283,6 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self._gens_prep["bus_id"] = self._gens_prep["bus_name"].map(
             self._bus_name_to_id
         )
-        self._gens_prep.sort_values("gen_name", inplace=True)
 
         # Add basic info
         # Actual parameters will be populated later for each timestamp
@@ -304,15 +307,15 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             timestamp: Current datetime.
         """
         # Set load
-        load = self._loads_ts.loc[timestamp].set_index("load_name")
-        self._model.load[self._load_cols] = load.loc[
-            self._model.load["name"], self._load_cols
+        # Assume that load_ts is sorted by datetime and load_name
+        self._model.load[self._load_cols] = self._loads_ts.loc[
+            timestamp, self._load_cols
         ].values
 
         # Set gens
-        gen = self._gens_ts_prep.loc[timestamp].set_index("gen_name")
-        self._model.gen[self._gen_cols] = gen.loc[
-            self._model.gen["name"], self._gen_cols
+        # Assume that gen_ts_prep is sorted by datetime and gen_name
+        self._model.gen[self._gen_cols] = self._gens_ts_prep.loc[
+            timestamp, self._gen_cols
         ].values
 
     def _save_sample(self, path: str, sample_name: str) -> None:
@@ -323,7 +326,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             sample_name: Sample name.
         """
         sample_path = os.path.join(path, f"{sample_name}.json")
-        pp.to_json(self.sample, sample_path)
+        pp.to_json(self._model, sample_path)
 
     def _calculate_opf(self) -> bool:
         """Solve optimal power flow task.
@@ -333,7 +336,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         """
         try:
             # Run OPF
-            pp.runopp(self._model, calculate_voltage_angles=True, init="flat")
+            pp.runopp(self._model, init="flat")
 
             # Add optimized values to the model
             self._model.gen[["p_mw", "vm_pu"]] = self._model.res_gen[
@@ -342,7 +345,15 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             self._model.ext_grid["vm_pu"] = self._model.res_bus.loc[
                 self._slack_bus_id, "vm_pu"
             ]
+
+            # Restore original limits of gen outputs and controllable flag
+            self._model.gen[["min_p_mw", "max_p_mw"]] = self._gens_prep[
+                ["min_p_mw", "max_p_mw"]
+            ].values
+            self._model.gen["controllable"] = self._gens_prep["is_optimized"].values
+
         except OPFNotConverged:
+            pp.clear_result_tables(self._model)
             return False
         return True
 
@@ -361,5 +372,6 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
                 enforce_q_lims=True,
             )
         except LoadflowNotConverged:
+            pp.clear_result_tables(self._model)
             return False
         return True
