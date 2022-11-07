@@ -4,7 +4,6 @@ import sys
 import pandas as pd
 
 from definitions import F_HZ, POWER_FLOW_ENGINE, S_BASE_MVA
-from src.power_flow.builders import PandaPowerFlowBuilder
 
 
 def building(
@@ -30,6 +29,9 @@ def building(
     # Create builder
     match POWER_FLOW_ENGINE:
         case "pandapower":
+
+            from src.power_flow.builders import PandaPowerFlowBuilder
+
             builder = PandaPowerFlowBuilder(f_hz=F_HZ, s_base_mva=S_BASE_MVA)
         case _:
             raise AttributeError(f"Unknown power flow engine: {POWER_FLOW_ENGINE}.")

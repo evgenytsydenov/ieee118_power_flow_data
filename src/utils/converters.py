@@ -1,9 +1,7 @@
 import os
 
 import pandas as pd
-import win32com.client
 from docx import Document
-from win32com.client import constants
 
 
 def doc_to_docx(path_doc: str, path_docx: str, converter: str = "word") -> None:
@@ -22,6 +20,10 @@ def doc_to_docx(path_doc: str, path_docx: str, converter: str = "word") -> None:
     path_doc_abs = os.path.abspath(path_doc)
     path_docx_abs = os.path.abspath(path_docx)
     if converter == "word":
+
+        import win32com.client
+        from win32com.client import constants
+
         word = win32com.client.gencache.EnsureDispatch("Word.Application")
         doc = word.Documents.Open(path_doc_abs)
         doc.Activate()
