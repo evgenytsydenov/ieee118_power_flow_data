@@ -29,9 +29,9 @@ The pipeline for data preparation and building power flow cases is separated int
 - build (create power flow cases using [the PandaPower engine](http://www.pandapower.org/))
 
 The presented pipeline processes mainly a dataset described [in the paper "An Extended IEEE 118-Bus Test System With
-High Renewable Penetration"](https://ieeexplore.ieee.org/document/7904729) (aka "NREL-118"). The NREL-118 dataset contains information about a power system based on the transmission representation of the IEEE-118 test system with a lot of modifications which are analyzed [in this notebook](notebooks/explore_nrel118_data.ipynb). To append the data with some additional info, the information about the IEEE-118 test system prepared by Illinois Institute of Technology (version of 2004) is also used (see [the JEAS-118 dataset](http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)) in the stages.
+High Renewable Penetration"](https://ieeexplore.ieee.org/document/7904729) (aka "NREL-118"). The NREL-118 dataset contains information about a power system based on the transmission representation of the IEEE-118 test system with a lot of modifications which are analyzed [in this notebook](https://nbviewer.org/github/evgenytsydenov/ieee118_power_flow_data/blob/main/notebooks/explore_nrel118_data.ipynb). To append the data with some additional info, the information about the IEEE-118 test system prepared by Illinois Institute of Technology (version of 2004) is also used (see [the JEAS-118 dataset](http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)) in the stages.
 
-Actions performed at each stage and all the assumptions made during the preparation process are described [in this notebook](notebooks/prepare_power_flow_data.ipynb). The naming of variables in the prepared data corresponds [to the project convention](convention.md).
+Actions performed at each stage and all the assumptions made during the preparation process are described [in this notebook](https://nbviewer.org/github/evgenytsydenov/ieee118_power_flow_data/blob/main/notebooks/prepare_power_flow_data.ipynb). The naming of variables in the prepared data corresponds [to the project convention](convention.md).
 
 To ensure the execution order and reproducibility of the stages, [Data Version Control](https://dvc.org/) is used. The configuration of the stages can be found [in the DVC config](dvc.yaml).
 
