@@ -127,7 +127,7 @@ stages:
       - data/parsed/nrel118_escalators_ts.csv
 
   parse_nrel118_hydros_nondisp_ts:
-    desc: "Parse hydro plants time-series data from the NREL-118 dataset"
+    desc: "Parse hydro gens time-series data from the NREL-118 dataset"
     cmd:
       - python src/data/parse/nrel118_hydros_nondisp_ts.py
         data/raw/nrel118/additional-files-mti-118/Hydro_nondipatchable.csv
@@ -144,7 +144,7 @@ stages:
       - data/parsed/nrel118_hydros_nondisp_ts.csv
 
   parse_nrel118_hydros_ts:
-    desc: "Parse time-series hydro plants data from the NREL-118 dataset"
+    desc: "Parse time-series hydro gens data from the NREL-118 dataset"
     cmd:
       - python src/data/parse/nrel118_hydros_ts.py
         "data/raw/nrel118/Input files/Hydro"
@@ -161,7 +161,7 @@ stages:
       - data/parsed/nrel118_hydros_ts.csv
 
   parse_nrel118_solars_ts:
-    desc: "Parse time-series solar plants data from the NREL-118 dataset"
+    desc: "Parse time-series solar gens data from the NREL-118 dataset"
     cmd:
       - python src/data/parse/nrel118_solars_ts.py
         "data/raw/nrel118/Input files/RT/Solar"
@@ -178,7 +178,7 @@ stages:
       - data/parsed/nrel118_solars_ts.csv
 
   parse_nrel118_winds_ts:
-    desc: "Parse time-series wind plants data from the NREL-118 dataset"
+    desc: "Parse time-series wind gens data from the NREL-118 dataset"
     cmd:
       - python src/data/parse/nrel118_winds_ts.py
         "data/raw/nrel118/Input files/RT/Wind"
@@ -227,7 +227,7 @@ stages:
       - data/transformed/loads.csv
 
   transform_gens:
-    desc: "Group generators into power plants if plant mode is enabled."
+    desc: "Combine necessary gen variables for preparation stages"
     cmd:
       - python src/data/transform/gens.py
         data/parsed/nrel118_gens.csv
@@ -432,17 +432,17 @@ stages:
     outs:
       - data/prepared/gens_ts.csv
 
-  model:
+  build:
     desc: "Start building power flow cases"
     cmd:
-      - python src/model/building.py
+      - python src/power_flow/building.py
         data/prepared/buses.csv
         data/prepared/branches.csv
         data/prepared/loads.csv
         data/prepared/loads_ts.csv
         data/prepared/gens.csv
         data/prepared/gens_ts.csv
-        models
+        samples
     deps:
       - data/prepared/buses.csv
       - data/prepared/branches.csv
@@ -450,17 +450,17 @@ stages:
       - data/prepared/loads_ts.csv
       - data/prepared/gens.csv
       - data/prepared/gens_ts.csv
-      - src/model/building.py
-      - src/model/builders/base.py
-      - src/model/builders/pandapower.py
+      - src/power_flow/building.py
+      - src/power_flow/builders/base.py
+      - src/power_flow/builders/pandapower.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
           - S_BASE_MVA
           - F_HZ
-          - REGIME_BUILDER
+          - POWER_FLOW_ENGINE
           - DATE_FORMAT
-          - MODEL_NAME_FORMAT
+          - SAMPLE_NAME_FORMAT
           - PLANT_MODE
     outs:
-      - models
+      - samples

@@ -1129,8 +1129,8 @@ stages:
       md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
       size: 6096
     - path: src/data/transform/gens.py
-      md5: dd4e3ab3687eac030bc684ea32647a10
-      size: 3717
+      md5: 18dffdb5de1328a3fb1b37fb50cdfa35
+      size: 3682
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -1252,3 +1252,52 @@ stages:
     - path: data/parsed/jeas118_buses.csv
       md5: 4777d14a3355b508d6d97485b5d76e54
       size: 2270
+  build:
+    cmd:
+    - python src/power_flow/building.py data/prepared/buses.csv data/prepared/branches.csv
+      data/prepared/loads.csv data/prepared/loads_ts.csv data/prepared/gens.csv data/prepared/gens_ts.csv
+      samples
+    deps:
+    - path: data/prepared/branches.csv
+      md5: ee925cff5fad2fe0ca4c384bc809345f
+      size: 14836
+    - path: data/prepared/buses.csv
+      md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
+      size: 6096
+    - path: data/prepared/gens.csv
+      md5: b1fde25da03126ddb08e94cf4c5bdd9c
+      size: 12660
+    - path: data/prepared/gens_ts.csv
+      md5: 7d41b91cfd7d2446d0141b69c1de8b10
+      size: 168092080
+    - path: data/prepared/loads.csv
+      md5: 9ebbed3e2700320d2a95a024072ec817
+      size: 1658
+    - path: data/prepared/loads_ts.csv
+      md5: 74c1c7666ba90046c52f40ab1811d322
+      size: 44062587
+    - path: src/power_flow/builders/base.py
+      md5: 90add39fcb939d9e30bfa8376143d4de
+      size: 7511
+    - path: src/power_flow/builders/pandapower.py
+      md5: c4cbb4c97615b0ac26ee218abfc3a487
+      size: 12869
+    - path: src/power_flow/building.py
+      md5: ad7415e18464d870b502e070201e5f66
+      size: 2019
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
+        F_HZ: 60
+        PLANT_MODE: false
+        POWER_FLOW_ENGINE: pandapower
+        SAMPLE_NAME_FORMAT: '%Y_%m_%d_%H_%M_%S'
+        S_BASE_MVA: 100
+    outs:
+    - path: samples
+      md5: 68ff6d42828a8974b35197bd6a353857.dir
+      size: 161289
+      nfiles: 1

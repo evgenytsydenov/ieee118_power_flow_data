@@ -37,11 +37,11 @@ FILL_METHOD = "pad"
 # If to group generators by bus to represent as a power plant
 PLANT_MODE = False
 
-# Which engine to use for power regime building
-REGIME_BUILDER = "pandapower"
+# Which engine to use for building power flow cases
+POWER_FLOW_ENGINE = "pandapower"
 
-# Format of model names
+# Format of names for each power flow case
 # Power flow cases built for each timestamp should have unique names
 # Each name can contain timestamp parameters
 # The extension will be added automatically
-MODEL_NAME_FORMAT = "%Y_%m_%d_%H_%M_%S"
+SAMPLE_NAME_FORMAT = "%Y_%m_%d_%H_%M_%S"

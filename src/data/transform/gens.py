@@ -11,7 +11,7 @@ def transform_gens(
     prepared_buses: str | pd.DataFrame,
     path_transformed_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
-    """Group generators by bus to represent as a power plant.
+    """Transform gen data.
 
     Args:
         path_transformed_data: Path to save transformed data.

@@ -26,7 +26,7 @@ The pipeline for data preparation and building power flow cases is separated int
 - parse (extract necessary parameters from the raw data)
 - transform (combine and convert data to use in further steps)
 - prepare (compose final dataset to create power flow cases)
-- model (build power flow cases using [the PandaPower engine](http://www.pandapower.org/))
+- build (create power flow cases using [the PandaPower engine](http://www.pandapower.org/))
 
 The presented pipeline processes mainly a dataset described [in the paper "An Extended IEEE 118-Bus Test System With
 High Renewable Penetration"](https://ieeexplore.ieee.org/document/7904729) (aka "NREL-118"). The NREL-118 dataset contains information about a power system based on the transmission representation of the IEEE-118 test system with a lot of modifications which are analyzed [in this notebook](notebooks/explore_nrel118_data.ipynb). To append the data with some additional info, the information about the IEEE-118 test system prepared by Illinois Institute of Technology (version of 2004) is also used (see [the JEAS-118 dataset](http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)) in the stages.
@@ -41,7 +41,7 @@ To ensure the execution order and reproducibility of the stages, [Data Version C
 1. Download the source code (see [how to clone a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)).
 2. Go to the project directory, create and activate a virtual environment, install project dependencies [with poetry](https://python-poetry.org/docs/basic-usage/#installing-dependencies) or [pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
 3. Run `main.py` script in the activated environment.
-4. After completing all the stages, the data and power flow models will be saved in the folders "data" and "models" in the project directory.
+4. After completing all the stages, the power flow cases will be saved in the folder "samples" in the project directory.
 
 Some parameters used in the computation are listed [in definitions](definitions.py) and can be tuned.
 
