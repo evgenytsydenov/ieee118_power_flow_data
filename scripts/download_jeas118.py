@@ -12,8 +12,8 @@ The dataset contains the information about the IEEE-118 test system
 
 The data were downloaded {timestamp} from the following URLs:
 
-- [http://motor.ece.iit.edu/data/JEAS_IEEE118.doc]
-(http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)
+- [http://motor.ece.iit.edu/data/JEAS_IEEE118.doc](
+http://motor.ece.iit.edu/data/JEAS_IEEE118.doc)
 
 ## Reference
 
@@ -37,4 +37,4 @@ if __name__ == "__main__":
     timestamp = datetime.datetime.now(tz=datetime.timezone.utc)
     timestamp = timestamp.strftime("%m/%d/%Y %H:%M:%S %Z")
     with open(os.path.join(path_folder, "README.md"), "w", encoding="utf-8") as file:
-        file.write(text.format(timestamp=timestamp) + "\n")
+        file.write(text.format(timestamp=timestamp))

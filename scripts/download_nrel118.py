@@ -14,14 +14,14 @@ The dataset contains the information about the IEEE-118 power system with
 
 The data were downloaded {timestamp} from the following URLs:
 
-- [https://www.nrel.gov/esif/assets/docs/input-files.zip]
-(https://www.nrel.gov/esif/assets/docs/input-files.zip)
-- [https://www.nrel.gov/esif/assets/docs/additional-files-mti-118.zip]
-(https://www.nrel.gov/esif/assets/docs/additional-files-mti-118.zip)
-- [https://www.nrel.gov/esif/assets/docs/plexos-export.xls]
-(https://www.nrel.gov/esif/assets/docs/plexos-export.xls)
-- [https://www.nrel.gov/esif/assets/docs/mti-118-mt-da-rt-reserves-all-generators.xml]
-(https://www.nrel.gov/esif/assets/docs/mti-118-mt-da-rt-reserves-all-generators.xml)
+- [https://www.nrel.gov/esif/assets/docs/input-files.zip](
+https://www.nrel.gov/esif/assets/docs/input-files.zip)
+- [https://www.nrel.gov/esif/assets/docs/additional-files-mti-118.zip](
+https://www.nrel.gov/esif/assets/docs/additional-files-mti-118.zip)
+- [https://www.nrel.gov/esif/assets/docs/plexos-export.xls](
+https://www.nrel.gov/esif/assets/docs/plexos-export.xls)
+- [https://www.nrel.gov/esif/assets/docs/mti-118-mt-da-rt-reserves-all-generators.xml](
+https://www.nrel.gov/esif/assets/docs/mti-118-mt-da-rt-reserves-all-generators.xml)
 
 ## Reference
 
