@@ -92,8 +92,9 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
 
             # Modify gen info
             gens.drop(columns=["gen_name"], inplace=True)
-            funcs = {"max_p_mw": "sum", "min_p_mw": "min"}
+            funcs = {"max_p_mw": "sum", "min_p_mw": "min", "is_optimized": "max"}
             gens = gens.groupby(["bus_name", "plant_name"], as_index=False).agg(funcs)
+            gens["is_optimized"] = gens["is_optimized"].astype(bool)
 
             # Rename columns for consistency in further scripts
             gen_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
