@@ -1,0 +1,27 @@
+name: Create Release
+
+on:
+  push:
+    branch:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Power Flow Data of IEEE-188 Bus System (${{ github.ref }})
+          draft: false
+          prerelease: true

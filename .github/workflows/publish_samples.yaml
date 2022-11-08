@@ -1,11 +1,8 @@
-name: Release prepared power flow cases
+name: Publish prepared power flow cases
 
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - v*
+  release:
+    types: [ released, prereleased ]
 
 jobs:
   publish:
