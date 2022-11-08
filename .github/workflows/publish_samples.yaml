@@ -41,5 +41,5 @@ jobs:
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ./samples.zip
-          asset_name: samples.zip
+          asset_name: Samples.zip
           asset_content_type: application/zip
