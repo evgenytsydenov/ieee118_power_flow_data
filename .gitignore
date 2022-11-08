@@ -143,6 +143,8 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+### MacOS
+.DS_Store
 
 ### Project files
 /samples
