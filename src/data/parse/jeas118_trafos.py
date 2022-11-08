@@ -1,11 +1,9 @@
-import os
 import sys
-import tempfile
 from typing import Optional
 
 import pandas as pd
 
-from src.utils.converters import doc_to_docx, docx_to_pandas
+from src.utils.converters import docx_to_pandas
 
 
 def parse_jeas118_trafos(
@@ -28,14 +26,8 @@ def parse_jeas118_trafos(
     }
     cols = dtypes.keys()
     if isinstance(raw_data, str):
-        # To parse "doc", it is necessary to convert it into "docx"
-        with tempfile.TemporaryDirectory() as temp_dir:
-            path_docx = os.path.join(temp_dir, "jeas_118.docx")
-            doc_to_docx(path_doc=raw_data, path_docx=path_docx)
-
-            # Convert table into dataframe
-            trafos = docx_to_pandas(path_docx=path_docx, table_num=4, header_num=1)
-            trafos = trafos[cols].astype(dtypes)
+        trafos = docx_to_pandas(path_docx=raw_data, table_num=4, header_num=1)
+        trafos = trafos[cols].astype(dtypes)
     else:
         trafos = raw_data[cols].astype(dtypes)
 

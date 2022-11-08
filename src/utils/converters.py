@@ -4,10 +4,10 @@ import pandas as pd
 from docx import Document
 
 
-def doc_to_docx(path_doc: str, path_docx: str, converter: str = "word") -> None:
+def doc_to_docx(path_doc: str, path_docx: str) -> None:
     """Convert doc-file into docx-file.
 
-    Currently, only the "word" converter is supported.
+    Currently, only the MS Word converter for Windows is supported.
     However, it is possible to add other converters:
      - LibreOffice-based (see, https://github.com/unoconv/unoserver)
      - Cloud-based (see, https://products.aspose.com/words/python-net/)
@@ -15,12 +15,10 @@ def doc_to_docx(path_doc: str, path_docx: str, converter: str = "word") -> None:
     Args:
         path_doc: Path to doc file.
         path_docx: Path to docx file.
-        converter: Application used for conversion.
     """
     path_doc_abs = os.path.abspath(path_doc)
     path_docx_abs = os.path.abspath(path_docx)
-    if converter == "word":
-
+    try:
         import win32com.client
         from win32com.client import constants
 
@@ -31,8 +29,8 @@ def doc_to_docx(path_doc: str, path_docx: str, converter: str = "word") -> None:
             path_docx_abs, FileFormat=constants.wdFormatXMLDocument
         )
         doc.Close(False)
-    else:
-        raise AttributeError(f"The converter {converter} is not supported now.")
+    except Exception:
+        raise RuntimeError("Conversion using MS Word failed.")
 
 
 def docx_to_pandas(path_docx: str, table_num: int, header_num: int = 1) -> pd.DataFrame:

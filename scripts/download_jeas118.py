@@ -1,7 +1,11 @@
 import datetime
+import logging
 import os
 
+from src.utils.converters import doc_to_docx
 from src.utils.download_file import download_file_by_url
+
+logger = logging.getLogger(__name__)
 
 text = """# JEAS-118 Dataset
 
@@ -38,3 +42,14 @@ if __name__ == "__main__":
     timestamp = timestamp.strftime("%m/%d/%Y %H:%M:%S %Z")
     with open(os.path.join(path_folder, "README.md"), "w", encoding="utf-8") as file:
         file.write(text.format(timestamp=timestamp))
+
+    # Convert doc to docx
+    path_doc = os.path.join(path_folder, "JEAS_IEEE118.doc")
+    path_docx = os.path.join(path_folder, "JEAS_IEEE118.docx")
+    try:
+        doc_to_docx(path_doc=path_doc, path_docx=path_docx)
+    except RuntimeError:
+        logger.warning(
+            "Conversion from doc to docx failed. "
+            f'Please convert file "{path_doc}" into "{path_docx}" manually.'
+        )

@@ -1,11 +1,9 @@
-import os
 import sys
-import tempfile
 from typing import Optional
 
 import pandas as pd
 
-from src.utils.converters import doc_to_docx, docx_to_pandas
+from src.utils.converters import docx_to_pandas
 
 
 def parse_jeas118_buses(
@@ -23,14 +21,8 @@ def parse_jeas118_buses(
     dtypes = {"Bus No.": str, "Voltage-Max (pu)": float, "Voltage-Min (pu)": float}
     cols = dtypes.keys()
     if isinstance(raw_data, str):
-        # To parse "doc", it is necessary to convert it into "docx"
-        with tempfile.TemporaryDirectory() as temp_dir:
-            path_docx = os.path.join(temp_dir, "jeas_118.docx")
-            doc_to_docx(path_doc=raw_data, path_docx=path_docx)
-
-            # Convert table into dataframe
-            buses = docx_to_pandas(path_docx=path_docx, table_num=2, header_num=1)
-            buses = buses[cols].astype(dtypes)
+        buses = docx_to_pandas(path_docx=raw_data, table_num=2, header_num=1)
+        buses = buses[cols].astype(dtypes)
     else:
         buses = raw_data[cols].astype(dtypes)
 

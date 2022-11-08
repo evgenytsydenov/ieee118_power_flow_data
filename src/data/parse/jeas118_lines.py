@@ -1,11 +1,9 @@
-import os
 import sys
-import tempfile
 from typing import Optional
 
 import pandas as pd
 
-from src.utils.converters import doc_to_docx, docx_to_pandas
+from src.utils.converters import docx_to_pandas
 
 
 def parse_jeas118_lines(
@@ -28,14 +26,8 @@ def parse_jeas118_lines(
     }
     cols = dtypes.keys()
     if isinstance(raw_data, str):
-        # To parse "doc", it is necessary to convert it into "docx"
-        with tempfile.TemporaryDirectory() as temp_dir:
-            path_docx = os.path.join(temp_dir, "jeas_118.docx")
-            doc_to_docx(path_doc=raw_data, path_docx=path_docx)
-
-            # Convert table into dataframe
-            lines = docx_to_pandas(path_docx=path_docx, table_num=3, header_num=1)
-            lines = lines[cols].astype(dtypes)
+        lines = docx_to_pandas(path_docx=raw_data, table_num=3, header_num=1)
+        lines = lines[cols].astype(dtypes)
     else:
         lines = raw_data[cols].astype(dtypes)
 
