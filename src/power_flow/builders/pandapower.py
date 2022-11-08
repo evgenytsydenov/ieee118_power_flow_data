@@ -303,6 +303,8 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
     def _apply_next_timestamp(self, timestamp: str) -> None:
         """Refresh data in accordance to the timestamp.
 
+        Prepare the model for OPF.
+
         Args:
             timestamp: Current datetime.
         """
@@ -317,6 +319,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self._model.gen[self._gen_cols] = self._gens_ts_prep.loc[
             timestamp, self._gen_cols
         ].values
+        self._model.gen["controllable"] = True
 
     def _save_sample(self, path: str, sample_name: str) -> None:
         """Save sample.
@@ -345,6 +348,11 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             self._model.ext_grid["vm_pu"] = self._model.res_bus.loc[
                 self._slack_bus_id, "vm_pu"
             ]
+        except OPFNotConverged:
+            pp.clear_result_tables(self._model)
+            return False
+
+        finally:
 
             # Restore original limits of gen outputs and controllable flag
             self._model.gen[["min_p_mw", "max_p_mw"]] = self._gens_prep[
@@ -352,9 +360,6 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             ].values
             self._model.gen["controllable"] = self._gens_prep["is_optimized"].values
 
-        except OPFNotConverged:
-            pp.clear_result_tables(self._model)
-            return False
         return True
 
     def _calculate_power_flow(self) -> bool:
