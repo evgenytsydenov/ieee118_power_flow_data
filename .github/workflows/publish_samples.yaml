@@ -1,8 +1,8 @@
-name: Publish prepared power flow cases
+name: Publish power flow cases
 
 on:
   release:
-    types: [ released, prereleased ]
+    types: [released, prereleased]
 
 jobs:
   publish:
@@ -24,7 +24,7 @@ jobs:
       - name: Install packages
         run: poetry install
 
-      - name: Run data preparation pipeline
+      - name: Run pipeline
         run: |
           export PYTHONPATH=$PWD
           poetry run python main.py
