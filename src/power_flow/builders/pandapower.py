@@ -319,7 +319,10 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self._model.gen[self._gen_cols] = self._gens_ts_prep.loc[
             timestamp, self._gen_cols
         ].values
+
+        # Need to refresh values after previous run
         self._model.gen["controllable"] = True
+        self._model.gen["vm_pu"] = 1.0
 
     def _save_sample(self, path: str, sample_name: str) -> None:
         """Save sample.
