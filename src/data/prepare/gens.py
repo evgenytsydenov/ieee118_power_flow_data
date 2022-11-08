@@ -33,6 +33,9 @@ def prepare_gens(
     # Drop slack bus gens
     gens = gens.loc[~gens["is_slack"], [c for c in gens.columns if c != "is_slack"]]
 
+    # Temporary assumptions
+    gens.loc[gens["is_optimized"], "min_p_mw"] = 0
+
     # Round values
     cols = ["max_p_mw", "min_p_mw"]
     gens.loc[:, cols] = gens.loc[:, cols].round(decimals=6)

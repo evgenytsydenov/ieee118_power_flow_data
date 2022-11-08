@@ -371,8 +371,8 @@ stages:
     - python src/data/check/loads.py data/prepared/loads.csv data/prepared/buses.csv
     deps:
     - path: data/prepared/buses.csv
-      md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
-      size: 6096
+      md5: 806381a3d75530bca1df0527060ca994
+      size: 5860
     - path: data/transformed/loads.csv
       md5: 5b288dc3b5402cf00a237d689e4e31d2
       size: 4770
@@ -685,15 +685,15 @@ stages:
       md5: cd78ab87578bb8667cd4ad714ca4f945
       size: 1492
     - path: src/data/prepare/buses.py
-      md5: 293e8576d8d90e9e0f6d360ed7bb6349
-      size: 2901
+      md5: f12bdfc15b66c42be3b6c03c44607b2a
+      size: 2990
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     outs:
     - path: data/prepared/buses.csv
-      md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
-      size: 6096
+      md5: 806381a3d75530bca1df0527060ca994
+      size: 5860
   parse_jeas118_trafos:
     cmd:
     - python src/data/parse/jeas118_trafos.py data/raw/jeas118/JEAS_IEEE118.doc data/parsed/jeas118_trafos.csv
@@ -761,8 +761,8 @@ stages:
       md5: e788aa728eb05670cf2370238072dcbc
       size: 7522
     - path: data/prepared/buses.csv
-      md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
-      size: 6096
+      md5: 806381a3d75530bca1df0527060ca994
+      size: 5860
     - path: src/data/check/branches.py
       md5: 89298250f55615935c087f866ee6e8a5
       size: 2391
@@ -807,8 +807,8 @@ stages:
     - python src/data/check/gens_ts.py data/prepared/gens_ts.csv data/prepared/gens.csv
     deps:
     - path: data/prepared/gens.csv
-      md5: b1fde25da03126ddb08e94cf4c5bdd9c
-      size: 12660
+      md5: a6eddc0a6dcca8215e5d5aca644f93f6
+      size: 12605
     - path: data/transformed/gens.csv
       md5: 5e7d9e2b92f128c0d4579c050f7d60d2
       size: 16787
@@ -837,8 +837,8 @@ stages:
     - python src/data/check/gens.py data/prepared/gens.csv data/prepared/buses.csv
     deps:
     - path: data/prepared/buses.csv
-      md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
-      size: 6096
+      md5: 806381a3d75530bca1df0527060ca994
+      size: 5860
     - path: data/transformed/gens.csv
       md5: 5e7d9e2b92f128c0d4579c050f7d60d2
       size: 16787
@@ -846,15 +846,15 @@ stages:
       md5: a86d4b146bf35a61652986dee8ff96a6
       size: 1950
     - path: src/data/prepare/gens.py
-      md5: e967da8dc538dea48e7ab882b53acf76
-      size: 1711
+      md5: 8c54059b7bd2e3e144a8007ecb979540
+      size: 1794
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     outs:
     - path: data/prepared/gens.csv
-      md5: b1fde25da03126ddb08e94cf4c5bdd9c
-      size: 12660
+      md5: a6eddc0a6dcca8215e5d5aca644f93f6
+      size: 12605
   check_buses:
     cmd: python src/data/check/buses.py data/prepared/buses.csv data/checks/buses.json
     deps:
@@ -1126,8 +1126,8 @@ stages:
       md5: cfc34c8564f33d3ea824e5401c64ad5f
       size: 10954
     - path: data/prepared/buses.csv
-      md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
-      size: 6096
+      md5: 806381a3d75530bca1df0527060ca994
+      size: 5860
     - path: src/data/transform/gens.py
       md5: 18dffdb5de1328a3fb1b37fb50cdfa35
       size: 3682
@@ -1262,11 +1262,11 @@ stages:
       md5: ee925cff5fad2fe0ca4c384bc809345f
       size: 14836
     - path: data/prepared/buses.csv
-      md5: 10e5218a03fcd5dbe7fb4bd1dad8b57f
-      size: 6096
+      md5: 806381a3d75530bca1df0527060ca994
+      size: 5860
     - path: data/prepared/gens.csv
-      md5: b1fde25da03126ddb08e94cf4c5bdd9c
-      size: 12660
+      md5: a6eddc0a6dcca8215e5d5aca644f93f6
+      size: 12605
     - path: data/prepared/gens_ts.csv
       md5: 7d41b91cfd7d2446d0141b69c1de8b10
       size: 168092080
@@ -1277,14 +1277,14 @@ stages:
       md5: 74c1c7666ba90046c52f40ab1811d322
       size: 44062587
     - path: src/power_flow/builders/base.py
-      md5: 90add39fcb939d9e30bfa8376143d4de
-      size: 7511
+      md5: 91c0411425e4daa78e6dc9d08d5f5a9f
+      size: 7497
     - path: src/power_flow/builders/pandapower.py
-      md5: fd9695edac5c7ce208ecebe329872abc
-      size: 13332
+      md5: 5f980dd0eebd56b9f66b15bb315f0e4f
+      size: 13438
     - path: src/power_flow/building.py
-      md5: a30f798d40d2cb6a7fc4486d5d150ca3
-      size: 2035
+      md5: f782b7b818097e30a86fa49dffda20e8
+      size: 2034
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -1298,6 +1298,6 @@ stages:
         S_BASE_MVA: 100
     outs:
     - path: samples
-      md5: b658597add7757c8a3b9fac0e039115d.dir
-      size: 112893
-      nfiles: 1
+      md5: 3d0c6213bde4b450ee9bd1c12e8d7b4b.dir
+      size: 2060120
+      nfiles: 10

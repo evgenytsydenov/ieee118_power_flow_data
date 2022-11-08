@@ -53,6 +53,10 @@ def prepare_buses(
     buses_345 = [8, 9, 10, 26, 30, 38, 63, 64, 65, 68, 81, 116]
     buses.loc[[num - 1 for num in buses_345], "v_rated_kv"] = 345
 
+    # Temporary assumptions
+    buses["min_v_pu"] = 0.8
+    buses["max_v_pu"] = 1.2
+
     # Round values
     cols = ["v_rated_kv", "min_v_pu", "max_v_pu", "x_coordinate", "y_coordinate"]
     buses.loc[:, cols] = buses.loc[:, cols].round(decimals=6)

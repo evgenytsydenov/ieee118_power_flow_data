@@ -48,7 +48,7 @@ def building(
 
     # Start building process
     os.makedirs(path_samples)
-    builder.run(path_samples=path_samples, display=False)
+    builder.run(path_samples=path_samples, display=True)
 
 
 if __name__ == "__main__":

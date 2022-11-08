@@ -169,7 +169,7 @@ class BasePowerFlowBuilder(ABC):
         self._build_base_model()
 
         # Timestamps are equal for all time-series data
-        for timestamp in tqdm(self._timestamps, disable=not display):
+        for timestamp in tqdm(self._timestamps[:10], disable=not display):
 
             # Refresh sample data in accordance to the current datetime
             self._apply_next_timestamp(timestamp)
@@ -190,7 +190,6 @@ class BasePowerFlowBuilder(ABC):
                 SAMPLE_NAME_FORMAT
             )
             self._save_sample(path=path_samples, sample_name=sample_name)
-            break
 
     @abstractmethod
     def _build_base_model(self) -> None:
