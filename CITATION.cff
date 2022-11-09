@@ -4,9 +4,11 @@ authors:
 - family-names: "Tsydenov"
   given-names: "Evgeny"
   orcid: "https://orcid.org/0000-0002-0373-3782"
+  email: "evgenytsydenov@tpu.ru"
 - family-names: "Prokhorov"
   given-names: "Anton"
   orcid: "https://orcid.org/0000-0002-7516-6027"
+  email: "antonprokhorov@tpu.ru"
 abstract: "The repository contains a data pipeline to build power flow
  cases of an IEEE-118 like power system with an hourly frequency for one year.
 
