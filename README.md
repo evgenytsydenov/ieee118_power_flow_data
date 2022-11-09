@@ -38,7 +38,7 @@ To ensure the execution order and reproducibility of the stages, [Data Version C
 
 ## How to Use
 
-Power flow cases built using the latest release version of the pipeline can be downloaded [from the release page](https://github.com/evgenytsydenov/ieee118_power_flow_data/releases/latest) (see, the "Samples" archives).
+Power system data (model structure, time-series, plots, etc.) and power flow cases built using the latest release version of the pipeline can be downloaded [from the release page](https://github.com/evgenytsydenov/ieee118_power_flow_data/releases/latest) (see, the "Power flow data.zip" archive).
 
 To customize the pipeline or to build power flow cases manually:
 1. Download the source code [from the latest release](https://github.com/evgenytsydenov/ieee118_power_flow_data/releases/latest) or [clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
@@ -51,3 +51,19 @@ To customize the pipeline or to build power flow cases manually:
 ## License and Copyright
 
 This work is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][license].
+
+
+## Citation
+
+If you use the repository code or prepared dataset (power system data, power flow cases, plots, etc.) in your research, please reference the following BibTeX entry:
+```
+@software{Tsydenov_Power_Flow_Data_2022,
+    author = {Tsydenov, Evgeny and Prokhorov, Anton},
+    license = {CC-BY-NC-SA-4.0},
+    month = {11},
+    title = {{Power Flow Data of IEEE-118 Bus System}},
+    url = {https://github.com/evgenytsydenov/ieee118_power_flow_data},
+    version = {0.0.1},
+    year = {2022}
+}
+```
