@@ -4,6 +4,9 @@ on:
   release:
     types: [released, prereleased]
 
+env:
+  FOLDER_NAME: "dataset-${{ github.event.release.tag_name }}"
+
 jobs:
   publish:
     name: Publish power flow cases and power system data
@@ -31,19 +34,19 @@ jobs:
 
       - name: Collect data
         run: |
-          mkdir to_publish
-          cp -r samples to_publish/samples/
-          cp -r data/prepared/ to_publish/data/
-          cp -r resources/plot to_publish/plots/
-          cp convention.md to_publish/convention.md
-          cp LICENSE to_publish/LICENSE.txt
-          cp resources/data_description.md to_publish/README.md
-          rm ./to_publish/**/.gitignore
+          mkdir ${{ env.FOLDER_NAME }}
+          cp -r samples ${{ env.FOLDER_NAME }}/samples/
+          cp -r data/prepared/ ${{ env.FOLDER_NAME }}/data/
+          cp -r resources/plot ${{ env.FOLDER_NAME }}/plots/
+          cp convention.md ${{ env.FOLDER_NAME }}/convention.md
+          cp LICENSE ${{ env.FOLDER_NAME }}/LICENSE.txt
+          cp resources/data_description.md ${{ env.FOLDER_NAME }}/README.md
+          rm ./${{ env.FOLDER_NAME }}/**/.gitignore
 
       - name: Compress data
         run: |
           sudo apt-get install zip
-          zip -r to_publish.zip to_publish/
+          zip -r ${{ env.FOLDER_NAME }}.zip ${{ env.FOLDER_NAME }}/
 
       - name: Publish data
         uses: actions/upload-release-asset@v1.0.2
@@ -51,6 +54,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: to_publish.zip
-          asset_name: 'power-flow-data.zip'
+          asset_path: "${{ env.FOLDER_NAME }}.zip"
+          asset_name: "${{ env.FOLDER_NAME }}.zip"
           asset_content_type: application/zip
