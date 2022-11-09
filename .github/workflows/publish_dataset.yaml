@@ -42,7 +42,7 @@ jobs:
           cp -r resources/plot to_publish/plots/
           cp convention.md to_publish/convention.md
           cp LICENSE to_publish/LICENSE.txt
-          cp data_description.md to_publish/README.md
+          cp resources/data_description.md to_publish/README.md
           cp citation.bib to_publish/citation.bib
           rm ./to_publish/**/.gitignore
 
