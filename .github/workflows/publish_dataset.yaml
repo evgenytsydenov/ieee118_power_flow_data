@@ -1,0 +1,62 @@
+name: Publish dataset
+
+on:
+  release:
+    types: [released, prereleased]
+
+jobs:
+  publish:
+    name: Publish power flow cases and power system data
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry==1.2.2
+
+      - name: Install python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: poetry
+
+      - name: Install packages
+        run: poetry install
+
+      - name: Run pipeline
+        run: |
+          export PYTHONPATH=$PWD
+          poetry run python main.py
+
+      - name: Prepare citation file
+        uses: citation-file-format/cffconvert-github-action@2.0.0
+        with:
+          args: "-f bibtex > citation.bib"
+
+      - name: Collect data
+        run: |
+          mkdir to_publish
+          cp -r samples to_publish/samples/
+          cp -r data/prepared/ to_publish/data/
+          cp -r resources/plot to_publish/plots/
+          cp convention.md to_publish/convention.md
+          cp LICENSE to_publish/LICENSE.txt
+          cp data_description.md to_publish/README.md
+          cp citation.bib to_publish/citation.bib
+          rm ./to_publish/**/.gitignore
+
+      - name: Compress data
+        run: |
+          sudo apt-get install zip
+          zip -r to_publish.zip to_publish/
+
+      - name: Publish data
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: to_publish.zip
+          asset_name: 'Power flow data.zip'
+          asset_content_type: application/zip
