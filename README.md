@@ -38,7 +38,7 @@ To ensure the execution order and reproducibility of the stages, [Data Version C
 
 ## How to Use
 
-Power system data (model structure, time-series, plots, etc.) and power flow cases built using the latest release version of the pipeline can be downloaded [from the release page](https://github.com/evgenytsydenov/ieee118_power_flow_data/releases/latest) (see, the "Power flow data.zip" archive).
+Power system data (model structure, time-series, plots, etc.) and power flow cases built using the latest release version of the pipeline can be downloaded [from the release page](https://github.com/evgenytsydenov/ieee118_power_flow_data/releases/latest) (see, the "power-flow-data.zip" archive).
 
 To customize the pipeline or to build power flow cases manually:
 1. Download the source code [from the latest release](https://github.com/evgenytsydenov/ieee118_power_flow_data/releases/latest) or [clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
