@@ -11,7 +11,7 @@ abstract: "The repository contains a data pipeline to build power flow
  cases of an IEEE-118 like power system with an hourly frequency for one year.
 
 Power system data (model structure, time-series, plots, etc.) and power
- flow cases built using the pipeline can be downloaded from the release page"
+ flow cases built using the pipeline can be downloaded from the release page."
 message: "If you use the repository code or prepared dataset
  (power system data, power flow cases, plots, etc.) in your research,
  please cite it as below."
