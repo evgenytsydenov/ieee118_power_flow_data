@@ -32,7 +32,7 @@ jobs:
       - name: Prepare citation file
         uses: citation-file-format/cffconvert-github-action@2.0.0
         with:
-          args: "-f bibtex > citation.bib"
+          args: "--infile ./CITATION.cff --format bibtex --outfile citation.bib"
 
       - name: Collect data
         run: |
