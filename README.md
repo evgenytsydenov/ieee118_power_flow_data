@@ -55,7 +55,7 @@ This work is licensed under [Creative Commons Attribution-NonCommercial-ShareAli
 
 ## Citation
 
-If you use the repository code or prepared dataset (power system data, power flow cases, plots, etc.) in your research, please reference the following BibTeX entry:
+If you use the repository code or prepared dataset (power system data, power flow cases, plots, etc.) in your research, please cite the following BibTeX entry:
 ```
 @software{Tsydenov_Power_Flow_Data_2022,
     author = {Tsydenov, Evgeny and Prokhorov, Anton},

@@ -29,11 +29,6 @@ jobs:
           export PYTHONPATH=$PWD
           poetry run python main.py
 
-      - name: Prepare citation file
-        uses: citation-file-format/cffconvert-github-action@2.0.0
-        with:
-          args: "--infile ./CITATION.cff --format bibtex --outfile citation.bib"
-
       - name: Collect data
         run: |
           mkdir to_publish
@@ -43,7 +38,6 @@ jobs:
           cp convention.md to_publish/convention.md
           cp LICENSE to_publish/LICENSE.txt
           cp resources/data_description.md to_publish/README.md
-          cp citation.bib to_publish/citation.bib
           rm ./to_publish/**/.gitignore
 
       - name: Compress data
