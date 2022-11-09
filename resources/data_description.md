@@ -19,11 +19,9 @@ If you use the dataset in your research, please cite the following BibTeX entry:
 ```
 @software{Tsydenov_Power_Flow_Data_2022,
     author = {Tsydenov, Evgeny and Prokhorov, Anton},
+    doi = {10.5281/zenodo.7306932},
     license = {CC-BY-NC-SA-4.0},
-    month = {11},
     title = {{Power Flow Data of IEEE-118 Bus System}},
     url = {https://github.com/evgenytsydenov/ieee118_power_flow_data},
-    version = {0.0.1},
-    year = {2022}
 }
 ```

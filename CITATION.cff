@@ -1,7 +1,5 @@
 cff-version: 1.2.0
-message: "If you use the repository code or prepared dataset
-(power system data, power flow cases, plots, etc.) in your research,
-please cite it as below."
+title: "Power Flow Data of IEEE-118 Bus System"
 authors:
 - family-names: "Tsydenov"
   given-names: "Evgeny"
@@ -9,8 +7,20 @@ authors:
 - family-names: "Prokhorov"
   given-names: "Anton"
   orcid: "https://orcid.org/0000-0002-7516-6027"
-title: "Power Flow Data of IEEE-118 Bus System"
-version: 0.0.1
-date-released: 2022-11-09
+abstract: "The repository contains a data pipeline to build power flow
+ cases of an IEEE-118 like power system with an hourly frequency for one year.
+
+Power system data (model structure, time-series, plots, etc.) and power
+ flow cases built using the pipeline can be downloaded from the release page"
+message: "If you use the repository code or prepared dataset
+ (power system data, power flow cases, plots, etc.) in your research,
+ please cite it as below."
+doi: 10.5281/zenodo.7306932
 url: "https://github.com/evgenytsydenov/ieee118_power_flow_data"
 license: "CC-BY-NC-SA-4.0"
+keywords:
+- "power engineering"
+- "power flow"
+- "power flow analysis"
+- "power system"
+- "ieee18"

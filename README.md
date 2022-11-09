@@ -6,6 +6,7 @@
 
 [![CC-BY-NC-SA-4.0][license-shield]][license]
 [![Python 3.10][python-shield]][python]
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7306932.svg)](https://doi.org/10.5281/zenodo.7306932)
 
 
 # Power Flow Data of IEEE-118 Bus System
@@ -53,17 +54,15 @@ To customize the pipeline or to build power flow cases manually:
 This work is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][license].
 
 
-## Citation
+## Citing
 
 If you use the repository code or prepared dataset (power system data, power flow cases, plots, etc.) in your research, please cite the following BibTeX entry:
 ```
 @software{Tsydenov_Power_Flow_Data_2022,
     author = {Tsydenov, Evgeny and Prokhorov, Anton},
+    doi = {10.5281/zenodo.7306932},
     license = {CC-BY-NC-SA-4.0},
-    month = {11},
     title = {{Power Flow Data of IEEE-118 Bus System}},
     url = {https://github.com/evgenytsydenov/ieee118_power_flow_data},
-    version = {0.0.1},
-    year = {2022}
 }
 ```
