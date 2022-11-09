@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use the repository code or prepared dataset
+(power system data, power flow cases, plots, etc.) in your research,
+please cite it as below."
+authors:
+- family-names: "Tsydenov"
+  given-names: "Evgeny"
+  orcid: "https://orcid.org/0000-0002-0373-3782"
+- family-names: "Prokhorov"
+  given-names: "Anton"
+  orcid: "https://orcid.org/0000-0002-7516-6027"
+title: "Power Flow Data of IEEE-118 Bus System"
+version: 0.0.1
+date-released: 2022-11-09
+url: "https://github.com/evgenytsydenov/ieee118_power_flow_data"
+license: "CC-BY-NC-SA-4.0"
