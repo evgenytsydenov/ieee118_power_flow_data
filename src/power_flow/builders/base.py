@@ -1,8 +1,11 @@
 import logging
+import multiprocessing
+import os
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
+import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
@@ -17,6 +20,7 @@ class BasePowerFlowBuilder(ABC):
 
     def __init__(self) -> None:
         """Base class for building power flow cases."""
+        self.timestamps = None
         self._is_plant_mode = PLANT_MODE
         self._buses = None
         self._branches = None
@@ -24,8 +28,6 @@ class BasePowerFlowBuilder(ABC):
         self._loads_ts = None
         self._gens = None
         self._gens_ts = None
-        self._timestamps = None
-        self._model = None
 
     def load_data(
         self,
@@ -115,120 +117,150 @@ class BasePowerFlowBuilder(ABC):
             },
         )
 
-        # Datetime ranges in load and gen time-series are equal
-        load_timestamps = sorted(self._loads_ts["datetime"].unique())
-        gen_timestamps = sorted(self._gens_ts["datetime"].unique())
-        assert (
-            load_timestamps == gen_timestamps
-        ), "Gen and load timestamps are different"
-        self._timestamps = gen_timestamps
+        # Assume datetime ranges in load and gen time-series are equal
+        self.timestamps = sorted(self._gens_ts["datetime"].unique())
 
-    @property
-    def sample(self) -> Any:
-        """Current power flow case"""
-        raise NotImplementedError
-
-    def run_first(self, verbose: bool = True) -> Any:
+    def run(
+        self,
+        timestamp: Optional[str | list[str]] = None,
+        path_sample: Optional[str] = None,
+        display: bool = False,
+        workers: int = 1,
+    ) -> Optional[Any]:
         """Run the building process.
 
         Args:
-            verbose: If to print info messages.
+            timestamp: Timestamps of power flow cases to calculate.
+            path_sample: Path if it is necessary to save power flow cases.
+            display: If to show a progress bar.
+            workers: Number of workers to use.
+
         Returns:
-            Power flow case corresponding to the first timestamp of the provided data.
+            Power flow cases corresponding to the timestamp of the provided data.
         """
-        # Create base model
-        self._build_base_model()
+        # If one timestamp or one worker
+        timestamps = self.timestamps if timestamp is None else timestamp
+        timestamps = [timestamps] if isinstance(timestamps, str) else timestamps
+        if len(timestamps) > 1 and (path_sample is None):
+            logger.warning("Samples will not be saved because `path_sample` is `None`.")
+        workers_count = workers if workers > 0 else os.cpu_count()
+        workers_count = min([workers_count, len(timestamps), os.cpu_count()])
+        if workers != workers_count:
+            logger.warning(f"The number of workers was changed to {workers_count}.")
+        self._prepare_data()
+        if workers_count == 1:
+            return self._run(
+                timestamps=timestamps, display=display, path_samples=path_sample
+            )
 
-        # Refresh case data in accordance to the first timestamp
-        timestamp = self._timestamps[0]
-        if verbose:
-            logger.info(f"Use data for {timestamp}")
-        self._apply_next_timestamp(timestamp)
+        # Run in processes
+        args = []
+        for worker_id, time_samples in enumerate(
+            np.array_split(timestamps, workers_count)
+        ):
+            # Show progress bar only for the last worker
+            to_display = display * (worker_id + 1 == workers_count)
+            args.append((time_samples.tolist(), path_sample, to_display))
+        with multiprocessing.Pool(workers_count) as pool:
+            pool.starmap(self._run, args)
 
-        # Calculate power flows
-        is_opf_converged = self._calculate_opf()
-        if is_opf_converged:
-            is_pf_converged = self._calculate_power_flow()
-            if not is_pf_converged:
-                logger.warning(
-                    f"Power flow estimation at {timestamp}" f" did not converge."
-                )
-        else:
-            logger.warning(f"OPF estimation at {timestamp} did not converge.")
-        return self.sample
-
-    def run(self, path_samples: str, display: bool = False) -> None:
+    def _run(
+        self,
+        timestamps: list[str],
+        path_samples: Optional[str] = None,
+        display: bool = False,
+    ) -> Optional[Any]:
         """Run the building process.
 
         Args:
+            timestamps: Timestamps of power flow cases to calculate.
             path_samples: Path if it is necessary to save power flow cases.
             display: If to show a progress bar.
+        Returns:
+            Power flow cases corresponding to the timestamp of the provided data.
         """
-
         # Create base model
-        self._build_base_model()
+        model = self._build_base_model()
 
         # Timestamps are equal for all time-series data
-        for timestamp in tqdm(self._timestamps[:10], disable=not display):
+        to_return = (len(timestamps) == 1) and (path_samples is None)
+        for time_sample in tqdm(timestamps, disable=not display):
 
             # Refresh sample data in accordance to the current datetime
-            self._apply_next_timestamp(timestamp)
+            self._apply_next_timestamp(model, time_sample)
 
             # Calculate power flows
-            is_opf_converged = self._calculate_opf()
+            is_opf_converged = self._calculate_opf(model)
             if is_opf_converged:
-                is_pf_converged = self._calculate_power_flow()
+                is_pf_converged = self._calculate_power_flow(model)
                 if not is_pf_converged:
                     logger.warning(
-                        f"Power flow estimation at {timestamp}" f" did not converge."
+                        f"Power flow estimation at {time_sample}" f" did not converge."
                     )
             else:
-                logger.warning(f"OPF estimation at {timestamp} did not converge.")
+                logger.warning(f"OPF estimation at {time_sample} did not converge.")
 
             # Save created case
-            sample_name = datetime.strptime(timestamp, DATE_FORMAT).strftime(
-                SAMPLE_NAME_FORMAT
-            )
-            self._save_sample(path=path_samples, sample_name=sample_name)
+            if path_samples:
+                sample_name = datetime.strptime(time_sample, DATE_FORMAT).strftime(
+                    SAMPLE_NAME_FORMAT
+                )
+                self._save_sample(model, path=path_samples, sample_name=sample_name)
+        return model if to_return else None
 
     @abstractmethod
-    def _build_base_model(self) -> None:
-        """Create power flow model."""
+    def _build_base_model(self) -> Any:
+        """Create power flow model.
+
+        Returns:
+            Model with predefined parameters.
+        """
         raise NotImplementedError
 
     @abstractmethod
-    def _save_sample(self, path: str, sample_name: str) -> None:
+    def _save_sample(self, model: Any, path: str, sample_name: str) -> None:
         """Save sample.
 
         Args:
+            model: Power system model.
             path: Path to save the sample.
             sample_name: Sample name.
         """
         raise NotImplementedError
 
     @abstractmethod
-    def _apply_next_timestamp(self, timestamp: str) -> None:
+    def _apply_next_timestamp(self, model: Any, timestamp: str) -> None:
         """Refresh data in accordance to the timestamp.
 
         Args:
+            model: Power system model.
             timestamp: Current datetime.
         """
         raise NotImplementedError
 
     @abstractmethod
-    def _calculate_power_flow(self) -> bool:
+    def _calculate_power_flow(self, model: Any) -> bool:
         """Calculate power flows.
 
+        Args:
+            model: Power system model.
         Returns:
             True if the calculation was successful, False otherwise.
         """
         raise NotImplementedError
 
     @abstractmethod
-    def _calculate_opf(self) -> bool:
+    def _calculate_opf(self, model: Any) -> bool:
         """Solve optimal power flow task.
 
+        Args:
+            model: Power system model.
         Returns:
             True if the calculation was successful, False otherwise.
         """
+        raise NotImplementedError
+
+    @abstractmethod
+    def _prepare_data(self) -> None:
+        """Prepare initial data for faster access."""
         raise NotImplementedError

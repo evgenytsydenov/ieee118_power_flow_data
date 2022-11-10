@@ -2,7 +2,6 @@ import logging
 import math
 import os
 import warnings
-from typing import Any
 
 import numpy as np
 import pandapower as pp
@@ -29,7 +28,8 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self.s_base_mva = s_base_mva
         self.f_hz = f_hz
         self._bus_name_to_id = None
-        self._bus_name_to_v_rate = None
+        self._bus_name_to_v_rated = None
+        self._slack_bus = None
         self._slack_bus_id = None
         self._gens_prep = None
         self._gens_ts_prep = None
@@ -43,17 +43,37 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             "min_p_mw",
         ]
 
-    @property
-    def sample(self) -> Any:
-        """Current power flow sample."""
-        if self._model is None:
-            raise ValueError("The model should be built first.")
-        return self._model.deepcopy()
-
     def _prepare_data(self) -> None:
-        """Prepare data for OPF and group gens in plants if needed."""
+        """Prepare data for faster access."""
+        # Prepare buses
+        self._buses.sort_values("bus_name", inplace=True, ignore_index=True)
+        self._bus_name_to_id = pd.Series(
+            data=self._buses.index.values, index=self._buses["bus_name"].values
+        )
+        self._bus_name_to_v_rated = pd.Series(
+            data=self._buses["v_rated_kv"].values, index=self._buses["bus_name"].values
+        )
 
-        # Add plant names
+        # Prepare slack bus
+        self._slack_bus = self._buses.loc[self._buses["is_slack"], "bus_name"].values[0]
+        self._slack_bus_id = self._bus_name_to_id[self._slack_bus]
+
+        # Prepare branches
+        self._branches.sort_values("branch_name", inplace=True, ignore_index=True)
+        self._branches["from_bus_id"] = self._branches["from_bus"].map(
+            self._bus_name_to_id
+        )
+        self._branches["to_bus_id"] = self._branches["to_bus"].map(self._bus_name_to_id)
+
+        # Prepare loads
+        self._loads.sort_values("load_name", inplace=True, ignore_index=True)
+        self._loads["bus_id"] = self._loads["bus_name"].map(self._bus_name_to_id)
+        self._loads_ts[self._load_cols] = self._loads_ts[self._load_cols].astype(float)
+        self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
+        if "datetime" not in self._loads_ts.index.names:
+            self._loads_ts.set_index("datetime", inplace=True)
+
+        # Prepare gens
         gens = self._gens.copy()
         if self._is_plant_mode:
             gens.sort_values("bus_name", inplace=True, ignore_index=True)
@@ -102,6 +122,9 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
 
         # Prepare gen data for faster access
         self._gens_prep = gens.sort_values("gen_name")
+        self._gens_prep["bus_id"] = self._gens_prep["bus_name"].map(
+            self._bus_name_to_id
+        )
         self._gens_ts_prep = (
             gen_ts[["datetime", "gen_name", "in_service", *cols]]
             .rename(columns={"max_p_opf_mw": "max_p_mw", "min_p_opf_mw": "min_p_mw"})
@@ -110,65 +133,52 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             .set_index("datetime")
         )
 
-        # Prepare load data for faster access
-        self._loads.sort_values("load_name", inplace=True)
-        self._loads_ts[self._load_cols] = self._loads_ts[self._load_cols].astype(float)
-        self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
-        if "datetime" not in self._loads_ts.index.names:
-            self._loads_ts.set_index("datetime", inplace=True)
+    def _build_base_model(self) -> pp.pandapowerNet:
+        """Create power flow model.
 
-    def _build_base_model(self) -> None:
-        """Create power flow model."""
-        # Some initial preparations
-        self._prepare_data()
-
+        Returns:
+            Model with predefined parameters.
+        """
         # Create empty network
-        self._model = pp.create_empty_network(
+        model = pp.create_empty_network(
             sn_mva=self.s_base_mva, f_hz=self.f_hz, add_stdtypes=False
         )
 
-        # Prepare and add buses first
-        self._add_buses()
+        # Add tables
+        self._add_buses(model)
+        self._add_lines(model)
+        self._add_transformers(model)
+        self._add_loads(model)
+        self._add_generators(model)
+        self._add_slack(model)
+        return model
 
-        # For faster access
-        self._bus_name_to_id = pd.Series(
-            data=self._model.bus.index.values, index=self._model.bus["name"].values
-        )
-        self._bus_name_to_v_rate = pd.Series(
-            data=self._model.bus["vn_kv"].values, index=self._model.bus["name"].values
-        )
+    def _add_slack(self, model: pp.pandapowerNet) -> None:
+        """Add slack bus info to the power flow model.
 
-        # Prepare and add the rest
-        self._add_lines()
-        self._add_transformers()
-        self._add_loads()
-        self._add_generators()
-        self._add_slack()
-
-    def _add_slack(self) -> None:
-        """Add slack bus info to the power flow model."""
-        slack_bus = self._buses.loc[self._buses["is_slack"], "bus_name"].values[0]
-        self._slack_bus_id = self._bus_name_to_id[slack_bus]
+        Args:
+            model: Power system model.
+        """
         pp.create_ext_grid(
-            self._model,
+            net=model,
             bus=self._slack_bus_id,
-            name=slack_bus,
+            name=self._slack_bus,
             vm_pu=1,
             va_degree=0,
             in_service=True,
             controllable=True,
         )
 
-    def _add_buses(self) -> None:
-        """Add bus info to the power flow model."""
+    def _add_buses(self, model: pp.pandapowerNet) -> None:
+        """Add bus info to the power flow model.
 
-        # Prepare
-        self._buses.sort_values("bus_name", inplace=True)
-
-        # Add buses
+        Args:
+            model: Power system model.
+        """
         pp.create_buses(
-            self._model,
+            net=model,
             nr_buses=len(self._buses),
+            index=self._buses.index,
             vn_kv=self._buses["v_rated_kv"],
             name=self._buses["bus_name"],
             zone=self._buses["region"],
@@ -178,23 +188,21 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             geodata=list(zip(self._buses["x_coordinate"], self._buses["y_coordinate"])),
         )
 
-    def _add_lines(self) -> None:
-        """Add line info to the power flow model."""
+    def _add_lines(self, model: pp.pandapowerNet) -> None:
+        """Add line info to the power flow model.
 
+        Args:
+            model: Power system model.
+        """
         # Get only lines
         lines = self._branches[self._branches["trafo_ratio_rel"].isna()]
-        lines.sort_values("branch_name", inplace=True)
-
-        # Convert bus names to indices
-        lines["from_bus_id"] = lines["from_bus"].map(self._bus_name_to_id)
-        lines["to_bus_id"] = lines["to_bus"].map(self._bus_name_to_id)
 
         # Convert to farads
         lines["c_nf"] = lines["b_µs"] * 1e3 / (2 * self.f_hz * math.pi)
 
         # Add lines to the model
         pp.create_lines_from_parameters(
-            self._model,
+            net=model,
             name=lines["branch_name"],
             from_buses=lines["from_bus_id"],
             to_buses=lines["to_bus_id"],
@@ -209,20 +217,19 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             type="ol",
         )
 
-    def _add_transformers(self) -> None:
-        """Add transformer info to the power flow model."""
+    def _add_transformers(self, model: pp.pandapowerNet) -> None:
+        """Add transformer info to the power flow model.
+
+        Args:
+            model: Power system model.
+        """
 
         # Get only transformers
         trafos = self._branches[~self._branches["trafo_ratio_rel"].isna()]
-        trafos.sort_values("branch_name", inplace=True)
-
-        # Convert bus names to indices
-        trafos["from_bus_id"] = trafos["from_bus"].map(self._bus_name_to_id)
-        trafos["to_bus_id"] = trafos["to_bus"].map(self._bus_name_to_id)
 
         # Consider from_bus is a high voltage level bus
-        vn_hv_kv = self._bus_name_to_v_rate.loc[trafos["from_bus"]].values
-        vn_lv_kv = self._bus_name_to_v_rate.loc[trafos["to_bus"]].values
+        vn_hv_kv = self._bus_name_to_v_rated.loc[trafos["from_bus"]].values
+        vn_lv_kv = self._bus_name_to_v_rated.loc[trafos["to_bus"]].values
 
         # Calculate trafo parameters
         z_base_net = vn_hv_kv**2 / self.s_base_mva
@@ -239,7 +246,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
 
         # Add trafos to the model
         pp.create_transformers_from_parameters(
-            self._model,
+            net=model,
             name=trafos["branch_name"],
             hv_buses=trafos["from_bus_id"],
             lv_buses=trafos["to_bus_id"],
@@ -259,16 +266,15 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             max_loading_percent=100,
         )
 
-    def _add_loads(self) -> None:
-        """Add load info to the power flow model."""
+    def _add_loads(self, model: pp.pandapowerNet) -> None:
+        """Add load info to the power flow model.
 
-        # Prepare load info
-        self._loads["bus_id"] = self._loads["bus_name"].map(self._bus_name_to_id)
-
-        # Add basic info
+        Args:
+            model: Power system model.
+        """
         # Actual parameters will be populated later for each timestamp
         pp.create_loads(
-            self._model,
+            net=model,
             name=self._loads["load_name"],
             buses=self._loads["bus_id"],
             p_mw=0,
@@ -277,18 +283,15 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             controllable=False,
         )
 
-    def _add_generators(self) -> None:
-        """Add gen info to the power flow model."""
+    def _add_generators(self, model: pp.pandapowerNet) -> None:
+        """Add gen info to the power flow model.
 
-        # Prepare gen info
-        self._gens_prep["bus_id"] = self._gens_prep["bus_name"].map(
-            self._bus_name_to_id
-        )
-
-        # Add basic info
+        Args:
+            model: Power system model.
+        """
         # Actual parameters will be populated later for each timestamp
         pp.create_gens(
-            self._model,
+            net=model,
             name=self._gens_prep["gen_name"],
             buses=self._gens_prep["bus_id"],
             p_mw=0,
@@ -301,86 +304,88 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             controllable=True,
         )
 
-    def _apply_next_timestamp(self, timestamp: str) -> None:
+    def _apply_next_timestamp(self, model: pp.pandapowerNet, timestamp: str) -> None:
         """Refresh data in accordance to the timestamp.
 
         Prepare the model for OPF.
 
         Args:
+            model: Power system model.
             timestamp: Current datetime.
         """
-        # Set load
         # Assume that load_ts is sorted by datetime and load_name
-        self._model.load[self._load_cols] = self._loads_ts.loc[
+        model.load[self._load_cols] = self._loads_ts.loc[
             timestamp, self._load_cols
         ].values
 
-        # Set gens
         # Assume that gen_ts_prep is sorted by datetime and gen_name
-        self._model.gen[self._gen_cols] = self._gens_ts_prep.loc[
+        model.gen[self._gen_cols] = self._gens_ts_prep.loc[
             timestamp, self._gen_cols
         ].values
 
         # Need to refresh values after previous run
-        self._model.gen["controllable"] = True
-        self._model.gen["vm_pu"] = 1.0
+        model.gen["controllable"] = True
+        model.gen["vm_pu"] = 1.0
 
-    def _save_sample(self, path: str, sample_name: str) -> None:
+    def _save_sample(
+        self, model: pp.pandapowerNet, path: str, sample_name: str
+    ) -> None:
         """Save sample.
 
         Args:
+            model: Power system model.
             path: Path to save the sample.
             sample_name: Sample name.
         """
         sample_path = os.path.join(path, f"{sample_name}.json")
-        pp.to_json(self._model, sample_path)
+        pp.to_json(model, sample_path)
 
-    def _calculate_opf(self) -> bool:
+    def _calculate_opf(self, model: pp.pandapowerNet) -> bool:
         """Solve optimal power flow task.
 
+        Args:
+            model: Power system model.
         Returns:
             True if the calculation was successful, False otherwise.
         """
         try:
             # Run OPF
-            pp.runopp(self._model, init="flat")
+            pp.runopp(model, init="flat")
 
             # Add optimized values to the model
-            self._model.gen[["p_mw", "vm_pu"]] = self._model.res_gen[
-                ["p_mw", "vm_pu"]
-            ].values
-            self._model.ext_grid["vm_pu"] = self._model.res_bus.loc[
-                self._slack_bus_id, "vm_pu"
-            ]
+            model.gen[["p_mw", "vm_pu"]] = model.res_gen[["p_mw", "vm_pu"]].values
+            model.ext_grid["vm_pu"] = model.res_bus.loc[self._slack_bus_id, "vm_pu"]
         except OPFNotConverged:
-            pp.clear_result_tables(self._model)
+            pp.clear_result_tables(model)
             return False
 
         finally:
 
             # Restore original limits of gen outputs and controllable flag
-            self._model.gen[["min_p_mw", "max_p_mw"]] = self._gens_prep[
+            model.gen[["min_p_mw", "max_p_mw"]] = self._gens_prep[
                 ["min_p_mw", "max_p_mw"]
             ].values
-            self._model.gen["controllable"] = self._gens_prep["is_optimized"].values
+            model.gen["controllable"] = self._gens_prep["is_optimized"].values
 
         return True
 
-    def _calculate_power_flow(self) -> bool:
+    def _calculate_power_flow(self, model: pp.pandapowerNet) -> bool:
         """Calculate power flows.
 
+        Args:
+            model: Power system model.
         Returns:
             True if the calculation was successful, False otherwise.
         """
         try:
             pp.runpp(
-                self._model,
+                net=model,
                 algorithm="nr",
                 calculate_voltage_angles=True,
                 init="flat",
                 enforce_q_lims=True,
             )
         except LoadflowNotConverged:
-            pp.clear_result_tables(self._model)
+            pp.clear_result_tables(model)
             return False
         return True
