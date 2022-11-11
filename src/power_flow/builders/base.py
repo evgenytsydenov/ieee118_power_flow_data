@@ -1,8 +1,8 @@
-import logging
-import multiprocessing
 import os
 from abc import ABC, abstractmethod
 from datetime import datetime
+from multiprocessing import Manager, Pool, Queue, current_process
+from threading import Thread
 from typing import Any, Optional
 
 import numpy as np
@@ -10,9 +10,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from definitions import DATE_FORMAT, PLANT_MODE, SAMPLE_NAME_FORMAT
+from src.utils.app_logger import get_logger, get_queue_logger, queue_listener
 from src.utils.data_loaders import load_df_data
-
-logger = logging.getLogger(__name__)
 
 
 class BasePowerFlowBuilder(ABC):
@@ -21,6 +20,7 @@ class BasePowerFlowBuilder(ABC):
     def __init__(self) -> None:
         """Base class for building power flow cases."""
         self.timestamps = None
+        self._logger = get_logger(__name__)
         self._is_plant_mode = PLANT_MODE
         self._buses = None
         self._branches = None
@@ -142,33 +142,48 @@ class BasePowerFlowBuilder(ABC):
         timestamps = self.timestamps if timestamp is None else timestamp
         timestamps = [timestamps] if isinstance(timestamps, str) else timestamps
         if len(timestamps) > 1 and (path_sample is None):
-            logger.warning("Samples will not be saved because `path_sample` is `None`.")
+            self._logger.warning(
+                "Samples will not be saved because `path_sample` is `None`."
+            )
         workers_count = workers if workers > 0 else os.cpu_count()
         workers_count = min([workers_count, len(timestamps), os.cpu_count()])
         if workers != workers_count:
-            logger.warning(f"The number of workers was changed to {workers_count}.")
+            self._logger.warning(
+                f"The number of workers was changed to {workers_count}."
+            )
         self._prepare_data()
         if workers_count == 1:
             return self._run(
                 timestamps=timestamps, display=display, path_samples=path_sample
             )
 
-        # Run in processes
+        # Thread to capture logs
+        manager = Manager()
+        log_queue = manager.Queue(-1)
+        log_thread = Thread(target=queue_listener, args=(__name__, log_queue))
+        log_thread.start()
+
+        # Start processes
+        # Show progress bar only for the last worker
         args = []
         for worker_id, time_samples in enumerate(
             np.array_split(timestamps, workers_count)
         ):
-            # Show progress bar only for the last worker
             to_display = display * (worker_id + 1 == workers_count)
-            args.append((time_samples.tolist(), path_sample, to_display))
-        with multiprocessing.Pool(workers_count) as pool:
+            args.append((time_samples.tolist(), path_sample, to_display, log_queue))
+        with Pool(workers_count) as pool:
             pool.starmap(self._run, args)
+
+        # Finish logging thread
+        log_queue.put_nowait(None)
+        log_thread.join()
 
     def _run(
         self,
         timestamps: list[str],
         path_samples: Optional[str] = None,
         display: bool = False,
+        queue: Optional[Queue] = None,
     ) -> Optional[Any]:
         """Run the building process.
 
@@ -176,11 +191,20 @@ class BasePowerFlowBuilder(ABC):
             timestamps: Timestamps of power flow cases to calculate.
             path_samples: Path if it is necessary to save power flow cases.
             display: If to show a progress bar.
+            queue: Queue for logs.
         Returns:
             Power flow cases corresponding to the timestamp of the provided data.
         """
         # Create base model
         model = self._build_base_model()
+
+        # Prepare logger
+        if queue is None:
+            logger = self._logger
+        else:
+            proc_name = current_process().name.lower()
+            logger_name = f"{__name__}.{proc_name}"
+            logger = get_queue_logger(logger_name, queue)
 
         # Timestamps are equal for all time-series data
         to_return = (len(timestamps) == 1) and (path_samples is None)
@@ -194,11 +218,11 @@ class BasePowerFlowBuilder(ABC):
             if is_opf_converged:
                 is_pf_converged = self._calculate_power_flow(model)
                 if not is_pf_converged:
-                    logger.warning(
+                    logger.info(
                         f"Power flow estimation at {time_sample}" f" did not converge."
                     )
             else:
-                logger.warning(f"OPF estimation at {time_sample} did not converge.")
+                logger.info(f"OPF estimation at {time_sample} did not converge.")
 
             # Save created case
             if path_samples:
