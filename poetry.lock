@@ -1170,7 +1170,7 @@ qtconsole = "*"
 
 [[package]]
 name = "jupyter-client"
-version = "7.4.4"
+version = "7.4.5"
 description = "Jupyter protocol implementation and client libraries"
 category = "main"
 optional = false
@@ -2122,17 +2122,21 @@ tests = ["mock (==4.0.3)", "mypy (==0.971)", "paramiko (==2.11.0)", "pylint (==2
 
 [[package]]
 name = "seaborn"
-version = "0.11.2"
-description = "seaborn: statistical data visualization"
+version = "0.12.1"
+description = "Statistical data visualization"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 
 [package.dependencies]
-matplotlib = ">=2.2"
-numpy = ">=1.15"
-pandas = ">=0.23"
-scipy = ">=1.0"
+matplotlib = ">=3.1,<3.6.1 || >3.6.1"
+numpy = ">=1.17"
+pandas = ">=0.25"
+
+[package.extras]
+dev = ["flake8", "mypy", "pandas-stubs", "pre-commit", "pytest", "pytest-cov", "pytest-xdist"]
+docs = ["ipykernel", "nbconvert", "numpydoc", "pydata_sphinx_theme (==0.10.0rc2)", "pyyaml", "sphinx-copybutton", "sphinx-design", "sphinx-issues"]
+stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
 
 [[package]]
 name = "send2trash"
@@ -2484,8 +2488,8 @@ test = ["zope.testing"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.10,<3.11"
-content-hash = "048240d9a5d11f8dfa99f2ce720c4b56395ae96d01d2c684645eb59bfe2713d5"
+python-versions = "^3.10"
+content-hash = "333edc3e437822ee999310659ddb66a4c977ba5c676c80782df3675af38a459c"
 
 [metadata.files]
 aiohttp = [
@@ -3233,8 +3237,8 @@ jupyter = [
     {file = "jupyter-1.0.0.zip", hash = "sha256:3e1f86076bbb7c8c207829390305a2b1fe836d471ed54be66a3b8c41e7f46cc7"},
 ]
 jupyter-client = [
-    {file = "jupyter_client-7.4.4-py3-none-any.whl", hash = "sha256:1c1d418ef32a45a1fae0b243e6f01cc9bf65fa8ddbd491a034b9ba6ac6502951"},
-    {file = "jupyter_client-7.4.4.tar.gz", hash = "sha256:5616db609ac720422e6a4b893d6572b8d655ff41e058367f4459a0d2c0726832"},
+    {file = "jupyter_client-7.4.5-py3-none-any.whl", hash = "sha256:feaad9c04871254067d3b8c41192b7aba8e9bbbf9df9830ecf2673939510c5b7"},
+    {file = "jupyter_client-7.4.5.tar.gz", hash = "sha256:63eae06c40e1f2d9afa14447511fddc065c95dea3f2491fda2acccf91221954a"},
 ]
 jupyter-console = [
     {file = "jupyter_console-6.4.4-py3-none-any.whl", hash = "sha256:756df7f4f60c986e7bc0172e4493d3830a7e6e75c08750bbe59c0a5403ad6dee"},
@@ -4189,8 +4193,8 @@ scmrepo = [
     {file = "scmrepo-0.1.3.tar.gz", hash = "sha256:9ae20c2dc32a588215bb9b76040129cec68e2ef51b06cda48cdc32df15575998"},
 ]
 seaborn = [
-    {file = "seaborn-0.11.2-py3-none-any.whl", hash = "sha256:85a6baa9b55f81a0623abddc4a26b334653ff4c6b18c418361de19dbba0ef283"},
-    {file = "seaborn-0.11.2.tar.gz", hash = "sha256:cf45e9286d40826864be0e3c066f98536982baf701a7caa386511792d61ff4f6"},
+    {file = "seaborn-0.12.1-py3-none-any.whl", hash = "sha256:a9eb39cba095fcb1e4c89a7fab1c57137d70a715a7f2eefcd41c9913c4d4ed65"},
+    {file = "seaborn-0.12.1.tar.gz", hash = "sha256:bb1eb1d51d3097368c187c3ef089c0288ec1fe8aa1c69fb324c68aa1d02df4c1"},
 ]
 send2trash = [
     {file = "Send2Trash-1.8.0-py3-none-any.whl", hash = "sha256:f20eaadfdb517eaca5ce077640cb261c7d2698385a6a0f072a4a5447fd49fa08"},

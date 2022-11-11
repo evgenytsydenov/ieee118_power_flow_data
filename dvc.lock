@@ -294,7 +294,7 @@ stages:
     deps:
     - path: data/raw/nrel118/Input files/RT/Load
       md5: 15de5344806c746934ee61dfb508704b.dir
-      size: 886987
+      size: 860632
       nfiles: 4
     - path: src/data/parse/nrel118_loads_ts.py
       md5: 5c6636faa9a2e305a287c80c93fd21e2
@@ -332,8 +332,8 @@ stages:
     - python src/data/parse/jeas118_loads.py data/raw/jeas118/JEAS_IEEE118.docx data/parsed/jeas118_loads.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.docx
-      md5: 1f01a92d0ad7ff27733370ef134b894b
-      size: 101266
+      md5: 665c3929cff62d03939f85d9a5a83f02
+      size: 101226
     - path: src/data/parse/jeas118_loads.py
       md5: 815d3962113254bf95f9202da269133f
       size: 1719
@@ -404,8 +404,8 @@ stages:
     - python src/data/parse/jeas118_lines.py data/raw/jeas118/JEAS_IEEE118.docx data/parsed/jeas118_lines.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.docx
-      md5: 1f01a92d0ad7ff27733370ef134b894b
-      size: 101266
+      md5: 665c3929cff62d03939f85d9a5a83f02
+      size: 101226
     - path: src/data/parse/jeas118_lines.py
       md5: bb89979568178202ec0a8b3e9804ade1
       size: 1907
@@ -421,8 +421,8 @@ stages:
     - python src/data/parse/jeas118_buses.py data/raw/jeas118/JEAS_IEEE118.docx data/parsed/jeas118_buses.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.docx
-      md5: 1f01a92d0ad7ff27733370ef134b894b
-      size: 101266
+      md5: 665c3929cff62d03939f85d9a5a83f02
+      size: 101226
     - path: src/data/parse/jeas118_buses.py
       md5: 6250d678317728e20779e43a1d9d274a
       size: 1738
@@ -582,8 +582,8 @@ stages:
     - python src/data/parse/jeas118_trafos.py data/raw/jeas118/JEAS_IEEE118.docx data/parsed/jeas118_trafos.csv
     deps:
     - path: data/raw/jeas118/JEAS_IEEE118.docx
-      md5: 1f01a92d0ad7ff27733370ef134b894b
-      size: 101266
+      md5: 665c3929cff62d03939f85d9a5a83f02
+      size: 101226
     - path: src/data/parse/jeas118_trafos.py
       md5: 8a27078afa53fd55f672518459e3bcf8
       size: 1951
@@ -695,7 +695,7 @@ stages:
     deps:
     - path: data/raw/nrel118/Input files/RT/Wind
       md5: a46f8ccf7c19116d82cba65df615e2de.dir
-      size: 4812656
+      size: 4663311
       nfiles: 18
     - path: src/data/parse/nrel118_winds_ts.py
       md5: 677933934d7ea5f451c2e70ada5ce81d
@@ -730,7 +730,7 @@ stages:
     deps:
     - path: data/raw/nrel118/Input files/RT/Solar
       md5: e8e3065fef2b05440af5bef1c00157c0.dir
-      size: 17420193
+      size: 16761318
       nfiles: 76
     - path: src/data/parse/nrel118_solars_ts.py
       md5: a594b44eebc40dc5e6771333b1fab876
