@@ -45,3 +45,9 @@ POWER_FLOW_ENGINE = "pandapower"
 # Each name can contain timestamp parameters
 # The extension will be added automatically
 SAMPLE_NAME_FORMAT = "%Y_%m_%d_%H_%M_%S"
+
+# Logging parameters
+LOG_FORMAT_DEBUG = "%(asctime)s | %(name)s | %(funcName)s | %(levelname)s | %(message)s"
+LOG_FORMAT_INFO = "%(asctime)s | %(levelname)s | %(message)s"
+LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S %Z"
+LOG_PATH = "logs/system.log"
