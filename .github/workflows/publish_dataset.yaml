@@ -28,9 +28,7 @@ jobs:
         run: poetry install
 
       - name: Run pipeline
-        run: |
-          export PYTHONPATH=$PWD
-          poetry run python main.py
+        run: poetry run python main.py
 
       - name: Collect data
         run: |
