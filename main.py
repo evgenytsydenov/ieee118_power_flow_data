@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 if __name__ == "__main__":
@@ -9,4 +10,5 @@ if __name__ == "__main__":
     """
 
     # Run all preparation stages
-    subprocess.run(["dvc", "repro"])
+    env = {"PYTHONPATH": os.getcwd(), **os.environ}
+    subprocess.run(["dvc", "repro"], env=env)
