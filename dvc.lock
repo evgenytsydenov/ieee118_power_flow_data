@@ -989,8 +989,8 @@ stages:
       md5: ddc57b44ff4d76e63a823279e0c8dc63
       size: 13806
     - path: src/power_flow/building.py
-      md5: b3bf80484d604f307a0c7ba6ea1d116e
-      size: 2084
+      md5: a6259206bb9c863eaa5b464e93c71ab2
+      size: 2150
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
