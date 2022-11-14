@@ -986,8 +986,8 @@ stages:
       md5: 52e300a359e5d53f23cf29b42f424f38
       size: 9831
     - path: src/power_flow/builders/pandapower.py
-      md5: ddc57b44ff4d76e63a823279e0c8dc63
-      size: 13806
+      md5: a67ef51c568519b6d120972406a9c137
+      size: 13845
     - path: src/power_flow/building.py
       md5: a6259206bb9c863eaa5b464e93c71ab2
       size: 2150
