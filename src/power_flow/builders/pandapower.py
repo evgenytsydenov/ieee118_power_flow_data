@@ -326,6 +326,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         # Need to refresh values after previous run
         model.gen["controllable"] = True
         model.gen["vm_pu"] = 1.0
+        model.ext_grid["vm_pu"] = 1.0
 
     def _save_sample(
         self, model: pp.pandapowerNet, path: str, sample_name: str
