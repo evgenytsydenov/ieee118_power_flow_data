@@ -989,8 +989,8 @@ stages:
       md5: a67ef51c568519b6d120972406a9c137
       size: 13845
     - path: src/power_flow/building.py
-      md5: a6259206bb9c863eaa5b464e93c71ab2
-      size: 2150
+      md5: 088ff19876bce034f2852763e9ce7989
+      size: 2057
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -1004,6 +1004,6 @@ stages:
         S_BASE_MVA: 100
     outs:
     - path: samples
-      md5: 3d0c6213bde4b450ee9bd1c12e8d7b4b.dir
-      size: 2060120
-      nfiles: 10
+      md5: 4067b40d1789aacca43ba030ea227ec7.dir
+      size: 1543020775
+      nfiles: 8784
