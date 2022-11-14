@@ -3,7 +3,7 @@ import sys
 
 import pandas as pd
 
-from definitions import F_HZ, POWER_FLOW_ENGINE, S_BASE_MVA
+from definitions import F_HZ, POWER_FLOW_ENGINE, S_BASE_MVA, WORKERS_COUNT
 
 
 def building(
@@ -49,7 +49,10 @@ def building(
     # Start building process
     os.makedirs(path_samples)
     builder.run(
-        timestamp=builder.timestamps[:10], path_sample=path_samples, display=True
+        timestamp=builder.timestamps[:10],
+        path_sample=path_samples,
+        display=True,
+        workers=WORKERS_COUNT,
     )
 
 
