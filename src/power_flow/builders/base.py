@@ -118,7 +118,12 @@ class BasePowerFlowBuilder(ABC):
         )
 
         # Assume datetime ranges in load and gen time-series are equal
-        self.timestamps = sorted(self._gens_ts["datetime"].unique())
+        gen_timestamps = np.sort(self._gens_ts["datetime"].unique())
+        load_timestamps = np.sort(self._loads_ts["datetime"].unique())
+        assert np.array_equal(
+            gen_timestamps, load_timestamps
+        ), "Time-series data have different date ranges"
+        self.timestamps = gen_timestamps
 
     def run(
         self,

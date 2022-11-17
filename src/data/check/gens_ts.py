@@ -43,49 +43,59 @@ def check_gens_ts(
         not gens_ts[["datetime", "gen_name", "in_service"]].isna().values.any()
     ), "There are missing obligatory parameters"
 
-    # Ensure parameters are undefined when gen is out of service
-    values = ["p_mw"]
-    limits = ["min_q_mvar", "max_q_mvar", "max_p_mw", "min_p_mw"]
-    optimized_names = gens.loc[gens["opt_category"] != "non_optimized", "gen_name"]
-    optimized = gens_ts["gen_name"].isin(optimized_names)
-    gens_in_service = gens_ts["in_service"]
-    assert (
-        gens_ts.loc[~gens_in_service, values + limits].isna().values.all()
-    ), "There are parameters when generator is out of service"
-
-    # Ensure there are no NaNs when gens are in service
-    assert (
-        not gens_ts.loc[gens_in_service, limits].isna().values.any()
-    ), "There are undefined parameters when generator is in service"
-
-    # Ensure parameters are no NaNs when gens are in service and not optimized
-    assert (
-        not gens_ts.loc[gens_in_service & ~optimized, values].isna().values.any()
-    ), "There are undefined parameters when generator is not optimized"
-
-    # Ensure parameters are undefined when gen is in service and optimized
-    assert (
-        gens_ts.loc[gens_in_service & optimized, values].isna().values.all()
-    ), "There are undefined parameters when generator is not optimized"
-
-    # Some values should not be negative
-    mask = gens_in_service & ~optimized
-    assert (gens_ts.loc[mask, "p_mw"] >= 0).all(), "Some gens have negative output"
-
-    # Check reactive output
-    assert (
-        gens_ts.loc[mask, "min_q_mvar"] <= gens_ts.loc[mask, "max_q_mvar"]
-    ).all(), "Min level of reactive output of some gens are greater than max level"
-
     # Ensure there are time-series values for all gens
     gens_ts_names = gens_ts["gen_name"].unique()
     gens_names = gens["gen_name"].unique()
     assert np.isin(
         gens_names, gens_ts_names, assume_unique=True
-    ).all(), "Some gens are missed in time-series data"
+    ).all(), "Some gens are missed in the time-series data"
     assert np.isin(
         gens_ts_names, gens_names, assume_unique=True
-    ).all(), "There are some unknown gens in time-series data"
+    ).all(), "There are some unknown gens in the time-series data"
+
+    # Precompute
+    values = ["p_mw"]
+    limits = ["min_q_mvar", "max_q_mvar", "max_p_mw", "min_p_mw"]
+    optimized_names = gens.loc[gens["opt_category"] != "non_optimized", "gen_name"]
+    gens_optimized = gens_ts["gen_name"].isin(optimized_names)
+    gens_in_service = gens_ts["in_service"]
+
+    # Ensure parameters are undefined when gen is out of service
+    assert (
+        gens_ts.loc[~gens_in_service, values + limits].isna().values.all()
+    ), "There are parameters when generator is out of service"
+
+    # Ensure there are no NaNs among gen limits when gens are in service
+    assert (
+        not gens_ts.loc[gens_in_service, limits].isna().values.any()
+    ), "There are undefined gen limits when generator is in service"
+
+    # Ensure parameters are no NaNs when gens are in service and not optimized
+    assert (
+        not gens_ts.loc[gens_in_service & ~gens_optimized, values].isna().values.any()
+    ), "There are undefined parameters when generator is not optimized and in service"
+
+    # Ensure parameters are undefined when gen is in service and optimized
+    assert (
+        gens_ts.loc[gens_in_service & gens_optimized, values].isna().values.all()
+    ), "There are defined parameters when generator is optimized and in service"
+
+    # Some values should not be negative
+    assert (
+        gens_ts.loc[gens_in_service & ~gens_optimized, "p_mw"] >= 0
+    ).all(), "Some gens have negative output"
+
+    # Check reactive output limits
+    assert (
+        gens_ts.loc[gens_in_service, "min_q_mvar"]
+        <= gens_ts.loc[gens_in_service, "max_q_mvar"]
+    ).all(), "Min level of reactive output of some gens are greater than the max level"
+
+    # Check active output limits
+    assert (
+        gens_ts.loc[gens_in_service, "min_p_mw"]
+        <= gens_ts.loc[gens_in_service, "max_p_mw"]
+    ).all(), "Min level of active output of some gens are greater than the max level"
 
     # Ensure each gen has values for each timestamp
     pivot = gens_ts[["datetime", "gen_name", "in_service"]].pivot_table(
@@ -93,15 +103,7 @@ def check_gens_ts(
     )
     assert (
         not pivot.isna().values.any()
-    ), "Values of gen time-series dateset has different date ranges."
-
-    # Ensure actual gen output less than its max value
-    # assert (
-    #     gens_ts.loc[mask, "p_mw"] <= gens_ts.loc[mask, "max_p_mw"]
-    # ).all(), "Some gen outputs are greater than the max possible value"
-    # assert (
-    #     gens_ts.loc[mask, "min_p_mw"] <= gens_ts.loc[mask, "p_mw"]
-    # ).all(), "Some gen outputs are lower than the min value"
+    ), "Values of the gen time-series dataset has different date ranges."
 
 
 if __name__ == "__main__":

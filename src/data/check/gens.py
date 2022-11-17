@@ -33,13 +33,13 @@ def check_gens(
     # Ensure gen names are unique
     assert gens["gen_name"].is_unique, "There are duplicated gen names"
 
-    # Ensure all bus names are in bus dataset
+    # Ensure all bus names are in the bus dataset
     assert gens["bus_name"].isin(buses["bus_name"]).all(), "There are unknown bus names"
 
     # Ensure slack bus gens are not included
     slack_bus = buses.loc[buses["is_slack"], "bus_name"]
     assert (
-        ~gens["bus_name"].isin(slack_bus).all()
+        not gens["bus_name"].isin(slack_bus).any()
     ), "Gens of the slack bus are not excluded."
 
 

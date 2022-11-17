@@ -58,7 +58,7 @@ def check_loads_ts(
     )
     assert (
         not pivot.isna().values.any()
-    ), "Values of load time-series dateset has different date ranges."
+    ), "Values of the load time-series dataset have different date ranges."
 
 
 if __name__ == "__main__":
