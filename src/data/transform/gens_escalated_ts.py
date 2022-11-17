@@ -1,8 +1,10 @@
 import sys
+from datetime import datetime
 from typing import Optional
 
 import pandas as pd
 
+from definitions import DATE_FORMAT
 from src.utils.data_loaders import load_df_data
 
 
@@ -28,6 +30,7 @@ def transform_gens_escalated_ts(
         dtypes={
             "gen_name": str,
             "max_p_mw": float,
+            "min_p_mw": float,
         },
     )
     nrel118_escalators_ts = load_df_data(
@@ -35,13 +38,27 @@ def transform_gens_escalated_ts(
         dtypes={"datetime": str, "gen_name": str, "escalator_ratio": float},
     )
 
+    # Generators which do not have escalators
+    non_escalated = ~nrel118_gens["gen_name"].isin(nrel118_escalators_ts["gen_name"])
+    gens_non_escalated = pd.DataFrame(
+        data={
+            "gen_name": nrel118_gens.loc[non_escalated, "gen_name"].values,
+            "datetime": datetime(2024, 1, 1, 0, 0, 0).strftime(DATE_FORMAT),
+            "escalator_ratio": 1.0,
+        }
+    )
+    escalators_ts = pd.concat(
+        [nrel118_escalators_ts, gens_non_escalated], ignore_index=True
+    )
+
     # Merge
-    gens = nrel118_gens.merge(nrel118_escalators_ts, on="gen_name", how="right")
-    gens["p_mw"] = gens["escalator_ratio"] * gens["max_p_mw"]
+    gens = nrel118_gens.merge(escalators_ts, on="gen_name", how="right")
+    gens["max_p_mw"] *= gens["escalator_ratio"]
+    gens["min_p_mw"] *= gens["escalator_ratio"]
 
     # Return results
     gens.sort_values(["datetime", "gen_name"], inplace=True, ignore_index=True)
-    cols = ["datetime", "gen_name", "p_mw"]
+    cols = ["datetime", "gen_name", "max_p_mw", "min_p_mw"]
     if path_transformed_data:
         gens[cols].to_csv(path_transformed_data, header=True, index=False)
     else:

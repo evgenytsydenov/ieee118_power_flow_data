@@ -269,6 +269,9 @@ stages:
       - data/parsed/nrel118_escalators_ts.csv
       - src/data/transform/gens_escalated_ts.py
       - src/utils/data_loaders/load_df_data.py
+    params:
+      - definitions.py:
+          - DATE_FORMAT
     outs:
       - data/transformed/gens_escalated_ts.csv
 
@@ -281,8 +284,6 @@ stages:
         data/parsed/nrel118_solars_ts.csv
         data/parsed/nrel118_hydros_ts.csv
         data/parsed/nrel118_hydros_nondisp_ts.csv
-        data/transformed/gens_escalated_ts.csv
-        data/transformed/outages_ts.csv
         data/transformed/gens_ts.csv
     deps:
       - data/transformed/gens.csv
@@ -290,15 +291,11 @@ stages:
       - data/parsed/nrel118_solars_ts.csv
       - data/parsed/nrel118_hydros_ts.csv
       - data/parsed/nrel118_hydros_nondisp_ts.csv
-      - data/transformed/gens_escalated_ts.csv
-      - data/transformed/outages_ts.csv
       - src/data/transform/gens_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
           - DATE_FORMAT
-          - DATE_RANGE
-          - FILL_METHOD
     outs:
       - data/transformed/gens_ts.csv
 
@@ -415,6 +412,8 @@ stages:
       - python src/data/prepare/gens_ts.py
         data/transformed/gens.csv
         data/transformed/gens_ts.csv
+        data/transformed/gens_escalated_ts.csv
+        data/transformed/outages_ts.csv
         data/prepared/gens_ts.csv
       - python src/data/check/gens_ts.py
         data/prepared/gens_ts.csv
@@ -423,12 +422,16 @@ stages:
       - data/prepared/gens.csv
       - data/transformed/gens.csv
       - data/transformed/gens_ts.csv
+      - data/transformed/gens_escalated_ts.csv
+      - data/transformed/outages_ts.csv
       - src/data/prepare/gens_ts.py
       - src/data/check/gens_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
           - DATE_FORMAT
+          - DATE_RANGE
+          - FILL_METHOD
     outs:
       - data/prepared/gens_ts.csv
 

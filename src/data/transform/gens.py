@@ -30,6 +30,7 @@ def transform_gens(
             "bus_name": str,
             "max_p_mw": float,
             "min_p_mw": float,
+            "opt_category": str,
         },
     )
     buses = load_df_data(
@@ -37,79 +38,23 @@ def transform_gens(
         dtypes={"bus_name": str, "is_slack": bool},
     )
 
-    # Optimized gens
-    gens_optimized = [
-        "combined_cycle_gas_017",
-        "combined_cycle_gas_020",
-        "combined_cycle_gas_023",
-        "combined_cycle_gas_024",
-        "combined_cycle_gas_025",
-        "combined_cycle_gas_026",
-        "combined_cycle_gas_031",
-        "combined_cycle_gas_034",
-        "combined_cycle_gas_035",
-        "combined_cycle_gas_036",
-        "combustion_gas_011",
-        "combustion_gas_012",
-        "combustion_gas_015",
-        "combustion_gas_016",
-        "combustion_gas_020",
-        "steam_gas_003",
-        "steam_gas_006",
-        "steam_gas_007",
-        "steam_gas_008",
-        "steam_gas_009",
-    ]
-    gens_missed = [
-        "biomass_059",
-        "biomass_060",
-        "combined_cycle_gas_040",
-        "combustion_gas_008",
-        "combustion_gas_021",
-        "combustion_gas_022",
-        "combustion_gas_023",
-        "combustion_gas_024",
-        "combustion_gas_025",
-        "combustion_gas_026",
-        "combustion_gas_046",
-        "combustion_gas_047",
-        "combustion_gas_048",
-        "combustion_gas_049",
-        "combustion_gas_072",
-        "combustion_gas_073",
-        "hydro_001",
-        "hydro_002",
-        "hydro_003",
-        "hydro_004",
-        "hydro_005",
-        "hydro_006",
-        "hydro_007",
-        "hydro_008",
-        "hydro_009",
-        "hydro_010",
-        "hydro_011",
-        "hydro_012",
-        "hydro_013",
-        "hydro_014",
-        "hydro_015",
-    ]
-    gens_optimized += gens_missed
-    gens[["is_optimized", "is_ts_missed"]] = False
-    gens.loc[gens["gen_name"].isin(gens_optimized), "is_optimized"] = True
-    gens.loc[gens["gen_name"].isin(gens_missed), "is_ts_missed"] = True
+    # Specify which gens are optimized
+    non_optimized = ["solar", "wind", "hydro"]
+    gens.loc[gens["opt_category"].isin(non_optimized), "opt_category"] = "non_optimized"
+    optimized_hydros = [f"hydro_{i:03}" for i in range(1, 16)]
+    gens.loc[gens["gen_name"].isin(optimized_hydros), "opt_category"] = "real_time"
 
-    # Add bus info
+    # Add slack bus info
     gens = gens.merge(buses, on="bus_name", how="left")
 
     # Return results
     cols = [
-        "bus_name",
         "gen_name",
+        "bus_name",
         "max_p_mw",
         "min_p_mw",
         "is_slack",
-        "is_optimized",
-        "is_ts_missed",
+        "opt_category",
     ]
     if path_transformed_data:
         gens[cols].to_csv(path_transformed_data, header=True, index=False)

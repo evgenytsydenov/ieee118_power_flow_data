@@ -100,9 +100,7 @@ class BasePowerFlowBuilder(ABC):
             dtypes={
                 "gen_name": str,
                 "bus_name": str,
-                "max_p_mw": float,
-                "min_p_mw": float,
-                "is_optimized": bool,
+                "opt_category": str,
             },
         )
         self._gens_ts = load_df_data(
@@ -114,6 +112,8 @@ class BasePowerFlowBuilder(ABC):
                 "p_mw": float,
                 "max_q_mvar": float,
                 "min_q_mvar": float,
+                "max_p_mw": float,
+                "min_p_mw": float,
             },
         )
 

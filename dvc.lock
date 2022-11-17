@@ -470,8 +470,8 @@ stages:
       md5: 8b014c583d06d4c0b62270829082db5d
       size: 43221
     - path: src/data/parse/nrel118_gens.py
-      md5: f3aa70cf7e80e3bea45795cc37cbf25d
-      size: 2126
+      md5: d5cb1cfbb4ab35ccb969196004b6ed77
+      size: 2485
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -492,29 +492,29 @@ stages:
           ST Other: steam_other
     outs:
     - path: data/parsed/nrel118_gens.csv
-      md5: cfc34c8564f33d3ea824e5401c64ad5f
-      size: 10954
+      md5: dad3d993404bf7b4fe138635e4d08d7f
+      size: 13680
   transform_gens:
     cmd:
     - python src/data/transform/gens.py data/parsed/nrel118_gens.csv data/prepared/buses.csv
       data/transformed/gens.csv
     deps:
     - path: data/parsed/nrel118_gens.csv
-      md5: cfc34c8564f33d3ea824e5401c64ad5f
-      size: 10954
+      md5: dad3d993404bf7b4fe138635e4d08d7f
+      size: 13680
     - path: data/prepared/buses.csv
       md5: 806381a3d75530bca1df0527060ca994
       size: 5860
     - path: src/data/transform/gens.py
-      md5: 18dffdb5de1328a3fb1b37fb50cdfa35
-      size: 3682
+      md5: 75a6dfbd95c8bfc6806b0e8aafabfc89
+      size: 2256
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     outs:
     - path: data/transformed/gens.csv
-      md5: 5e7d9e2b92f128c0d4579c050f7d60d2
-      size: 16787
+      md5: 57a4ae7c81f6f8278d057358227b3915
+      size: 16682
   prepare_gens:
     cmd:
     - python src/data/prepare/gens.py data/transformed/gens.csv data/prepared/gens.csv
@@ -524,21 +524,21 @@ stages:
       md5: 806381a3d75530bca1df0527060ca994
       size: 5860
     - path: data/transformed/gens.csv
-      md5: 5e7d9e2b92f128c0d4579c050f7d60d2
-      size: 16787
+      md5: 57a4ae7c81f6f8278d057358227b3915
+      size: 16682
     - path: src/data/check/gens.py
-      md5: a86d4b146bf35a61652986dee8ff96a6
-      size: 1950
+      md5: 783f31b61732b85cb302ec3aaecc8fd8
+      size: 1602
     - path: src/data/prepare/gens.py
-      md5: 8c54059b7bd2e3e144a8007ecb979540
-      size: 1794
+      md5: cea0dde3d45499c31c60a2a20a32efae
+      size: 1510
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
     outs:
     - path: data/prepared/gens.csv
-      md5: a6eddc0a6dcca8215e5d5aca644f93f6
-      size: 12605
+      md5: 9eff2ba177db64e6808a98ef693c6781
+      size: 11225
   transform_outages_ts:
     cmd:
     - python src/data/transform/outages_ts.py data/parsed/nrel118_outages_ts.csv data/transformed/outages_ts.csv
@@ -870,23 +870,26 @@ stages:
       md5: a092317222c8e903881c4421e0af5256
       size: 94712
     - path: data/parsed/nrel118_gens.csv
-      md5: cfc34c8564f33d3ea824e5401c64ad5f
-      size: 10954
+      md5: dad3d993404bf7b4fe138635e4d08d7f
+      size: 13680
     - path: src/data/transform/gens_escalated_ts.py
-      md5: 60a063de8efd67f0874cfb7458e5a10e
-      size: 2102
+      md5: 05a6c009676714312d21ed62689db5c4
+      size: 2758
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
     outs:
     - path: data/transformed/gens_escalated_ts.csv
-      md5: 9ce0a7069f3c91ba2529e4dcf2d89446
-      size: 103835
+      md5: 93e140eb390fcab7a49ac889e7ebe215
+      size: 134081
   transform_gens_ts:
     cmd:
     - python src/data/transform/gens_ts.py data/transformed/gens.csv data/parsed/nrel118_winds_ts.csv
       data/parsed/nrel118_solars_ts.csv data/parsed/nrel118_hydros_ts.csv data/parsed/nrel118_hydros_nondisp_ts.csv
-      data/transformed/gens_escalated_ts.csv data/transformed/outages_ts.csv data/transformed/gens_ts.csv
+      data/transformed/gens_ts.csv
     deps:
     - path: data/parsed/nrel118_hydros_nondisp_ts.csv
       md5: e179b9380617cfc574cf25f0973531d4
@@ -901,17 +904,48 @@ stages:
       md5: 70cffc02cabee227db48d9b2bd67e1c3
       size: 6842986
     - path: data/transformed/gens.csv
-      md5: 5e7d9e2b92f128c0d4579c050f7d60d2
-      size: 16787
+      md5: 57a4ae7c81f6f8278d057358227b3915
+      size: 16682
+    - path: src/data/transform/gens_ts.py
+      md5: c9a842b9e88d788d56a294284aec9c3c
+      size: 3442
+    - path: src/utils/data_loaders/load_df_data.py
+      md5: f3b1048c9e46162b1c47094fc7cecab9
+      size: 953
+    params:
+      definitions.py:
+        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
+    outs:
+    - path: data/transformed/gens_ts.csv
+      md5: 0800a7b2fad438f49ce725653be78057
+      size: 42571298
+  prepare_gens_ts:
+    cmd:
+    - python src/data/prepare/gens_ts.py data/transformed/gens.csv data/transformed/gens_ts.csv
+      data/transformed/gens_escalated_ts.csv data/transformed/outages_ts.csv data/prepared/gens_ts.csv
+    - python src/data/check/gens_ts.py data/prepared/gens_ts.csv data/prepared/gens.csv
+    deps:
+    - path: data/prepared/gens.csv
+      md5: 9eff2ba177db64e6808a98ef693c6781
+      size: 11225
+    - path: data/transformed/gens.csv
+      md5: 57a4ae7c81f6f8278d057358227b3915
+      size: 16682
     - path: data/transformed/gens_escalated_ts.csv
-      md5: 9ce0a7069f3c91ba2529e4dcf2d89446
-      size: 103835
+      md5: 93e140eb390fcab7a49ac889e7ebe215
+      size: 134081
+    - path: data/transformed/gens_ts.csv
+      md5: 0800a7b2fad438f49ce725653be78057
+      size: 42571298
     - path: data/transformed/outages_ts.csv
       md5: 708649d096d6d2322729213b24cbd51f
       size: 134756
-    - path: src/data/transform/gens_ts.py
-      md5: d110e9630299d4d86627e5b179874d83
-      size: 4956
+    - path: src/data/check/gens_ts.py
+      md5: 0f4ae9caa492a809245efbf04cb9ef0e
+      size: 4191
+    - path: src/data/prepare/gens_ts.py
+      md5: 7542724215bde81d24bfe3070843dff9
+      size: 4295
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -924,40 +958,9 @@ stages:
         - 1h
         FILL_METHOD: pad
     outs:
-    - path: data/transformed/gens_ts.csv
-      md5: 67e2f1be45812fe621656ef3a37ebc41
-      size: 142518520
-  prepare_gens_ts:
-    cmd:
-    - python src/data/prepare/gens_ts.py data/transformed/gens.csv data/transformed/gens_ts.csv
-      data/prepared/gens_ts.csv
-    - python src/data/check/gens_ts.py data/prepared/gens_ts.csv data/prepared/gens.csv
-    deps:
-    - path: data/prepared/gens.csv
-      md5: a6eddc0a6dcca8215e5d5aca644f93f6
-      size: 12605
-    - path: data/transformed/gens.csv
-      md5: 5e7d9e2b92f128c0d4579c050f7d60d2
-      size: 16787
-    - path: data/transformed/gens_ts.csv
-      md5: 67e2f1be45812fe621656ef3a37ebc41
-      size: 142518520
-    - path: src/data/check/gens_ts.py
-      md5: 320909e8c5077c85c3675cfd4f9ef8dc
-      size: 3445
-    - path: src/data/prepare/gens_ts.py
-      md5: 72226e31caca5c7cc34ca76edcf03589
-      size: 2985
-    - path: src/utils/data_loaders/load_df_data.py
-      md5: f3b1048c9e46162b1c47094fc7cecab9
-      size: 953
-    params:
-      definitions.py:
-        DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
-    outs:
     - path: data/prepared/gens_ts.csv
-      md5: 7d41b91cfd7d2446d0141b69c1de8b10
-      size: 168092080
+      md5: 1e2c0cfc5700da7c55f53fac64928a45
+      size: 202649068
   build:
     cmd:
     - python src/power_flow/building.py data/prepared/buses.csv data/prepared/branches.csv
@@ -971,11 +974,11 @@ stages:
       md5: 806381a3d75530bca1df0527060ca994
       size: 5860
     - path: data/prepared/gens.csv
-      md5: a6eddc0a6dcca8215e5d5aca644f93f6
-      size: 12605
+      md5: 9eff2ba177db64e6808a98ef693c6781
+      size: 11225
     - path: data/prepared/gens_ts.csv
-      md5: 7d41b91cfd7d2446d0141b69c1de8b10
-      size: 168092080
+      md5: 1e2c0cfc5700da7c55f53fac64928a45
+      size: 202649068
     - path: data/prepared/loads.csv
       md5: 9ebbed3e2700320d2a95a024072ec817
       size: 1658
@@ -983,14 +986,14 @@ stages:
       md5: 74c1c7666ba90046c52f40ab1811d322
       size: 44062587
     - path: src/power_flow/builders/base.py
-      md5: 52e300a359e5d53f23cf29b42f424f38
-      size: 9831
+      md5: a0d0168c941d7551fe2bcd2052efb6b3
+      size: 9830
     - path: src/power_flow/builders/pandapower.py
-      md5: a67ef51c568519b6d120972406a9c137
-      size: 13845
+      md5: 5f626ed2aaea8509ad984edcb9cb9736
+      size: 12817
     - path: src/power_flow/building.py
-      md5: 088ff19876bce034f2852763e9ce7989
-      size: 2057
+      md5: 29c7387b930538e466ef9783ca144455
+      size: 2138
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -1004,6 +1007,6 @@ stages:
         S_BASE_MVA: 100
     outs:
     - path: samples
-      md5: 4067b40d1789aacca43ba030ea227ec7.dir
-      size: 1543020775
-      nfiles: 8784
+      md5: a808f5fb787c7332cb56c5ce4612121b.dir
+      size: 1134259
+      nfiles: 10
