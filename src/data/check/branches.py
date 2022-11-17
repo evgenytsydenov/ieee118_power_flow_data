@@ -44,16 +44,16 @@ def check_branches(
         subset=["from_bus", "to_bus", "parallel"]
     ).any(), "There are duplicated (from_bus, to_bus, parallel)"
 
-    # Ensure all values (from_bus, to_bus) are in bus dataset
+    # Ensure all values (from_bus, to_bus) are in the bus dataset
     for col in ["from_bus", "to_bus"]:
         assert (
             branches[col].isin(buses["bus_name"]).all()
-        ), f"There are unknown bus names in column {col}"
+        ), f"There are unknown bus names in the column {col}"
 
     # Correct impedance and current
-    assert not (
-        branches[["r_ohm", "x_ohm", "b_µs", "max_i_ka"]] < 0
-    ).values.any(), "There are negative impedance or current"
+    assert (
+        branches[["r_ohm", "x_ohm", "b_µs", "max_i_ka"]] >= 0
+    ).values.all(), "There are negative impedance values or current limits"
 
     # Correct trafo_ratio_rel
     assert (

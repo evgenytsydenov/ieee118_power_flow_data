@@ -26,7 +26,7 @@ def check_loads(
     # Ensure load names are unique
     assert loads["load_name"].is_unique, "There are duplicated load names"
 
-    # Ensure all bus names are in bus dataset
+    # Ensure all bus names are in the bus dataset
     assert (
         loads["bus_name"].isin(buses["bus_name"]).all()
     ), "There are unknown bus names"

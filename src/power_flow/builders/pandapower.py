@@ -34,6 +34,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self._gen_slice = None
         self._load_vars = ["in_service", "p_mw", "q_mvar"]
         self._gen_vars_model = [
+            "in_service",
             "p_mw",
             "min_q_mvar",
             "max_q_mvar",
@@ -41,11 +42,12 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             "min_p_mw",
         ]
         self._gen_vars_ts = [
+            "in_service",
             "p_mw",
             "min_q_mvar",
             "max_q_mvar",
-            "max_p_opf_mw",
-            "min_p_opf_mw",
+            "max_opf_p_mw",
+            "min_opf_p_mw",
         ]
 
     def _prepare_data(self) -> None:
@@ -75,8 +77,6 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self._loads["bus_id"] = self._loads["bus_name"].map(self._bus_name_to_id)
 
         # Prepare loads ts
-        cols = [c for c in self._load_vars if c != "in_service"]
-        self._loads_ts.loc[~self._loads_ts["in_service"], cols] = np.nan
         self._loads_ts[self._load_vars] = self._loads_ts[self._load_vars].astype(float)
         self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
         if "datetime" not in self._loads_ts.index.names:
@@ -92,18 +92,16 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         # Prepare gens ts
         optimized_names = self._gens.loc[self._gens["is_optimized"], "gen_name"]
         self._gens_ts["is_optimized"] = self._gens_ts["gen_name"].isin(optimized_names)
-        self._gens_ts["max_p_opf_mw"] = np.where(
+        self._gens_ts["max_opf_p_mw"] = np.where(
             self._gens_ts["is_optimized"],
             self._gens_ts["max_p_mw"],
             self._gens_ts["p_mw"],
         )
-        self._gens_ts["min_p_opf_mw"] = np.where(
+        self._gens_ts["min_opf_p_mw"] = np.where(
             self._gens_ts["is_optimized"],
             self._gens_ts["min_p_mw"],
             self._gens_ts["p_mw"],
         )
-        cols = [c for c in self._gen_vars_ts if c != "in_service"]
-        self._gens_ts.loc[~self._gens_ts["in_service"], cols] = np.nan
         self._gens_ts[self._gen_vars_ts] = self._gens_ts[self._gen_vars_ts].astype(
             float
         )

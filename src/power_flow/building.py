@@ -51,7 +51,7 @@ def building(
     builder.run(
         path_sample=path_samples,
         workers=WORKERS_COUNT,
-        timestamp=builder.timestamps[:10],
+        timestamp=builder.timestamps[:20],
         display=True,
     )
 

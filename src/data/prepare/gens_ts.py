@@ -52,6 +52,11 @@ def prepare_gens_ts(
     date_range = pd.date_range(
         start_date, end_date, freq=frequency, name="datetime", inclusive="left"
     )
+
+    # Drop Feb 29 since load, wind, and solar data have no this date
+    mask = (date_range.day == 29) & (date_range.month == 2)
+    date_range = date_range[~mask]
+
     parts = []
     for df in [gens_ts, outages_ts, escalated_ts]:
         df["datetime"] = pd.to_datetime(df["datetime"], format=DATE_FORMAT)

@@ -53,4 +53,4 @@ LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S %Z"
 LOG_PATH = "logs/system.log"
 
 # Number of workers to use for building of power flow cases
-WORKERS_COUNT = -1
+WORKERS_COUNT = 1
