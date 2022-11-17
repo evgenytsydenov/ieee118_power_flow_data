@@ -48,7 +48,12 @@ def building(
 
     # Start building process
     os.makedirs(path_samples)
-    builder.run(path_sample=path_samples, workers=WORKERS_COUNT)
+    builder.run(
+        path_sample=path_samples,
+        workers=WORKERS_COUNT,
+        timestamp=builder.timestamps[:10],
+        display=True,
+    )
 
 
 if __name__ == "__main__":

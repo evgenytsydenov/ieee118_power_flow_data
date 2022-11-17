@@ -19,7 +19,10 @@ def check_gens_ts(
     # Load data
     gens = load_df_data(
         data=prepared_gens,
-        dtypes={"gen_name": str, "max_p_mw": float, "min_p_mw": float},
+        dtypes={
+            "gen_name": str,
+            "opt_category": str,
+        },
     )
     gens_ts = load_df_data(
         data=prepared_gens_ts,
@@ -30,6 +33,8 @@ def check_gens_ts(
             "p_mw": float,
             "max_q_mvar": float,
             "min_q_mvar": float,
+            "max_p_mw": float,
+            "min_p_mw": float,
         },
     )
 
@@ -39,23 +44,37 @@ def check_gens_ts(
     ), "There are missing obligatory parameters"
 
     # Ensure parameters are undefined when gen is out of service
-    value_cols = ["p_mw", "min_q_mvar", "max_q_mvar"]
+    values = ["p_mw"]
+    limits = ["min_q_mvar", "max_q_mvar", "max_p_mw", "min_p_mw"]
+    optimized_names = gens.loc[gens["opt_category"] != "non_optimized", "gen_name"]
+    optimized = gens_ts["gen_name"].isin(optimized_names)
+    gens_in_service = gens_ts["in_service"]
     assert (
-        gens_ts.loc[~gens_ts["in_service"], value_cols].isna().values.all()
-    ), "There are value of parameters when generator is out of service"
+        gens_ts.loc[~gens_in_service, values + limits].isna().values.all()
+    ), "There are parameters when generator is out of service"
 
     # Ensure there are no NaNs when gens are in service
-    gens_in_service = gens_ts[gens_ts["in_service"]]
     assert (
-        not gens_in_service.isna().values.any()
+        not gens_ts.loc[gens_in_service, limits].isna().values.any()
     ), "There are undefined parameters when generator is in service"
 
+    # Ensure parameters are no NaNs when gens are in service and not optimized
+    assert (
+        not gens_ts.loc[gens_in_service & ~optimized, values].isna().values.any()
+    ), "There are undefined parameters when generator is not optimized"
+
+    # Ensure parameters are undefined when gen is in service and optimized
+    assert (
+        gens_ts.loc[gens_in_service & optimized, values].isna().values.all()
+    ), "There are undefined parameters when generator is not optimized"
+
     # Some values should not be negative
-    assert (gens_in_service["p_mw"] >= 0).all(), "Some gens have negative output"
+    mask = gens_in_service & ~optimized
+    assert (gens_ts.loc[mask, "p_mw"] >= 0).all(), "Some gens have negative output"
 
     # Check reactive output
     assert (
-        gens_in_service["min_q_mvar"] <= gens_in_service["max_q_mvar"]
+        gens_ts.loc[mask, "min_q_mvar"] <= gens_ts.loc[mask, "max_q_mvar"]
     ).all(), "Min level of reactive output of some gens are greater than max level"
 
     # Ensure there are time-series values for all gens
@@ -77,13 +96,12 @@ def check_gens_ts(
     ), "Values of gen time-series dateset has different date ranges."
 
     # Ensure actual gen output less than its max value
-    gens_in_service = pd.merge(gens_in_service, gens, how="left", on="gen_name")
-    assert (
-        gens_in_service["p_mw"] <= gens_in_service["max_p_mw"]
-    ).all(), "Some gen outputs are greater than the max possible value"
-    assert (
-        gens_in_service["min_p_mw"] <= gens_in_service["p_mw"]
-    ).all(), "Some gen outputs are lower than the min value"
+    # assert (
+    #     gens_ts.loc[mask, "p_mw"] <= gens_ts.loc[mask, "max_p_mw"]
+    # ).all(), "Some gen outputs are greater than the max possible value"
+    # assert (
+    #     gens_ts.loc[mask, "min_p_mw"] <= gens_ts.loc[mask, "p_mw"]
+    # ).all(), "Some gen outputs are lower than the min value"
 
 
 if __name__ == "__main__":

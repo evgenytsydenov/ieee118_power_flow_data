@@ -23,25 +23,16 @@ def prepare_gens(
     dtypes = {
         "gen_name": str,
         "bus_name": str,
-        "max_p_mw": float,
-        "min_p_mw": float,
         "is_slack": bool,
-        "is_optimized": bool,
+        "opt_category": str,
     }
     gens = load_df_data(data=transformed_gens, dtypes=dtypes)
 
     # Drop slack bus gens
     gens = gens.loc[~gens["is_slack"], [c for c in gens.columns if c != "is_slack"]]
 
-    # Temporary assumptions
-    gens.loc[gens["is_optimized"], "min_p_mw"] = 0
-
-    # Round values
-    cols = ["max_p_mw", "min_p_mw"]
-    gens.loc[:, cols] = gens.loc[:, cols].round(decimals=6)
-
     # Return results
-    cols = ["gen_name", "bus_name", "max_p_mw", "min_p_mw", "is_optimized"]
+    cols = ["gen_name", "bus_name", "opt_category"]
     gens.sort_values("gen_name", inplace=True, ignore_index=True)
     if path_prepared_data:
         gens[cols].to_csv(path_prepared_data, header=True, index=False)

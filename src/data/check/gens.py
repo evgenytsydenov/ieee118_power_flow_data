@@ -17,7 +17,11 @@ def check_gens(
     # Load data
     gens = load_df_data(
         data=prepared_gens,
-        dtypes={"bus_name": str, "gen_name": str, "max_p_mw": float, "min_p_mw": float},
+        dtypes={
+            "bus_name": str,
+            "gen_name": str,
+            "opt_category": str,
+        },
     )
     buses = load_df_data(
         data=prepared_buses, dtypes={"bus_name": str, "is_slack": bool}
@@ -31,15 +35,6 @@ def check_gens(
 
     # Ensure all bus names are in bus dataset
     assert gens["bus_name"].isin(buses["bus_name"]).all(), "There are unknown bus names"
-
-    # Ensure max output is not negative
-    assert (gens["max_p_mw"] >= 0).all(), "There are negative max outputs"
-    assert (gens["min_p_mw"] >= 0).all(), "There are negative min outputs"
-
-    # Ensure max output is greater than the min one
-    assert (
-        gens["max_p_mw"] >= gens["min_p_mw"]
-    ).all(), "Max output of some gens is not greater than the min one"
 
     # Ensure slack bus gens are not included
     slack_bus = buses.loc[buses["is_slack"], "bus_name"]

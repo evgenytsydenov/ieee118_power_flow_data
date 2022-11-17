@@ -22,6 +22,7 @@ def parse_nrel118_gens(
     dtypes = {
         "Generator Name": str,
         "Node of connection": str,
+        "Category": str,
         "Max Capacity (MW)": float,
         "Min Stable Level (MW)": float,
     }
@@ -37,6 +38,7 @@ def parse_nrel118_gens(
             "Node of connection": "bus_name",
             "Max Capacity (MW)": "max_p_mw",
             "Min Stable Level (MW)": "min_p_mw",
+            "Category": "opt_category",
         },
         inplace=True,
     )
@@ -47,6 +49,16 @@ def parse_nrel118_gens(
     names["gen_type"].replace(GEN_TYPES, inplace=True)
     gens["gen_name"] = names["gen_type"] + "_" + names["gen_number"].str.zfill(3)
     gens["bus_name"] = "bus_" + gens["bus_name"].str.lstrip("node").str.zfill(3)
+
+    # Convert optimization priories
+    categories = {
+        "1. Committed DA": "day_ahead",
+        "2. Committed RT": "real_time",
+        "Solar": "solar",
+        "Hydro": "hydro",
+        "Wind": "wind",
+    }
+    gens["opt_category"] = gens["opt_category"].map(categories)
 
     # Return results
     gens.sort_values(by="gen_name", inplace=True, ignore_index=True)

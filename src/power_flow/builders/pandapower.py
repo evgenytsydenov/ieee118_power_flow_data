@@ -31,16 +31,21 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         self._bus_name_to_v_rated = None
         self._slack_bus = None
         self._slack_bus_id = None
-        self._gens_prep = None
-        self._gens_ts_prep = None
-        self._load_cols = ["in_service", "p_mw", "q_mvar"]
-        self._gen_cols = [
-            "in_service",
+        self._gen_slice = None
+        self._load_vars = ["in_service", "p_mw", "q_mvar"]
+        self._gen_vars_model = [
             "p_mw",
             "min_q_mvar",
             "max_q_mvar",
             "max_p_mw",
             "min_p_mw",
+        ]
+        self._gen_vars_ts = [
+            "p_mw",
+            "min_q_mvar",
+            "max_q_mvar",
+            "max_p_opf_mw",
+            "min_p_opf_mw",
         ]
 
     def _prepare_data(self) -> None:
@@ -68,70 +73,43 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         # Prepare loads
         self._loads.sort_values("load_name", inplace=True, ignore_index=True)
         self._loads["bus_id"] = self._loads["bus_name"].map(self._bus_name_to_id)
-        self._loads_ts[self._load_cols] = self._loads_ts[self._load_cols].astype(float)
+
+        # Prepare loads ts
+        cols = [c for c in self._load_vars if c != "in_service"]
+        self._loads_ts.loc[~self._loads_ts["in_service"], cols] = np.nan
+        self._loads_ts[self._load_vars] = self._loads_ts[self._load_vars].astype(float)
         self._loads_ts.sort_values(["datetime", "load_name"], inplace=True)
         if "datetime" not in self._loads_ts.index.names:
             self._loads_ts.set_index("datetime", inplace=True)
 
         # Prepare gens
-        gens = self._gens.copy()
-        if self._is_plant_mode:
-            gens.sort_values("bus_name", inplace=True, ignore_index=True)
-            bus_index = gens["bus_name"].str.lstrip("bus_")
-            gens["plant_name"] = "plant_" + bus_index
+        self._gens["is_optimized"] = True
+        mask = self._gens["opt_category"] == "non_optimized"
+        self._gens.loc[mask, "is_optimized"] = False
+        self._gens.sort_values("gen_name", inplace=True)
+        self._gens["bus_id"] = self._gens["bus_name"].map(self._bus_name_to_id)
 
-        # Limits for OPF
-        gen_ts = pd.merge(self._gens_ts, gens, on="gen_name", how="left", copy=True)
-        gen_ts["max_p_opf_mw"] = np.where(
-            gen_ts["is_optimized"], gen_ts["max_p_mw"], gen_ts["p_mw"]
+        # Prepare gens ts
+        optimized_names = self._gens.loc[self._gens["is_optimized"], "gen_name"]
+        self._gens_ts["is_optimized"] = self._gens_ts["gen_name"].isin(optimized_names)
+        self._gens_ts["max_p_opf_mw"] = np.where(
+            self._gens_ts["is_optimized"],
+            self._gens_ts["max_p_mw"],
+            self._gens_ts["p_mw"],
         )
-        gen_ts["min_p_opf_mw"] = np.where(
-            gen_ts["is_optimized"], gen_ts["min_p_mw"], gen_ts["p_mw"]
+        self._gens_ts["min_p_opf_mw"] = np.where(
+            self._gens_ts["is_optimized"],
+            self._gens_ts["min_p_mw"],
+            self._gens_ts["p_mw"],
         )
-        cols = ["p_mw", "max_q_mvar", "min_q_mvar", "max_p_opf_mw", "min_p_opf_mw"]
-        gen_ts.loc[~gen_ts["in_service"], cols] = np.nan
-
-        # Group gen parameters
-        if self._is_plant_mode:
-            agg_funcs = {
-                "p_mw": "sum",
-                "max_q_mvar": "sum",
-                "min_q_mvar": "sum",
-                "max_p_opf_mw": "sum",
-                "min_p_opf_mw": "sum",
-                "in_service": "sum",
-            }
-            gen_ts = gen_ts.groupby(["plant_name", "datetime"], as_index=False).agg(
-                agg_funcs
-            )
-
-            # If the number of gens, which are in service, equals to zero,
-            # the plant is out of service and its parameters should be undefined
-            gen_ts["in_service"] = gen_ts["in_service"].astype(bool)
-            gen_ts.loc[~gen_ts["in_service"], cols] = np.nan
-
-            # Modify gen info
-            gens.drop(columns=["gen_name"], inplace=True)
-            funcs = {"max_p_mw": "sum", "min_p_mw": "min", "is_optimized": "max"}
-            gens = gens.groupby(["bus_name", "plant_name"], as_index=False).agg(funcs)
-            gens["is_optimized"] = gens["is_optimized"].astype(bool)
-
-            # Rename columns for consistency in further scripts
-            gen_ts.rename(columns={"plant_name": "gen_name"}, inplace=True)
-            gens.rename(columns={"plant_name": "gen_name"}, inplace=True)
-
-        # Prepare gen data for faster access
-        self._gens_prep = gens.sort_values("gen_name")
-        self._gens_prep["bus_id"] = self._gens_prep["bus_name"].map(
-            self._bus_name_to_id
+        cols = [c for c in self._gen_vars_ts if c != "in_service"]
+        self._gens_ts.loc[~self._gens_ts["in_service"], cols] = np.nan
+        self._gens_ts[self._gen_vars_ts] = self._gens_ts[self._gen_vars_ts].astype(
+            float
         )
-        self._gens_ts_prep = (
-            gen_ts[["datetime", "gen_name", "in_service", *cols]]
-            .rename(columns={"max_p_opf_mw": "max_p_mw", "min_p_opf_mw": "min_p_mw"})
-            .astype({col: float for col in self._gen_cols})
-            .sort_values(["datetime", "gen_name"])
-            .set_index("datetime")
-        )
+        self._gens_ts.sort_values(["datetime", "gen_name"], inplace=True)
+        if "datetime" not in self._gens_ts.index.names:
+            self._gens_ts.set_index("datetime", inplace=True)
 
     def _build_base_model(self) -> pp.pandapowerNet:
         """Create power flow model.
@@ -292,8 +270,8 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         # Actual parameters will be populated later for each timestamp
         pp.create_gens(
             net=model,
-            name=self._gens_prep["gen_name"],
-            buses=self._gens_prep["bus_id"],
+            name=self._gens["gen_name"],
+            buses=self._gens["bus_id"],
             p_mw=0,
             max_q_mvar=0,
             min_q_mvar=0,
@@ -314,16 +292,15 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
             timestamp: Current datetime.
         """
         # Assume that load_ts is sorted by datetime and load_name
-        model.load[self._load_cols] = self._loads_ts.loc[
-            timestamp, self._load_cols
+        model.load[self._load_vars] = self._loads_ts.loc[
+            timestamp, self._load_vars
         ].values
 
         # Assume that gen_ts_prep is sorted by datetime and gen_name
-        model.gen[self._gen_cols] = self._gens_ts_prep.loc[
-            timestamp, self._gen_cols
-        ].values
+        self._gen_slice = self._gens_ts.loc[timestamp]
+        model.gen[self._gen_vars_model] = self._gen_slice[self._gen_vars_ts].values
 
-        # Need to refresh values after previous run
+        # Need to refresh values after the previous run
         model.gen["controllable"] = True
         model.gen["vm_pu"] = 1.0
         model.ext_grid["vm_pu"] = 1.0
@@ -363,10 +340,10 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         finally:
 
             # Restore original limits of gen outputs and controllable flag
-            model.gen[["min_p_mw", "max_p_mw"]] = self._gens_prep[
+            model.gen[["min_p_mw", "max_p_mw"]] = self._gen_slice[
                 ["min_p_mw", "max_p_mw"]
             ].values
-            model.gen["controllable"] = self._gens_prep["is_optimized"].values
+            model.gen["controllable"] = self._gens["is_optimized"].values
 
         return True
 
