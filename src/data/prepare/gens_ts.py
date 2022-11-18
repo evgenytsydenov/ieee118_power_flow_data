@@ -31,7 +31,7 @@ def prepare_gens_ts(
     # Load data
     gens = load_df_data(
         data=transformed_gens,
-        dtypes={"gen_name": str, "is_slack": bool},
+        dtypes={"gen_name": str, "is_slack": bool, "opt_category": str},
     )
     gens_ts = load_df_data(
         data=transformed_gens_ts,
@@ -73,11 +73,13 @@ def prepare_gens_ts(
     # Drop gens in the slack bus
     gens_ts = gens_ts.merge(gens, on="gen_name", how="left")
     gens_ts.drop(labels=gens_ts.index[gens_ts["is_slack"]], inplace=True)
-    gens_ts.drop(columns="is_slack", inplace=True)
 
     # Reactive power limits
     gens_ts["max_q_mvar"] = 0.7 * gens_ts["max_p_mw"]
     gens_ts["min_q_mvar"] = -0.3 * gens_ts["max_p_mw"]
+
+    # Temporary assumptions
+    gens_ts.loc[gens_ts["opt_category"] != "non_optimized", "min_p_mw"] = 0
 
     # If gen is not in service, its parameters are undefined
     value_cols = ["p_mw", "max_q_mvar", "min_q_mvar", "max_p_mw", "min_p_mw"]

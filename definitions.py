@@ -34,9 +34,6 @@ DATE_RANGE = ("2024-01-01 00:00:00", "2025-01-01 00:00:00", "1h")
 # "pad" --- propagate last valid observation forward to next valid
 FILL_METHOD = "pad"
 
-# If to group generators by bus to represent as a power plant
-PLANT_MODE = False
-
 # Which engine to use for building power flow cases
 POWER_FLOW_ENGINE = "pandapower"
 
@@ -53,4 +50,4 @@ LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S %Z"
 LOG_PATH = "logs/system.log"
 
 # Number of workers to use for building of power flow cases
-WORKERS_COUNT = 1
+WORKERS_COUNT = -1
