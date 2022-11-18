@@ -26,7 +26,6 @@ IIT, “Index of data Illinois Institute of Technology,”
  Available: http://motor.ece.iit.edu/data/
 """
 
-
 if __name__ == "__main__":
 
     # Download files

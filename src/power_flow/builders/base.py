@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-from definitions import DATE_FORMAT, PLANT_MODE, SAMPLE_NAME_FORMAT
+from definitions import DATE_FORMAT, SAMPLE_NAME_FORMAT
 from src.utils.app_logger import get_logger, get_queue_logger, queue_listener
 from src.utils.data_loaders import load_df_data
 
@@ -21,7 +21,6 @@ class BasePowerFlowBuilder(ABC):
         """Base class for building power flow cases."""
         self.timestamps = None
         self._logger = get_logger(__name__)
-        self._is_plant_mode = PLANT_MODE
         self._buses = None
         self._branches = None
         self._loads = None

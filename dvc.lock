@@ -300,8 +300,8 @@ stages:
       md5: 5c6636faa9a2e305a287c80c93fd21e2
       size: 1596
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 6d51344b030841502594c83d77e1d49a
-      size: 1430
+      md5: a4185a2babe92611b5c1c24718f91a45
+      size: 1428
     params:
       definitions.py:
         DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
@@ -701,8 +701,8 @@ stages:
       md5: 677933934d7ea5f451c2e70ada5ce81d
       size: 1605
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 6d51344b030841502594c83d77e1d49a
-      size: 1430
+      md5: a4185a2babe92611b5c1c24718f91a45
+      size: 1428
     params:
       definitions.py:
         DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
@@ -736,8 +736,8 @@ stages:
       md5: a594b44eebc40dc5e6771333b1fab876
       size: 1621
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 6d51344b030841502594c83d77e1d49a
-      size: 1430
+      md5: a4185a2babe92611b5c1c24718f91a45
+      size: 1428
     params:
       definitions.py:
         DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
@@ -771,8 +771,8 @@ stages:
       md5: f74952e735a863e84e047d62938be981
       size: 1619
     - path: src/utils/data_loaders/load_ts_data.py
-      md5: 6d51344b030841502594c83d77e1d49a
-      size: 1430
+      md5: a4185a2babe92611b5c1c24718f91a45
+      size: 1428
     params:
       definitions.py:
         DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
@@ -944,8 +944,8 @@ stages:
       md5: 1b90fe28356f785b3ea2709a2b34b7ed
       size: 4196
     - path: src/data/prepare/gens_ts.py
-      md5: ad5272c1e99100295fb1072e5a6f847e
-      size: 4667
+      md5: df34304a66b806b6babc494580b0b612
+      size: 4543
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -959,7 +959,7 @@ stages:
         FILL_METHOD: pad
     outs:
     - path: data/prepared/gens_ts.csv
-      md5: f0eb70a0ec39d35119fd6f0d0105d157
+      md5: a9abc69cc6bdf1bf29ae5c459e0663f8
       size: 195609283
   build:
     cmd:
@@ -977,7 +977,7 @@ stages:
       md5: 9eff2ba177db64e6808a98ef693c6781
       size: 11225
     - path: data/prepared/gens_ts.csv
-      md5: f0eb70a0ec39d35119fd6f0d0105d157
+      md5: a9abc69cc6bdf1bf29ae5c459e0663f8
       size: 195609283
     - path: data/prepared/loads.csv
       md5: 9ebbed3e2700320d2a95a024072ec817
@@ -986,14 +986,14 @@ stages:
       md5: 7df4ce911315f5eb0c513e6c36cfca6f
       size: 43942179
     - path: src/power_flow/builders/base.py
-      md5: 41f72235ef06f908dbfd04ff608a5048
-      size: 10070
+      md5: 58258b90adab8036fd185d0770a4b7b4
+      size: 10025
     - path: src/power_flow/builders/pandapower.py
       md5: 94d13942e89f28da588202e7abe2cfd9
       size: 12591
     - path: src/power_flow/building.py
-      md5: 25c4a8f20885c24875a678f312889d19
-      size: 2150
+      md5: 088ff19876bce034f2852763e9ce7989
+      size: 2057
     - path: src/utils/data_loaders/load_df_data.py
       md5: f3b1048c9e46162b1c47094fc7cecab9
       size: 953
@@ -1001,12 +1001,11 @@ stages:
       definitions.py:
         DATE_FORMAT: '%Y-%m-%d %H:%M:%S'
         F_HZ: 60
-        PLANT_MODE: false
         POWER_FLOW_ENGINE: pandapower
         SAMPLE_NAME_FORMAT: '%Y_%m_%d_%H_%M_%S'
         S_BASE_MVA: 100
     outs:
     - path: samples
-      md5: db3c1d1cae93337c3e34fdb3eb950834.dir
-      size: 3855411
-      nfiles: 20
+      md5: 085180ddeae8acf95a7ad96be0fdbdac.dir
+      size: 1504086175
+      nfiles: 8760

@@ -464,6 +464,5 @@ stages:
           - POWER_FLOW_ENGINE
           - DATE_FORMAT
           - SAMPLE_NAME_FORMAT
-          - PLANT_MODE
     outs:
       - samples
