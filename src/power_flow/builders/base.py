@@ -15,7 +15,11 @@ from src.utils.data_loaders import load_df_data
 
 
 class BasePowerFlowBuilder(ABC):
-    """Base class for building power flow cases."""
+    """Base class for building power flow cases.
+
+    Attributes:
+        timestamps: List of timestamps loaded with data.
+    """
 
     def __init__(self) -> None:
         """Base class for building power flow cases."""
@@ -46,6 +50,10 @@ class BasePowerFlowBuilder(ABC):
             loads_ts: Path or DataFrame with load time-series data.
             gens: Path or DataFrame with generation data.
             gens_ts: Path or DataFrame with generation time-series data.
+
+        Raises:
+            AssertionError: Error if timestamps of load and gen time-series
+              are different.
         """
         # Load raw data
         self._buses = load_df_data(
@@ -196,6 +204,7 @@ class BasePowerFlowBuilder(ABC):
             path_samples: Path if it is necessary to save power flow cases.
             display: If to show a progress bar.
             queue: Queue for logs.
+
         Returns:
             Power flow cases corresponding to the timestamp of the provided data.
         """
@@ -272,6 +281,7 @@ class BasePowerFlowBuilder(ABC):
 
         Args:
             model: Power system model.
+
         Returns:
             True if the calculation was successful, False otherwise.
         """
@@ -283,6 +293,7 @@ class BasePowerFlowBuilder(ABC):
 
         Args:
             model: Power system model.
+
         Returns:
             True if the calculation was successful, False otherwise.
         """

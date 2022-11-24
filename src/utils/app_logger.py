@@ -19,6 +19,7 @@ class CustomFormatter(logging.Formatter):
 
         Args:
             timestamp: Time in seconds.
+
         Returns:
             Datetime object in UTC zone.
         """
@@ -33,6 +34,7 @@ class CustomFormatter(logging.Formatter):
         Args:
             record: Log record.
             datefmt: Date format.
+
         Returns:
             Time in string format.
         """
@@ -47,6 +49,7 @@ def _get_file_handler(path: str) -> logging.FileHandler:
 
     Args:
         path: Path to log file.
+
     Returns:
         File handler for logs.
     """
@@ -77,6 +80,7 @@ def get_logger(module_name: str) -> logging.Logger:
 
     Args:
         module_name: Name of the module where events happen.
+
     Returns:
         Logger.
     """

@@ -16,7 +16,7 @@ def transform_outages_ts(
 
     Args:
         parsed_nrel118_outages_ts: Path or dataframe with outage time-series data
-         from the NREL-118 dataset.
+          from the NREL-118 dataset.
         path_transformed_data: Path to save transformed data.
 
     Returns:

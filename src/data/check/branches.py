@@ -13,6 +13,9 @@ def check_branches(
     Args:
         prepared_buses: Path or dataframe to prepared data.
         prepared_branches: Path or dataframe to prepared data.
+
+    Raises:
+        AssertionError: Some check fails.
     """
     # Load data
     branches = load_df_data(

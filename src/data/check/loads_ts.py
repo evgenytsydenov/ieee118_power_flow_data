@@ -15,6 +15,9 @@ def check_loads_ts(
     Args:
         prepared_loads_ts: Path or dataframe to prepared time-series data.
         prepared_loads: Path or dataframe to prepared data.
+
+    Raises:
+        AssertionError: Some check fails.
     """
     # Load data
     loads = load_df_data(

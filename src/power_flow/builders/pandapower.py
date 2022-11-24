@@ -21,6 +21,10 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
     Args:
         s_base_mva: Base power.
         f_hz: Power system frequency.
+
+    Attributes:
+        s_base_mva: Base power of the system.
+        f_hz: System frequency.
     """
 
     def __init__(self, s_base_mva: float, f_hz: float) -> None:
@@ -321,6 +325,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
 
         Args:
             model: Power system model.
+
         Returns:
             True if the calculation was successful, False otherwise.
         """
@@ -350,6 +355,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
 
         Args:
             model: Power system model.
+
         Returns:
             True if the calculation was successful, False otherwise.
         """

@@ -15,6 +15,9 @@ def doc_to_docx(path_doc: str, path_docx: str) -> None:
     Args:
         path_doc: Path to doc file.
         path_docx: Path to docx file.
+
+    Raises:
+        RuntimeError: Error if conversion failed.
     """
     path_doc_abs = os.path.abspath(path_doc)
     path_docx_abs = os.path.abspath(path_docx)
