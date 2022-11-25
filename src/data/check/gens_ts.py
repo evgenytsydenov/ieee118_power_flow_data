@@ -15,6 +15,9 @@ def check_gens_ts(
     Args:
         prepared_gens_ts: Path or dataframe to prepared time-series data.
         prepared_gens: Path or dataframe to prepared data.
+
+    Raises:
+        AssertionError: Some check fails.
     """
     # Load data
     gens = load_df_data(

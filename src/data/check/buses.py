@@ -10,6 +10,9 @@ def check_buses(prepared_buses: str | pd.DataFrame) -> None:
 
     Args:
         prepared_buses: Path or dataframe to prepared data.
+
+    Raises:
+        AssertionError: Some check fails.
     """
     # Load data
     buses = load_df_data(

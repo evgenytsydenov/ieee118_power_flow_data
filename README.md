@@ -43,7 +43,7 @@ Power system data (model structure, time-series, plots, etc.) and power flow cas
 
 To customize the pipeline or to build power flow cases manually:
 1. Download the source code [from the latest release](https://github.com/evgenytsydenov/ieee118_power_flow_data/releases/latest) or [clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository).
-2. Go to the project directory, create and activate a virtual environment, install project dependencies [with poetry](https://python-poetry.org/docs/basic-usage/#installing-dependencies) or [pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/).
+2. Go to the project directory, create and activate a virtual environment, install project dependencies [with pip](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/) or use [poetry](https://python-poetry.org/docs/basic-usage/#installing-dependencies).
 3. Add customizations or tune parameters that are listed [in definitions](definitions.py) and used in the computation.
 4. Run `main.py` script in the activated environment. It is also possible to add the project directory to `PYTHONPATH` and run `dvc repro` in the terminal.
 5. After completing all the stages, the power flow cases will be saved in the folder "samples" in the project directory.
@@ -54,7 +54,7 @@ To customize the pipeline or to build power flow cases manually:
 This work is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][license].
 
 
-## Citing
+## Citation
 
 If you use the repository code or prepared dataset (power system data, power flow cases, plots, etc.) in your research, please cite the following BibTeX entry:
 ```
@@ -66,3 +66,8 @@ If you use the repository code or prepared dataset (power system data, power flo
     url = {https://github.com/evgenytsydenov/ieee118_power_flow_data},
 }
 ```
+
+
+## Contribution
+
+Everyone is welcome to contribute to this project. Feel free to share your ideas to improve the dataset and make it more valuable to the power engineering community. See [our Contribution Guide](CONTRIBUTING.md) for details.

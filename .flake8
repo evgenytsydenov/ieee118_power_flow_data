@@ -1,5 +1,6 @@
 [flake8]
 max-line-length = 88
-extend-ignore = E203,E402
+extend-ignore = E203,E402,D100,D104
+docstring-convention = google
 per-file-ignores =
     */__init__.py: F401

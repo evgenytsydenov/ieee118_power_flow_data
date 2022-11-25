@@ -25,6 +25,9 @@ def building(
         gens: Path or DataFrame with generation data.
         gens_ts: Path or DataFrame with generation time-series data.
         path_samples: Path to save created power flow cases.
+
+    Raises:
+        AttributeError: Error if `POWER_FLOW_ENGINE` is unknown.
     """
     # Create builder
     match POWER_FLOW_ENGINE:

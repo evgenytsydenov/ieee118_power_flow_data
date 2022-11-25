@@ -13,6 +13,9 @@ def check_loads(
     Args:
         prepared_buses: Path or dataframe to prepared data.
         prepared_loads: Path or dataframe to prepared data.
+
+    Raises:
+        AssertionError: Some check fails.
     """
     # Load data
     loads = load_df_data(

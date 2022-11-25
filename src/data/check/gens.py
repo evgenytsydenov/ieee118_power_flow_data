@@ -13,6 +13,9 @@ def check_gens(
     Args:
         prepared_buses: Path or dataframe to prepared data.
         prepared_gens: Path or dataframe to prepared data.
+
+    Raises:
+        AssertionError: Some check fails.
     """
     # Load data
     gens = load_df_data(
