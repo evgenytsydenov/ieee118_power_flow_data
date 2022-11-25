@@ -25,6 +25,8 @@ def prepare_gens(
         "bus_name": str,
         "is_slack": bool,
         "opt_category": str,
+        "max_p_mw": float,
+        "min_p_mw": float,
     }
     gens = load_df_data(data=transformed_gens, dtypes=dtypes)
 
@@ -32,7 +34,7 @@ def prepare_gens(
     gens = gens.loc[~gens["is_slack"], [c for c in gens.columns if c != "is_slack"]]
 
     # Return results
-    cols = ["gen_name", "bus_name", "opt_category"]
+    cols = ["gen_name", "bus_name", "opt_category", "max_p_mw", "min_p_mw"]
     gens.sort_values("gen_name", inplace=True, ignore_index=True)
     if path_prepared_data:
         gens[cols].to_csv(path_prepared_data, header=True, index=False)
