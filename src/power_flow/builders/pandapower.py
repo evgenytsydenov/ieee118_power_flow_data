@@ -28,6 +28,7 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
     """
 
     def __init__(self, s_base_mva: float, f_hz: float) -> None:
+        """Class for creating power flow cases using PandaPower."""
         super().__init__()
         self.s_base_mva = s_base_mva
         self.f_hz = f_hz
@@ -203,7 +204,6 @@ class PandaPowerFlowBuilder(BasePowerFlowBuilder):
         Args:
             model: Power system model.
         """
-
         # Get only transformers
         trafos = self._branches[~self._branches["trafo_ratio_rel"].isna()]
 
