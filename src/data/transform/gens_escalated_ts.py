@@ -9,14 +9,14 @@ from src.utils.data_loaders import load_df_data
 
 
 def transform_gens_escalated_ts(
-    parsed_nrel118_gens: str | pd.DataFrame,
+    transformed_gens: str | pd.DataFrame,
     parsed_nrel118_escalators_ts: str | pd.DataFrame,
     path_transformed_data: Optional[str] = None,
 ) -> Optional[pd.DataFrame]:
     """Transform data of generators which have info about escalation factor.
 
     Args:
-        parsed_nrel118_gens: Path or dataframe with parsed generation data.
+        transformed_gens: Path or dataframe with transformed generation data.
         parsed_nrel118_escalators_ts: Path or dataframe with parsed escalator data.
         path_transformed_data: Path to save transformed data.
 
@@ -25,8 +25,8 @@ def transform_gens_escalated_ts(
           were saved.
     """
     # Load data
-    nrel118_gens = load_df_data(
-        data=parsed_nrel118_gens,
+    gens = load_df_data(
+        data=transformed_gens,
         dtypes={
             "gen_name": str,
             "max_p_mw": float,
@@ -39,10 +39,10 @@ def transform_gens_escalated_ts(
     )
 
     # Generators which do not have escalators
-    non_escalated = ~nrel118_gens["gen_name"].isin(nrel118_escalators_ts["gen_name"])
+    non_escalated = ~gens["gen_name"].isin(nrel118_escalators_ts["gen_name"])
     gens_non_escalated = pd.DataFrame(
         data={
-            "gen_name": nrel118_gens.loc[non_escalated, "gen_name"].values,
+            "gen_name": gens.loc[non_escalated, "gen_name"].values,
             "datetime": datetime(2024, 1, 1, 0, 0, 0).strftime(DATE_FORMAT),
             "escalator_ratio": 1.0,
         }
@@ -52,7 +52,7 @@ def transform_gens_escalated_ts(
     )
 
     # Merge
-    gens = nrel118_gens.merge(escalators_ts, on="gen_name", how="right")
+    gens = gens.merge(escalators_ts, on="gen_name", how="right")
     gens["max_p_mw"] *= gens["escalator_ratio"]
     gens["min_p_mw"] *= gens["escalator_ratio"]
 
@@ -70,13 +70,13 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         raise ValueError(
             "Incorrect arguments. Usage:\n\tpython "
-            "transform_gens_escalated_ts.py path_parsed_nrel118_gens "
+            "transform_gens_escalated_ts.py path_transformed_gens "
             "path_parsed_nrel118_escalators_ts path_transformed_data\n"
         )
 
     # Run
     transform_gens_escalated_ts(
-        parsed_nrel118_gens=sys.argv[1],
+        transformed_gens=sys.argv[1],
         parsed_nrel118_escalators_ts=sys.argv[2],
         path_transformed_data=sys.argv[3],
     )

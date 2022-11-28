@@ -47,6 +47,15 @@ def transform_gens(
     # Add slack bus info
     gens = gens.merge(buses, on="bus_name", how="left")
 
+    # Assumptions
+    to_reduce = [
+        "combined_cycle_gas_034",
+        "combined_cycle_gas_036",
+        "combined_cycle_gas_031",
+        "combined_cycle_gas_035",
+    ]
+    gens.loc[gens["gen_name"].isin(to_reduce), ["max_p_mw", "min_p_mw"]] *= 0.5
+
     # Return results
     cols = [
         "gen_name",

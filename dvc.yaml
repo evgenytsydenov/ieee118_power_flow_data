@@ -261,11 +261,11 @@ stages:
     desc: "Combine gen output limits and escalator values"
     cmd:
       - python src/data/transform/gens_escalated_ts.py
-        data/parsed/nrel118_gens.csv
+        data/transformed/gens.csv
         data/parsed/nrel118_escalators_ts.csv
         data/transformed/gens_escalated_ts.csv
     deps:
-      - data/parsed/nrel118_gens.csv
+      - data/transformed/gens.csv
       - data/parsed/nrel118_escalators_ts.csv
       - src/data/transform/gens_escalated_ts.py
       - src/utils/data_loaders/load_df_data.py
