@@ -86,6 +86,9 @@ def prepare_gens_ts(
     gens_ts["max_q_mvar"] = 0.7 * gens_ts["max_p_mw"]
     gens_ts["min_q_mvar"] = -0.3 * gens_ts["max_p_mw"]
 
+    # Temporary assumptions
+    gens_ts.loc[gens_ts["opt_category"] != "non_optimized", "min_p_mw"] = 0
+
     # If gen is not in service, its parameters are undefined
     value_cols = ["p_mw", "max_q_mvar", "min_q_mvar", "max_p_mw", "min_p_mw"]
     gens_ts.loc[~gens_ts["in_service"], value_cols] = np.nan
