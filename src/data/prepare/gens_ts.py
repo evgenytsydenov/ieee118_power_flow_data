@@ -74,6 +74,14 @@ def prepare_gens_ts(
     gens_ts = gens_ts.merge(gens, on="gen_name", how="left")
     gens_ts.drop(labels=gens_ts.index[gens_ts["is_slack"]], inplace=True)
 
+    # Adjust limits
+    gens_ts["max_p_mw"] = np.where(
+        gens_ts["p_mw"] > gens_ts["max_p_mw"], gens_ts["p_mw"], gens_ts["max_p_mw"]
+    )
+    gens_ts["min_p_mw"] = np.where(
+        gens_ts["p_mw"] < gens_ts["min_p_mw"], gens_ts["p_mw"], gens_ts["min_p_mw"]
+    )
+
     # Reactive power limits
     gens_ts["max_q_mvar"] = 0.7 * gens_ts["max_p_mw"]
     gens_ts["min_q_mvar"] = -0.3 * gens_ts["max_p_mw"]

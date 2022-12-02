@@ -62,11 +62,14 @@ Here is a list of topics that can be implemented to enhance the quality of the d
 
 1. Bus voltage limits can be set from the JEAS-118 dataset. Currently, these values are hardcoded as 0.8 and 1.2 for `min_v_pu` and `max_v_pu` respectively to achieve the convergence of the OPF estimation.
 2. Min limits of active output of optimized generators are currently set to zero to achieve the convergence of the OPF estimation. These limits can be set according to the NREL-118 data.
-3. Limits of reactive output of generators can be estimated more accurate with consideration of actual active output of generators. Currently, the limits are set from -0.3 to 0.7 of the max active output.
-4. The cost function used for the OPF task can be composed and added to reflect the unit commitment process used in the industry. Currently, the default cost function from PandaPower is used which aims to minimize the total generation.
-5. Branch outages can be added as time series to simulate emergency failures or maintenance during the year. At present, all branches are always in service.
-6. The NREL-118 dataset contains a lot of generator parameters (fuel price, emission rate, start cost, up and down time, speed and cost of ramp up and down, etc.) that can be used to solve the OPF task in a more realistic way.
-7. The JEAS-118 dataset contains information about angles of phase shifting transformers. These angles can be added to the power system model for more accurate transformer modeling.
-8. Limits of slack bus injections can be added as time series for more realistic simulation of external grid behavior.
-9. The `PLANT_MODE` parameter can be added to group generators per buses so that the power system model contains only one generator/plant per bus.
-10. Memory consumption of parallel execution of OPF and PF (in workers) can be optimized by using [the shared memory](https://docs.python.org/3/library/multiprocessing.shared_memory.html).
+3. The cost function used for the OPF task can be composed and added to reflect the unit commitment process used in the industry. Currently, the default cost function from PandaPower is used which aims to minimize the total generation.
+4. Transfer capability limits of lines and transformers seem unrealistic. Line and transformer types can be specified for more realistic estimation of their characteristics.
+5. Limits of reactive output of generators can be estimated more accurate with consideration of actual active output of generators. Currently, the limits are set from -0.3 to 0.7 of the max active output.
+6. Branch outages can be added as time series to simulate emergency failures or maintenance during the year. At present, all branches are always in service.
+7. Bus voltage limits can be set as time series to simulate the change of the operating limits over time.
+8. The NREL-118 dataset contains a lot of generator parameters (fuel price, emission rate, start cost, up and down time, speed and cost of ramp up and down, etc.) that can be used to solve the OPF task in a more realistic way.
+9. The JEAS-118 dataset contains information about angles of phase shifting transformers. These angles can be added to the power system model for more accurate transformer modeling.
+10. Limits of slack bus injections can be added as time series for more realistic simulation of external grid behavior.
+11. The `PLANT_MODE` parameter can be added to group generators per buses so that the power system model contains only one generator/plant per bus.
+12. Memory consumption of parallel execution of OPF and PF (in workers) can be optimized by using [the shared memory](https://docs.python.org/3/library/multiprocessing.shared_memory.html).
+13. Besides PandaPower, other solvers can be added for OPF and PF estimation.

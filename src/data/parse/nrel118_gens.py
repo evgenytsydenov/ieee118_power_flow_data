@@ -19,12 +19,14 @@ def parse_nrel118_gens(
     Returns:
         Parsed data or None if `path_parsed_data` is passed and the data were saved.
     """
+    # Use "New stable level (MW)" instead of "Min Stable Level (MW)", since they are
+    # almost equal but the latter looks inappropriate for several power plants
     dtypes = {
         "Generator Name": str,
         "Node of connection": str,
         "Category": str,
         "Max Capacity (MW)": float,
-        "Min Stable Level (MW)": float,
+        "New stable level (MW)": float,
     }
     gens = load_df_data(data=raw_data, dtypes=dtypes, sep=";", decimal=",")
 
@@ -37,7 +39,7 @@ def parse_nrel118_gens(
             "Generator Name": "gen_name",
             "Node of connection": "bus_name",
             "Max Capacity (MW)": "max_p_mw",
-            "Min Stable Level (MW)": "min_p_mw",
+            "New stable level (MW)": "min_p_mw",
             "Category": "opt_category",
         },
         inplace=True,

@@ -83,11 +83,6 @@ def check_gens_ts(
         gens_ts.loc[gens_in_service & gens_optimized, values].isna().values.all()
     ), "There are defined parameters when generator is optimized and in service"
 
-    # Some values should not be negative
-    assert (
-        gens_ts.loc[gens_in_service & ~gens_optimized, "p_mw"] >= 0
-    ).all(), "Some gens have negative output"
-
     # Check reactive output limits
     assert (
         gens_ts.loc[gens_in_service, "min_q_mvar"]
@@ -99,6 +94,16 @@ def check_gens_ts(
         gens_ts.loc[gens_in_service, "min_p_mw"]
         <= gens_ts.loc[gens_in_service, "max_p_mw"]
     ).all(), "Min level of active output of some gens are greater than the max level"
+
+    # Check active output of non-optimized gens
+    values = gens_ts.loc[gens_in_service & ~gens_optimized]
+    assert (values["min_p_mw"] >= 0).all(), "Some gens have negative min output limit"
+    assert (
+        values["p_mw"] >= values["min_p_mw"]
+    ).all(), "Some gens have output which is less than min output limit"
+    assert (
+        values["p_mw"] <= values["max_p_mw"]
+    ).all(), "Some gens have output which is greater than max output limit"
 
     # Ensure each gen has values for each timestamp
     pivot = gens_ts[["datetime", "gen_name", "in_service"]].pivot_table(

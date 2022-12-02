@@ -48,3 +48,4 @@
 - "max_q_mvar" --- actual max limit of reactive output in megavolt-amperes according to PQ-diagram
 - "min_q_mvar" --- actual min limit of reactive output in megavolt-amperes according to PQ-diagram
 - "datetime" --- date and time of variable measurement
+- "opt_category" --- category used for the OPF estimation

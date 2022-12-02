@@ -261,11 +261,11 @@ stages:
     desc: "Combine gen output limits and escalator values"
     cmd:
       - python src/data/transform/gens_escalated_ts.py
-        data/parsed/nrel118_gens.csv
+        data/transformed/gens.csv
         data/parsed/nrel118_escalators_ts.csv
         data/transformed/gens_escalated_ts.csv
     deps:
-      - data/parsed/nrel118_gens.csv
+      - data/transformed/gens.csv
       - data/parsed/nrel118_escalators_ts.csv
       - src/data/transform/gens_escalated_ts.py
       - src/utils/data_loaders/load_df_data.py
@@ -393,15 +393,21 @@ stages:
     cmd:
       - python src/data/prepare/gens.py
         data/transformed/gens.csv
+        data/prepared/gens_ts.csv
         data/prepared/gens.csv
       - python src/data/check/gens.py
         data/prepared/gens.csv
         data/prepared/buses.csv
+      - python src/data/check/gens_ts.py
+        data/prepared/gens_ts.csv
+        data/prepared/gens.csv
     deps:
       - data/prepared/buses.csv
+      - data/prepared/gens_ts.csv
       - data/transformed/gens.csv
       - src/data/prepare/gens.py
       - src/data/check/gens.py
+      - src/data/check/gens_ts.py
       - src/utils/data_loaders/load_df_data.py
     outs:
       - data/prepared/gens.csv
@@ -415,17 +421,12 @@ stages:
         data/transformed/gens_escalated_ts.csv
         data/transformed/outages_ts.csv
         data/prepared/gens_ts.csv
-      - python src/data/check/gens_ts.py
-        data/prepared/gens_ts.csv
-        data/prepared/gens.csv
     deps:
-      - data/prepared/gens.csv
       - data/transformed/gens.csv
       - data/transformed/gens_ts.csv
       - data/transformed/gens_escalated_ts.csv
       - data/transformed/outages_ts.csv
       - src/data/prepare/gens_ts.py
-      - src/data/check/gens_ts.py
       - src/utils/data_loaders/load_df_data.py
     params:
       - definitions.py:
